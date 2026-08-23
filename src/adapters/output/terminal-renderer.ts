@@ -170,9 +170,11 @@ function renderDetails(
 }
 
 export class TerminalRenderer implements TerminalOutputPort {
-  constructor(
-    private readonly segmenter: GraphemeSegmenter = defaultGraphemeSegmenter,
-  ) {}
+  private readonly segmenter: GraphemeSegmenter;
+
+  constructor(segmenter: GraphemeSegmenter = defaultGraphemeSegmenter) {
+    this.segmenter = segmenter;
+  }
 
   render(
     mode: "default" | "tree" | "details",

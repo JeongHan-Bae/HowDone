@@ -11,6 +11,9 @@ bin/howdone.cjs -> src/boot/main.ts -> src/application/analyze.ts
 ```
 
 `bin/howdone.cjs` may only select native TypeScript execution on Node.js 23+ or the bundled `tsx` loader on Node.js 18.18–22. It must not contain domain or parsing behavior.
+Modules loaded through the native Node.js TypeScript path must use erasable
+TypeScript syntax. Do not use parameter properties, enums, namespaces, or
+other TypeScript constructs that require a transform at runtime.
 
 ## Architecture ownership
 

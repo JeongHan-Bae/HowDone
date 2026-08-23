@@ -13,12 +13,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JeongHan-Bae/HowDown.git"
+    "url": "git+https://github.com/JeongHan-Bae/HowDone.git"
   },
   "bugs": {
-    "url": "https://github.com/JeongHan-Bae/HowDown/issues"
+    "url": "https://github.com/JeongHan-Bae/HowDone/issues"
   },
-  "homepage": "https://github.com/JeongHan-Bae/HowDown#readme",
+  "homepage": "https://github.com/JeongHan-Bae/HowDone#readme",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"

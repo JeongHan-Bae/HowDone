@@ -10,7 +10,11 @@ export class FileReadError extends Error {
 }
 
 export class NodeMarkdownFileReader implements MarkdownFileReader {
-  constructor(private readonly baseDirectory = process.cwd()) {}
+  private readonly baseDirectory: string;
+
+  constructor(baseDirectory = process.cwd()) {
+    this.baseDirectory = baseDirectory;
+  }
 
   async read(filePath: string): Promise<string> {
     // The Node path implementation supplies the current platform's rules.
