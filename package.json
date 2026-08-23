@@ -1,0 +1,52 @@
+{
+  "name": "howdone",
+  "version": "0.0.1",
+  "description": "HowDone analyzes hierarchical completion progress in Markdown task lists.",
+  "type": "module",
+  "bin": {
+    "howdone": "./bin/howdone.cjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JeongHan-Bae/HowDown.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JeongHan-Bae/HowDown/issues"
+  },
+  "homepage": "https://github.com/JeongHan-Bae/HowDown#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "start": "node ./bin/howdone.cjs",
+    "test:tdd": "node --import tsx --test test/index.test.ts test/tdd/index.test.ts",
+    "test": "npm run test:tdd",
+    "test:bdd": "cucumber-js --config test/bdd/cucumber.cjs",
+    "test:all": "npm run typecheck && npm test && npm run test:bdd",
+    "typecheck": "tsc --noEmit",
+    "pack:check": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": ">=18.18"
+  },
+  "dependencies": {
+    "mdast-util-to-string": "^4.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "tsx": "^4.19.2",
+    "unified": "^11.0.5"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2"
+  }
+}

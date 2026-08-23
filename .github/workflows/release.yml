@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  ci:
+    name: Release CI gate
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  publish:
+    name: Publish to npm
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js for npm Trusted Publishing
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          registry-url: https://registry.npmjs.org
+
+      - name: Validate release tag and synchronize package version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_REF_TYPE:-}" != "tag" || "${RELEASE_TAG}" != v* ]]; then
+            echo "::error::Release must run from a Git tag beginning with v (received: ${RELEASE_TAG})."
+            exit 1
+          fi
+
+          VERSION="${RELEASE_TAG#v}"
+          VERSION="${VERSION}" node --input-type=module <<'NODE'
+          const version = process.env.VERSION;
+          const numericIdentifier = "(0|[1-9][0-9]*)";
+          const nonNumericIdentifier = "[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*";
+          const prereleaseIdentifier = `(?:${numericIdentifier}|${nonNumericIdentifier})`;
+          const buildIdentifier = "[0-9A-Za-z-]+";
+          const semver = new RegExp(
+            `^${numericIdentifier}\\.${numericIdentifier}\\.${numericIdentifier}` +
+              `(?:-${prereleaseIdentifier}(?:\\.${prereleaseIdentifier})*)?` +
+              `(?:\\+${buildIdentifier}(?:\\.${buildIdentifier})*)?$`,
+          );
+
+          if (typeof version !== "string" || !semver.test(version)) {
+            console.error(`::error::Invalid release tag version: ${version}`);
+            console.error("Expected vX.Y.Z or vX.Y.Z-prerelease, using npm SemVer.");
+            process.exit(1);
+          }
+          NODE
+
+          npm version "${VERSION}" --no-git-tag-version
+
+          PACKAGE_VERSION="$(node -e "console.log(require('./package.json').version)")"
+          if [[ "${PACKAGE_VERSION}" != "${VERSION}" ]]; then
+            echo "::error::package.json version ${PACKAGE_VERSION} does not match tag version ${VERSION}."
+            exit 1
+          fi
+
+          echo "RELEASE_VERSION=${VERSION}" >> "${GITHUB_ENV}"
+
+      - name: Publish the tagged package
+        run: npm publish --tag latest

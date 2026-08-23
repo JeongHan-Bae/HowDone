@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+out/
+
+# TypeScript, bundler, and tool caches
+*.tsbuildinfo
+.vite/
+.cache/
+.parcel-cache/
+.turbo/
+
+# Test and coverage output
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+
+# Logs and process files
+*.log
+*.pid
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment and local package-manager configuration
+.env
+.env.*
+!.env.example
+*.local
+.npmrc
+.node-version
+.nvmrc
+
+# Editors and IDEs
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+._*
+Thumbs.db
+
+# Temporary project artifacts
+tmp/
+temp/
+.tools/
+*.tmp
+*.tgz
