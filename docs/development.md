@@ -28,18 +28,24 @@ runtime package ships the TypeScript source and the small `bin/howdone.cjs`
 loader, so CI uses the real project checks: deterministic `npm ci`, typecheck,
 TDD/regression tests, BDD tests, and `npm run pack:check`.
 
-`.github/workflows/ci.yml` runs on Ubuntu via `actions/checkout@v5` and
-`actions/setup-node@v5` for manual dispatch, every branch push, pull requests,
-and `workflow_call`. Its test matrix runs typecheck, TDD, BDD, and package
-checks on Node.js 18, 20, 22, 24, and 26. Cucumber 11.3.0 is declared once in
-`package.json` and supports every Node.js line in the matrix; npm `overrides`
-pin the vulnerable/deprecated transitive `uuid` and `glob` packages to fixed
-versions. Every matrix row therefore runs the exact dependency graph produced
-by `npm ci` from the committed manifest and lockfile. A separate Ubuntu audit
-job verifies that graph before the matrix runs. `.github/workflows/release.yml`
-calls that same workflow first;
-its `publish` job has `needs: ci`, so npm publishing cannot run when any CI
-check fails.
+`.github/workflows/ci.yml` runs through `actions/checkout@v5` and
+`actions/setup-node@v5` on Ubuntu, macOS, and Windows. Push and pull-request
+CI is limited to changes in the CI workflow, `bin/`, `src/`, `test/`, the npm
+manifests, and `tsconfig.json`; README, other documentation, and release-only
+changes do not trigger normal CI. Manual dispatch and `workflow_call` remain
+available, so the Release workflow can still invoke the reusable CI gate.
+
+Each operating-system job runs the same Node.js 18, 20, 22, 24, and 26
+matrix, including dependency audit, typecheck, TDD, BDD, and package checks.
+The shared matrix and steps are declared once with YAML anchors and reused by
+the three OS jobs. Cucumber 11.3.0 is declared once in `package.json` and
+supports every Node.js line in the matrix; npm `overrides` pin the
+vulnerable/deprecated transitive `uuid` and `glob` packages to fixed versions.
+Every matrix row therefore runs the exact dependency graph produced by
+`npm ci` from the committed manifest and lockfile. `.github/workflows/release.yml`
+calls that same workflow first; its
+`publish` job has `needs: ci`, so npm publishing cannot run when any CI check
+fails.
 
 Formal releases are tag-driven. A tag such as `v0.1.0` or
 `v1.1.0-beta.1` is validated as npm SemVer, the leading `v` is removed, and
