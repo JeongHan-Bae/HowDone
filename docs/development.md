@@ -97,10 +97,18 @@ The README status badge follows the `main` branch CI workflow. Its version
 badge is generated from `package.json` by `npm run badge:version`, which
 updates `version_badge.json`. The script is repository maintenance only; the
 runtime package-version adapter reads the published package's own metadata.
-The independent Update Version Badge workflow
-runs this script on `main` pushes that change `package.json`, then commits the
-generated file as `github-actions[bot]`; its badge update does not retrigger the
-main CI workflow.
+The independent Update Version Badge workflow runs this script on `main`
+pushes that change `package.json` and can also be started with
+`workflow_dispatch`. It commits the generated file through the authorized SSH
+identity; its badge update does not retrigger the main CI workflow. The
+workflow uses `SSH_SIGNING_KEY` for the signed commit and
+`SSH_AUTH_KEY` for the GitHub push identity, and skips unauthorized actors.
+`SSH_SIGNING_KEY` does not grant repository access. Because the `main` rules
+require changes through a pull request and required status checks, the
+`GITHUB_TOKEN` granted by `contents: write` cannot push this generated commit
+by itself; `SSH_AUTH_KEY` must belong to the authorized account allowed by the
+repository rules. Missing either secret fails the workflow before a push, so a
+successful run cannot hide a rejected badge update.
 The package metadata and distribution are licensed under Apache License 2.0;
 the copyright year for this repository is 2026.
 

@@ -8,6 +8,7 @@ on:
       - "package.json"
       - ".github/workflows/update-version-badge.yml"
       - "scripts/update-version-badge.mjs"
+  workflow_dispatch:
 
 jobs:
   update-version-badge:
@@ -40,10 +41,22 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Exit if not changed
-        if: steps.check_diff.outputs.changed != 'true'
+      - name: Check if author is allowed to update
+        id: check_author
         run: |
-          echo "Version badge is already current."
+          if [[ "${{ github.actor }}" == "JeongHan-Bae" ]]; then
+            echo "authorized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Not authorized to commit. Actor is ${{ github.actor }}."
+            echo "authorized=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Exit if not changed or unauthorized
+        if: >
+          steps.check_diff.outputs.changed != 'true' ||
+          steps.check_author.outputs.authorized != 'true'
+        run: |
+          echo "Skipping update due to no generated changes or unauthorized actor."
           exit 0
 
       - name: Extract project version from package.json
@@ -53,14 +66,44 @@ jobs:
             "import { readFileSync } from 'node:fs'; console.log(JSON.parse(readFileSync('package.json', 'utf8')).version)")
           echo "project_version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Set up SSH Signing Key
+      - name: Set up SSH keys
+        env:
+          SSH_SIGNING_KEY: ${{ secrets.SSH_SIGNING_KEY }}
+          SSH_AUTH_KEY: ${{ secrets.SSH_AUTH_KEY }}
         run: |
+          set -euo pipefail
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_SIGNING_KEY }}" > ~/.ssh/id_ed25519_signing
+
+          if [ -z "$SSH_SIGNING_KEY" ]; then
+            echo "SSH_SIGNING_KEY is empty"
+            exit 1
+          fi
+
+          if [ -z "$SSH_AUTH_KEY" ]; then
+            echo "SSH_AUTH_KEY is empty"
+            exit 1
+          fi
+
+          printf '%s\n' "$SSH_SIGNING_KEY" | tr -d '\r' > ~/.ssh/id_ed25519_signing
+          printf '%s\n' "$SSH_AUTH_KEY" | tr -d '\r' > ~/.ssh/id_ed25519_github_actions
+
           chmod 600 ~/.ssh/id_ed25519_signing
+          chmod 600 ~/.ssh/id_ed25519_github_actions
+
+          ssh-keygen -y -f ~/.ssh/id_ed25519_signing > ~/.ssh/id_ed25519_signing.pub
+
+          cat > ~/.ssh/config <<'EOF'
+          Host github.com
+            HostName github.com
+            User git
+            IdentityFile ~/.ssh/id_ed25519_github_actions
+            IdentitiesOnly yes
+          EOF
+
           ssh-keyscan -H github.com >> ~/.ssh/known_hosts
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_ed25519_signing
+          ssh -T git@github.com || true
 
       - name: Configure Git for Signed Commits
         run: |
@@ -71,9 +114,12 @@ jobs:
           git config --global user.email "mastropseudo@gmail.com"
 
       - name: Commit and push Version Files
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           git add version_badge.json
-          git commit -S -m "auto-update(version): ${{ steps.version.outputs.project_version }}" || echo "No commit needed"
-          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" || echo "No changes to push"
+          if git diff --cached --quiet; then
+            echo "No version file changes to commit."
+            exit 0
+          fi
+          git commit -S -m "auto-update(version): ${{ steps.version.outputs.project_version }}"
+          git push "git@github.com:${{ github.repository }}.git"
