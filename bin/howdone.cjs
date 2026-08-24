@@ -4,9 +4,11 @@
 
 const { spawnSync } = require("node:child_process");
 const { dirname, resolve } = require("node:path");
+const { pathToFileURL } = require("node:url");
 
 const packageRoot = resolve(dirname(__dirname));
 const entryPoint = resolve(packageRoot, "src", "boot", "main.ts");
+const entryPointUrl = pathToFileURL(entryPoint).href;
 
 function parseNodeVersion() {
   const [majorText, minorText] = process.versions.node.split(".");
@@ -30,8 +32,20 @@ if (
 } else {
   const useNativeTypeScript = nodeVersion.major >= 23;
   const childArguments = useNativeTypeScript
-    ? [entryPoint, ...process.argv.slice(2)]
-    : ["--import", getTsxEntryPoint(), entryPoint, ...process.argv.slice(2)];
+    ? [
+        "--eval",
+        `import(${JSON.stringify(entryPointUrl)})`,
+        entryPoint,
+        ...process.argv.slice(2),
+      ]
+    : [
+        "--import",
+        getTsxEntryPoint(),
+        "--eval",
+        `import(${JSON.stringify(entryPointUrl)})`,
+        entryPoint,
+        ...process.argv.slice(2),
+      ];
 
   const result = spawnSync(process.execPath, childArguments, {
     stdio: "inherit",
