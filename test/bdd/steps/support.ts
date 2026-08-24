@@ -42,6 +42,16 @@ interface FrontmatterFixtures {
   cases: readonly FrontmatterCase[];
 }
 
+type BddRuntime = "source" | "compiled";
+
+function bddRuntime(): BddRuntime {
+  const value = process.env.HOWDONE_BDD_RUNTIME ?? "source";
+  if (value !== "source" && value !== "compiled") {
+    throw new Error(`unsupported BDD runtime: ${value}`);
+  }
+  return value;
+}
+
 export const pathFixtures = JSON.parse(
   readFileSync(new URL("../fixtures/path-variants.json", import.meta.url), "utf8"),
 ) as PathFixtures;
@@ -110,7 +120,11 @@ export function runHowdone(
   if (world.directory === undefined) {
     throw new Error("the BDD workspace has not been created");
   }
-  const entryPoint = path.resolve(process.cwd(), "bin", "howdone.cjs");
+  const runtime = bddRuntime();
+  const entryPoint = runtime === "compiled"
+    ? process.env.HOWDONE_BDD_ENTRY_POINT ??
+      path.resolve(process.cwd(), "dist", "boot", "main.js")
+    : path.resolve(process.cwd(), "bin", "howdone.cjs");
   world.result = spawnSync(process.execPath, [entryPoint, ...argumentsValue], {
     cwd: world.directory,
     encoding: "utf8",

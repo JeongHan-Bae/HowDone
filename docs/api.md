@@ -1,11 +1,19 @@
 # API contract
 
-The supported programmatic API is intentionally small. Import from `src/core/index.ts` during local development or use the individual stage modules when a test needs a precise boundary.
+The supported programmatic API is intentionally small. A published package
+consumer imports the compiled core entry from `howdone`; repository tests may
+still import individual source modules when a precise stage boundary is under
+test. The package does not expose adapters as a second implementation of the
+core API.
 
 ## Pipeline
 
+The core pipeline accepts a `MarkdownLexer` port. The adapter import below is
+the repository composition example; the published package exposes the
+compiled core contracts, not the repository's default adapter assembly.
+
 ```ts
-import { runMarkdownPipeline, TypedAstParser } from "./src/core/index.ts";
+import { runMarkdownPipeline, TypedAstParser } from "howdone";
 import { defaultRemarkLexer } from "./src/adapters/markdown/remark-lexer.ts";
 
 const document = runMarkdownPipeline(

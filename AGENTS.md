@@ -15,21 +15,28 @@ equivalent. The `Commit messages` section in `CONTRIBUTING.md` is authoritative
 for commit wording, and its development and review sections are authoritative
 for contribution procedure. Do not invent a second commit format here.
 
-The executable path is intentionally small:
+The executable paths are intentionally small. Repository checks use the
+original TypeScript runtime path, while the package bin points directly to the
+compiled entry:
 
 ```text
-bin/howdone.cjs -> src/boot/main.ts -> src/application/analyze.ts
+bin/howdone.cjs      -> src/boot/main.ts -> src/application/analyze.ts
+package bin howdone  -> dist/boot/main.js -> dist/application/analyze.js
 ```
 
-`bin/howdone.cjs` may only select native TypeScript execution on Node.js 23+ or the bundled `tsx` loader on Node.js 18.18–22. It must not contain domain or parsing behavior.
+`bin/howdone.cjs` preserves the source checkout behavior: Node.js 23 or later
+uses native TypeScript execution and Node.js 18.18 through 22 uses the bundled
+`tsx` loader. The published package maps its CLI directly to the compiled
+artifact and does not ship the source tree. The source launcher must not
+contain domain or parsing behavior.
 Every `.cjs` and `.mjs` file must declare its types at its own boundary: use
 `// @ts-check` with JSDoc typedefs and annotations for JavaScript files, and
 TypeScript interfaces or type aliases for `.ts` maintenance scripts. These
 repository scripts remain outside the application `tsconfig.json` include
 boundary; their file extension must not make them application source.
-Modules loaded through the native Node.js TypeScript path must use erasable
-TypeScript syntax. Do not use parameter properties, enums, namespaces, or
-other TypeScript constructs that require a transform at runtime.
+The published package contract is compiled JavaScript. The source runtime is
+for repository development and source-path verification; do not make a second
+domain implementation for it.
 
 ## Architecture ownership
 
@@ -89,7 +96,7 @@ step design, and test verification live in [`test/AGENTS.md`](test/AGENTS.md).
 This section only records the repository-level taxonomy:
 
 - `test/tdd/` verifies each pipeline boundary and intermediate contract: source to lexer tokens, lexer tokens to AST, AST to statistical tree, tree to completion metrics, and metrics to terminal/JSON output.
-- `test/bdd/features/` and `test/bdd/steps/` verify user-visible command behavior through the real `bin/howdone.cjs -> boot` path. These scenarios cover final stdout, JSON, exit status, paths, options, and errors.
+- `test/bdd/features/` and `test/bdd/steps/` verify user-visible command behavior through the real source launcher and, for compiled parity, the compiled package entry. These scenarios cover final stdout, JSON, exit status, paths, options, and errors.
 - TDD inputs and independent intermediate oracles belong under
   `test/tdd/fixtures/`; BDD source-only inputs belong under
   `test/bdd/fixtures/`. Do not create a shared fixture merely because two
@@ -125,15 +132,25 @@ typechecks, TDD and BDD suites, runtime and full dependency audits, package
 contents, platform-neutral source checks, and staged/unstaged Git checks. Do
 not reproduce the command sequence here; CONTRIBUTING owns that detail.
 
-`npm test` is the TDD gate. `npm run test:bdd` is the black-box behavior gate. `npm run test:all` runs typecheck, TDD, and BDD together.
+`npm test` is the unchanged source TDD gate. `npm run test:bdd` is the
+unchanged source black-box behavior gate. `npm run test:compiled` runs the
+compiled TDD and the same BDD features against the compiled CLI.
+`npm run test:all` runs both source and compiled gates together.
 
-The project has no separate lint or compiled build command: the runtime package
-ships the TypeScript source and its execution shim. CI therefore runs the real
-checks that exist—`npm ci`, application and maintenance typechecks, the
-platform API check, TDD, BDD, audits, and `npm pack --dry-run`—without
-adding no-op lint/build aliases. `.github/workflows/ci.yml` is reusable by the
-tag-based release workflow; publishing is permitted only after that CI job
-succeeds.
+Compiled verification first uses development tools to build the artifacts, then
+packs the package and installs it in a temporary isolated npm project with
+`--omit=dev`. The compiled TDD suite and compiled CLI child processes run from
+that production-only installation, so a passing result cannot be supplied by
+`tsx`, Cucumber, TypeScript, or another development dependency. Cucumber
+remains test orchestration infrastructure; it is not part of the CLI runtime
+dependency proof.
+
+The project has a real TypeScript build command. It emits one platform-neutral
+JavaScript package under `dist/`, rewrites relative TypeScript imports to
+`.js`, and emits declarations for the public core API. CI runs the source
+checks, the compiled TDD and BDD checks, and the package-content check from the
+same workspace. `.github/workflows/ci.yml` is reusable by the tag-based release
+workflow; publishing is permitted only after that CI job succeeds.
 
 ## Documentation ownership
 
@@ -148,6 +165,12 @@ succeeds.
   `scripts/check-platform-neutral.ts` rejects unreviewed platform API access.
   These are repository maintenance scripts and are not part of the published
   package.
+- `scripts/run-compiled-tests.mjs` builds the test artifacts, installs the
+  packed package with production dependencies only, and runs compiled parity
+  checks from that isolated installation.
+- `tsconfig.build.json` defines the runtime JavaScript and declaration build;
+  `tsconfig.test-build.json` defines the ignored compiled-test verification
+  output. Build output is never committed.
 - `docs/architecture.md` records stage contracts and dependency direction.
 - `docs/api.md` records the public core/application API.
 - `docs/development.md` records test-first workflow, development commands, CI,

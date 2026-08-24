@@ -12,6 +12,8 @@ on:
       - "package.json"
       - "package-lock.json"
       - "tsconfig.json"
+      - "tsconfig.build.json"
+      - "tsconfig.test-build.json"
   pull_request:
     paths:
       - ".github/workflows/ci.yml"
@@ -22,6 +24,8 @@ on:
       - "package.json"
       - "package-lock.json"
       - "tsconfig.json"
+      - "tsconfig.build.json"
+      - "tsconfig.test-build.json"
   workflow_call:
 
 permissions:
@@ -73,6 +77,9 @@ jobs:
 
       - name: Run BDD tests
         run: npm run test:bdd
+
+      - name: Build and run compiled TDD and BDD tests
+        run: npm run test:compiled
 
       - name: Verify npm package contents
         run: npm run pack:check

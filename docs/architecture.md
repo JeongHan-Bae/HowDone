@@ -17,8 +17,11 @@
 │   ├── development.md
 │   └── syntax.md
 ├── scripts/
+│   ├── build-test-artifacts.mjs
 │   ├── check-package-contents.ts
 │   ├── check-platform-neutral.ts
+│   ├── run-compiled-tests.mjs
+│   ├── run-cucumber.mjs
 │   └── update-version-badge.mjs
 ├── src/
 │   ├── adapters/
@@ -79,7 +82,9 @@
 ├── package-lock.json
 ├── package.json
 ├── README.md
+├── tsconfig.build.json
 ├── tsconfig.json
+├── tsconfig.test-build.json
 └── version_badge.json
 ```
 
@@ -101,6 +106,19 @@ Markdown source
   -> separate or explicitly merged ProgressReport
   -> terminal or JSON output adapter
 ```
+
+TypeScript source is compiled by `tsconfig.build.json` into the ignored
+`dist/` directory. The compiler rewrites relative `.ts` imports to `.js` and
+emits declarations for the public core entry. The package `howdone` bin points
+directly to the compiled `dist/boot/main.js` entry. Repository source checks
+continue to use `bin/howdone.cjs`: Node.js 23+ uses native TypeScript
+execution and Node.js 18.18–22 uses `tsx`. The source and compiled test modes
+select their entry explicitly; each mode owns its runtime contract. Compiled
+parity builds with repository development tools, then packs the package and
+runs the compiled TDD suite and CLI from a temporary npm installation created
+with `--omit=dev`. The test runner may use development dependencies to
+orchestrate BDD, but the application process can resolve only the package's
+published runtime dependencies.
 
 The first arrow is the only Markdown syntax-engine boundary. Unified/Remark recognizes CommonMark, GFM task lists, YAML/TOML frontmatter, code blocks, tables, HTML, links, and inline content. The adapter maps the external mdast into local source tokens and source spans. No core module imports mdast. YAML/TOML syntax is decoded by the format adapter; the core classifier then applies the semantic shape rules, never Markdown checkbox text.
 
@@ -187,4 +205,4 @@ the TOML adapter enforces its homogeneous-array grammar before classification.
 
 ## Composition root
 
-`src/boot/main.ts` constructs every default adapter and passes them to the application, including the package-version reader and process-warning sink. The package-version adapter reads the current npm package's own `package.json` metadata; the repository badge script is not a runtime dependency and is not published. `src/application/analyze.ts` does not instantiate Remark, filesystem, runtime, or output implementations. `bin/howdone.cjs` only chooses the TypeScript loader and starts `boot/main.ts`.
+`src/boot/main.ts` constructs every default adapter and passes them to the application, including the package-version reader and process-warning sink. The package-version adapter reads the current npm package's own `package.json` metadata; the repository badge script is not a runtime dependency and is not published. `src/application/analyze.ts` does not instantiate Remark, filesystem, runtime, or output implementations. The repository launcher starts `src/boot/main.ts`, while the published `howdone` bin starts the compiled `dist/boot/main.js`; both entries use the same composition root and application.

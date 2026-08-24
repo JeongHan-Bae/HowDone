@@ -79,7 +79,8 @@ BDD tests live in `test/bdd/features/` and `test/bdd/steps/`. They verify the
 user-visible command through the real executable path:
 
 ```text
-bin/howdone.cjs -> src/boot/main.ts -> src/application/analyze.ts
+source BDD    -> bin/howdone.cjs -> src/boot/main.ts -> src/application/analyze.ts
+compiled BDD  -> package bin    -> dist/boot/main.js -> dist/application/analyze.js
 ```
 
 BDD must start a real Node child process. It must not inject a fake lexer,
@@ -438,6 +439,25 @@ The Cucumber configuration loads only `test/bdd/steps/**/*.steps.ts`. Helper
 modules use a name such as `support.ts` and are imported explicitly, so a
 helper cannot silently become a step module.
 
+### Compiled parity
+
+Existing TDD entry files, fixtures, feature files, and assertions remain
+unchanged. `npm test` and `npm run test:bdd`
+explicitly select the source runtime, preserving native Node.js TypeScript on
+Node.js 23+ and bundled `tsx` on Node.js 18.18–22. The command
+`npm run test:tdd:compiled` compiles the same `src/` and `test/` modules into the
+ignored `.test-build/` directory, packs the release artifact, installs it into
+a temporary project with `npm install --omit=dev`, and runs the same TDD entry
+files with Node from that production-only installation. `npm run test:compiled`
+explicitly selects the compiled runtime after the same package installation,
+runs that compiled TDD suite, and runs the unchanged BDD feature suite through
+the installed compiled package entry. The Cucumber process is development-only
+test orchestration; it must not provide a module to the application child
+process. Do not create
+a second fixture set or change expected values for compiled verification;
+parity means the same test files, feature files, fixtures, and assertions
+exercise both paths. Each test command selects its runtime explicitly.
+
 The test layout tree in `test/README.md` follows the repository tree order.
 When adding a test directory or file to a documented tree, insert it in the
 same order used by the repository view; do not group entries by test purpose
@@ -476,14 +496,16 @@ Use these focused commands while iterating on the test suite:
 npm run typecheck
 npm test
 npm run test:bdd
+npm run test:compiled
 npm run typecheck:maintenance
 npm run check:platform
 npm run pack:check
 ```
 
 `npm test` runs the broad regression suite and all files imported by
-`test/tdd/index.test.ts`. `npm run test:bdd` runs the Cucumber feature suite.
-For the final repository boundary, run
+`test/tdd/index.test.ts`. `npm run test:bdd` runs the source Cucumber feature
+suite, and `npm run test:compiled` runs the same TDD and BDD contracts through
+the compiled entry. For the final repository boundary, run
 `npm run verify:precommit` as required by
 [`CONTRIBUTING.md`](../CONTRIBUTING.md). That command also runs both dependency
 audits and staged/unstaged Git checks; the focused commands above are not a

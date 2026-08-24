@@ -37,6 +37,12 @@ lists, calculates overall and per-level completion, and never modifies or upload
 For a local package path, install it directly:
 
 ```bash
+# In the HowDone checkout:
+cd /path/to/HowDone
+npm install
+npm run build
+
+# In the consuming project:
 npm install /path/to/HowDone
 npx howdone ./tasks.md
 ```
@@ -50,6 +56,7 @@ npx howdone README.md
 ```
 
 The npm package is `howdone` and the executable is `howdone`. Node.js 18.18 or newer is required.
+The published package contains the compiled runtime, and its `howdone` executable points to that compiled entry.
 
 ## Usage
 

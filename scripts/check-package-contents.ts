@@ -53,9 +53,8 @@ function isAllowedPackageFile(file: string): boolean {
     file === "LICENSE" ||
     file === "README.md" ||
     file === "package.json" ||
-    file === "bin/howdone.cjs" ||
     file === "docs/syntax.md" ||
-    file.startsWith("src/")
+    file.startsWith("dist/")
   );
 }
 
@@ -80,8 +79,9 @@ function main(): void {
   const requiredFiles = [
     "LICENSE",
     "README.md",
-    "bin/howdone.cjs",
     "docs/syntax.md",
+    "dist/boot/main.js",
+    "dist/core/index.js",
     "package.json",
   ];
   const files = report.files.map(({ path }) => path).sort();
