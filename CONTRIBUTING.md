@@ -138,6 +138,7 @@ Install dependencies with:
 
 ```bash
 npm install
+npm run badge:version
 ```
 
 Run the normal verification gate before handoff:
@@ -175,6 +176,9 @@ Update documentation in the same change when the corresponding contract
 changes:
 
 - `README.md`: installation, usage, and user-visible behavior;
+- `LICENSE`: the repository's Apache License 2.0 terms and copyright notice;
+- `scripts/update-version-badge.mjs`: generates the package version shown by
+  the README badge in `version_badge.json`;
 - `docs/api.md`: programmatic types and output contracts;
 - `docs/architecture.md`: stage ownership and dependency direction;
 - `docs/development.md`: test-first workflow and development commands;

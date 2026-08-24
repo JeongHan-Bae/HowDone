@@ -1,0 +1,77 @@
+name: Update Version Badge
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "package.json"
+
+jobs:
+  update-version-badge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+
+      - name: Generate Version Files
+        run: npm run badge:version
+
+      - name: Check if Version Files changed
+        id: check_diff
+        run: |
+          git add version_badge.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Exit if not changed
+        if: steps.check_diff.outputs.changed != 'true'
+        run: |
+          echo "Version badge is already current."
+          exit 0
+
+      - name: Extract project version from package.json
+        id: version
+        run: |
+          version=$(node --input-type=module -e \
+            "import { readFileSync } from 'node:fs'; console.log(JSON.parse(readFileSync('package.json', 'utf8')).version)")
+          echo "project_version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Set up SSH Signing Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_SIGNING_KEY }}" > ~/.ssh/id_ed25519_signing
+          chmod 600 ~/.ssh/id_ed25519_signing
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_ed25519_signing
+
+      - name: Configure Git for Signed Commits
+        run: |
+          git config --global gpg.format ssh
+          git config --global user.signingkey ~/.ssh/id_ed25519_signing
+          git config --global commit.gpgsign true
+          git config --global user.name "JeongHan-Bae"
+          git config --global user.email "mastropseudo@gmail.com"
+
+      - name: Commit and push Version Files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add version_badge.json
+          git commit -S -m "auto-update(version): ${{ steps.version.outputs.project_version }}" || echo "No commit needed"
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" || echo "No changes to push"

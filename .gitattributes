@@ -1,0 +1,2 @@
+# Keep repository maintenance scripts out of GitHub Linguist language statistics.
+/scripts/** linguist-vendored

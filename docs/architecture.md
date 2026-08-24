@@ -7,7 +7,8 @@
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml
-│       └── release.yml
+│       ├── release.yml
+│       └── update-version-badge.yml
 ├── bin/
 │   └── howdone.cjs
 ├── docs/
@@ -56,11 +57,16 @@
 │       └── types.ts
 ├── test/                    TDD, BDD, and regression tests
 ├── .gitignore
+├── .gitattributes
 ├── AGENTS.md
 ├── CONTRIBUTING.md
+├── LICENSE                  Apache License 2.0
 ├── package-lock.json
 ├── package.json
 ├── README.md
+├── scripts/
+│   └── update-version-badge.mjs
+├── version_badge.json       README version badge data
 └── tsconfig.json
 ```
 

@@ -80,10 +80,17 @@ succeeds.
 
 ## Documentation ownership
 
-- `README.md` is the user quickstart and installation guide.
+- `README.md` is the npm-facing user quickstart: explain that HowDone is a CLI,
+  how to install it, how to run it, and what its output/options mean. Keep
+  internal architecture, test commands, CI matrices, release automation,
+  dependency maintenance, and contribution rules out of the README.
+- `LICENSE` records the Apache License 2.0 terms and 2026 copyright notice.
+- `scripts/update-version-badge.mjs` generates `version_badge.json` from the
+  package version used by the README badge.
 - `docs/architecture.md` records stage contracts and dependency direction.
 - `docs/api.md` records the public core/application API.
-- `docs/development.md` records test-first and contribution workflow.
+- `docs/development.md` records test-first workflow, development commands, CI,
+  release automation, and maintenance details.
 - `CONTRIBUTING.md` records commit, pull request, and handoff requirements.
 - `AGENTS.md` records implementation constraints and test taxonomy.
 
