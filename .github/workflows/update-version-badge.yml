@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - "package.json"
+      - ".github/workflows/update-version-badge.yml"
+      - "scripts/update-version-badge.mjs"
 
 jobs:
   update-version-badge:
