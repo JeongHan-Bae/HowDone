@@ -104,15 +104,21 @@ main CI workflow.
 The package metadata and distribution are licensed under Apache License 2.0;
 the copyright year for this repository is 2026.
 
-Formal releases are tag-driven. `0.1.0` is the first formal public release.
-Before creating `v0.1.0`, both `package.json` and `package-lock.json` must
-already declare `0.1.0`. The Release workflow validates npm SemVer and requires
-the `v`-stripped tag to match both committed manifest versions; it does not
-rewrite the tested workspace before publishing. Later releases follow the same
-rule: update the manifests in a reviewed change, pass the full CI gate, and
-create the matching `v` tag. The publish job uses the `latest` dist-tag after
-the reusable CI gate passes. The publish job installs the locked dependencies
-and rebuilds `dist/` in its fresh checkout before `npm publish`.
+Formal releases are tag-driven. `0.1.0` was the first formal public release.
+Starting with `0.1.1`, every published npm release is a compiled release: both
+the package API entry and the `howdone` CLI resolve to JavaScript under
+`dist/`. TypeScript source, the repository launcher, tests, development
+documentation, and maintenance scripts are not part of the published package.
+Before creating `v0.1.1` or any later release, both `package.json` and
+`package-lock.json` must already declare the tag's exact version. The Release
+workflow validates npm SemVer and requires the `v`-stripped tag to match both
+committed manifest versions; it does not rewrite the tested workspace before
+publishing. Later releases follow the same rule: update the manifests in a
+reviewed change, pass the full CI gate, and create the matching `v` tag. The
+publish job uses the `latest` dist-tag after the reusable CI gate passes. It
+installs the locked dependencies and rebuilds `dist/` in its fresh checkout
+before `npm publish`, so the package and CLI published by the tag are the
+tested compiled artifacts.
 
 ## Main branch policy
 
