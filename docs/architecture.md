@@ -20,6 +20,7 @@
 │   ├── build-test-artifacts.mjs
 │   ├── check-package-contents.ts
 │   ├── check-platform-neutral.ts
+│   ├── run-compiled-tests.mjs
 │   ├── run-cucumber.mjs
 │   └── update-version-badge.mjs
 ├── src/
@@ -112,7 +113,12 @@ emits declarations for the public core entry. The package `howdone` bin points
 directly to the compiled `dist/boot/main.js` entry. Repository source checks
 continue to use `bin/howdone.cjs`: Node.js 23+ uses native TypeScript
 execution and Node.js 18.18–22 uses `tsx`. The source and compiled test modes
-select their entry explicitly; each mode owns its runtime contract.
+select their entry explicitly; each mode owns its runtime contract. Compiled
+parity builds with repository development tools, then packs the package and
+runs the compiled TDD suite and CLI from a temporary npm installation created
+with `--omit=dev`. The test runner may use development dependencies to
+orchestrate BDD, but the application process can resolve only the package's
+published runtime dependencies.
 
 The first arrow is the only Markdown syntax-engine boundary. Unified/Remark recognizes CommonMark, GFM task lists, YAML/TOML frontmatter, code blocks, tables, HTML, links, and inline content. The adapter maps the external mdast into local source tokens and source spans. No core module imports mdast. YAML/TOML syntax is decoded by the format adapter; the core classifier then applies the semantic shape rules, never Markdown checkbox text.
 

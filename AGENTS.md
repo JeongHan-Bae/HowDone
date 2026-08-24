@@ -137,6 +137,14 @@ unchanged source black-box behavior gate. `npm run test:compiled` runs the
 compiled TDD and the same BDD features against the compiled CLI.
 `npm run test:all` runs both source and compiled gates together.
 
+Compiled verification first uses development tools to build the artifacts, then
+packs the package and installs it in a temporary isolated npm project with
+`--omit=dev`. The compiled TDD suite and compiled CLI child processes run from
+that production-only installation, so a passing result cannot be supplied by
+`tsx`, Cucumber, TypeScript, or another development dependency. Cucumber
+remains test orchestration infrastructure; it is not part of the CLI runtime
+dependency proof.
+
 The project has a real TypeScript build command. It emits one platform-neutral
 JavaScript package under `dist/`, rewrites relative TypeScript imports to
 `.js`, and emits declarations for the public core API. CI runs the source
@@ -157,6 +165,9 @@ workflow; publishing is permitted only after that CI job succeeds.
   `scripts/check-platform-neutral.ts` rejects unreviewed platform API access.
   These are repository maintenance scripts and are not part of the published
   package.
+- `scripts/run-compiled-tests.mjs` builds the test artifacts, installs the
+  packed package with production dependencies only, and runs compiled parity
+  checks from that isolated installation.
 - `tsconfig.build.json` defines the runtime JavaScript and declaration build;
   `tsconfig.test-build.json` defines the ignored compiled-test verification
   output. Build output is never committed.

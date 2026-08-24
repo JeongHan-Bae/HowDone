@@ -20,11 +20,15 @@ of its checks is useful while iterating, but it is not a substitute for the
 final harness run.
 
 The harness is the repository's hard contribution boundary. It runs the
-application typecheck, TDD and BDD suites in the current local Node.js
-environment, typed maintenance-file checks, the platform-neutral source
-check, the runtime and full dependency audits,
+application typecheck, source TDD and source BDD suites, compiled TDD and
+compiled BDD parity suites, typed maintenance-file checks, the
+platform-neutral source check, the runtime and full dependency audits,
 `scripts/check-package-contents.ts` through `npm run pack:check`, and both
-staged and unstaged Git whitespace checks. It does not run
+staged and unstaged Git whitespace checks. The compiled parity suites build
+with development tools but execute the packed JavaScript package from a
+temporary `npm install --omit=dev` environment, so the application under test
+can resolve only its published `dependencies`. The test runner's Cucumber and
+TypeScript tooling remains outside that application process. It does not run
 `npm run badge:version`; version-badge generation is a separate maintenance
 operation and is never a pre-commit requirement. Do not bypass the harness with
 `git commit --no-verify`, skip a failed command, weaken a failing assertion, or

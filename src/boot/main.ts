@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { pathToFileURL } from "node:url";
+import { realpathSync } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { TypedAstParser } from "../core/index.ts";
 import { defaultRemarkLexer } from "../adapters/markdown/remark-lexer.ts";
@@ -37,8 +38,12 @@ export function main(): Promise<number> {
 
 function isEntrypoint(): boolean {
   const processEntry = process.argv[1];
-  return processEntry !== undefined &&
-    import.meta.url === pathToFileURL(resolve(processEntry)).href;
+  if (processEntry === undefined) return false;
+  const entryUrl = pathToFileURL(realpathSync(resolve(processEntry))).href;
+  const moduleUrl = pathToFileURL(
+    realpathSync(fileURLToPath(import.meta.url)),
+  ).href;
+  return moduleUrl === entryUrl;
 }
 
 if (isEntrypoint()) {

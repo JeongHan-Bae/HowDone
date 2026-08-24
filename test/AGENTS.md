@@ -446,10 +446,14 @@ unchanged. `npm test` and `npm run test:bdd`
 explicitly select the source runtime, preserving native Node.js TypeScript on
 Node.js 23+ and bundled `tsx` on Node.js 18.18–22. The command
 `npm run test:tdd:compiled` compiles the same `src/` and `test/` modules into the
-ignored `.test-build/` directory and runs the same TDD entry files with Node.
-`npm run test:compiled` explicitly selects the compiled runtime after building
-the release `dist/` artifact, runs that compiled TDD suite, and runs the
-unchanged BDD feature suite through the compiled package entry. Do not create
+ignored `.test-build/` directory, packs the release artifact, installs it into
+a temporary project with `npm install --omit=dev`, and runs the same TDD entry
+files with Node from that production-only installation. `npm run test:compiled`
+explicitly selects the compiled runtime after the same package installation,
+runs that compiled TDD suite, and runs the unchanged BDD feature suite through
+the installed compiled package entry. The Cucumber process is development-only
+test orchestration; it must not provide a module to the application child
+process. Do not create
 a second fixture set or change expected values for compiled verification;
 parity means the same test files, feature files, fixtures, and assertions
 exercise both paths. Each test command selects its runtime explicitly.

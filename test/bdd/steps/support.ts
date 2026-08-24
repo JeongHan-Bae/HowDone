@@ -120,8 +120,10 @@ export function runHowdone(
   if (world.directory === undefined) {
     throw new Error("the BDD workspace has not been created");
   }
-  const entryPoint = bddRuntime() === "compiled"
-    ? path.resolve(process.cwd(), "dist", "boot", "main.js")
+  const runtime = bddRuntime();
+  const entryPoint = runtime === "compiled"
+    ? process.env.HOWDONE_BDD_ENTRY_POINT ??
+      path.resolve(process.cwd(), "dist", "boot", "main.js")
     : path.resolve(process.cwd(), "bin", "howdone.cjs");
   world.result = spawnSync(process.execPath, [entryPoint, ...argumentsValue], {
     cwd: world.directory,

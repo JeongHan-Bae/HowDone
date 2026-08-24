@@ -53,13 +53,16 @@ JavaScript and declarations under the ignored `dist/` directory. Relative
 preserves the native Node.js TypeScript path on Node.js 23+ and the bundled
 `tsx` path on Node.js 18.18–22. The published package and CLI entrypoint run
 the compiled JavaScript directly through Node.
-`npm run build:tests` compiles the same
-TDD files and source modules into the ignored `.test-build/` directory, copies
-their JSON fixtures, and `npm run test:tdd:compiled` runs that compiled suite.
-`npm run test:compiled` builds the runtime, runs the compiled TDD suite, and
-then runs the unchanged BDD feature suite through the compiled launcher. CI
-uses deterministic `npm ci`, dependency audits, application and maintenance
-typechecks, the platform-neutral source check, source TDD/BDD tests, compiled
+`npm run build:tests` compiles the same TDD files and source modules into the
+ignored `.test-build/` directory and copies their JSON fixtures. The compiled
+test commands use `scripts/run-compiled-tests.mjs`: it builds the release
+artifact, packs it, installs it into a temporary project with
+`npm install --omit=dev`, copies the compiled TDD tests into that project, and
+runs the compiled TDD suite and/or the BDD suite against the installed package.
+This keeps development tools such as `tsx`, TypeScript, and Cucumber outside
+the application runtime dependency graph being verified. CI uses deterministic
+`npm ci`, dependency audits, application and maintenance typechecks, the
+platform-neutral source check, source TDD/BDD tests, production-only compiled
 TDD/BDD tests, and package verification.
 The typed maintenance script under `scripts/` is executed through `tsx` and is
 kept outside the application `tsconfig.json` boundary.
