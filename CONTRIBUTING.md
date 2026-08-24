@@ -76,8 +76,10 @@ these ownership boundaries:
   case; it receives ports and does not instantiate adapters.
 - `src/boot/` is the composition root. It constructs the default adapters and
   calls the application.
-- `bin/howdone.cjs` is an execution shim only. It selects native TypeScript
-  execution on Node.js 23+ or the bundled `tsx` fallback on Node.js 18.18–22.
+- `bin/howdone.cjs` is the repository source execution shim only. It keeps the
+  original native TypeScript path on Node.js 23+ and the bundled `tsx` path on
+  Node.js 18.18–22. The package `howdone` bin points directly to the compiled
+  `dist/boot/main.js` entry.
 
 Do not add loose business modules to the `src` root. Core modules must not
 import adapters, CLI code, Node filesystem APIs, or terminal libraries; adapters
@@ -114,8 +116,9 @@ platform test, written rationale, and explicit review. The
 The project has three complementary evidence layers:
 
 - `test/tdd/` proves each pipeline boundary and intermediate contract.
-- `test/bdd/features/` and `test/bdd/steps/` exercise the real
-  `bin/howdone.cjs -> src/boot/main.ts` path with Cucumber.
+- `test/bdd/features/` and `test/bdd/steps/` exercise the real source launcher
+  and the compiled package entry with Cucumber. The runtime is selected by the
+  test command, never by using an implicit runtime fallback.
 - `test/index.test.ts` holds the broad regression and edge-case matrix.
 
 Use TDD for stage behavior and BDD for user-visible behavior. In particular,
@@ -147,14 +150,17 @@ input returns a non-zero status.
 
 ## Local setup and checks
 
-Node.js 23+ runs the TypeScript entry point with native type stripping. Node.js
-18.18 through 22 uses the bundled `tsx` fallback. Earlier Node.js versions are
-unsupported.
+The source checkout keeps its original runtime choice: Node.js 23+ uses native
+TypeScript and Node.js 18.18–22 uses the bundled `tsx` loader. The published
+package and published CLI run compiled JavaScript from `dist/` and do not
+depend on Node's native TypeScript stripping. Earlier Node.js versions than
+18.18 are unsupported.
 
 Install dependencies with:
 
 ```bash
 npm install
+npm run build
 ```
 
 The mandatory final pre-commit gate is the same harness described above:
@@ -171,6 +177,7 @@ For local behavior checks, use the maintained TDD and BDD fixtures:
 ```bash
 npm test
 npm run test:bdd
+npm run test:compiled
 npm run check:platform
 ```
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { TypedAstParser } from "../core/index.ts";

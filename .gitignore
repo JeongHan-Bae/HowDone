@@ -6,6 +6,7 @@ node_modules/
 dist/
 build/
 out/
+.test-build/
 
 # TypeScript, bundler, and tool caches
 *.tsbuildinfo

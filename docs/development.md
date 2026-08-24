@@ -13,15 +13,17 @@ Use the smallest boundary that proves the change:
    user/API/architecture/development/metadata contract changes.
 5. Run the full verification gate.
 
-TDD tests must assert the intermediate result, not only the final percentage. This includes the separate Markdown body and YAML/TOML semantic frontmatter results, as well as merged weighting arithmetic. BDD tests must exercise the real executable path through `bin/howdone.cjs` and `src/boot/main.ts`; injecting a fake parser is not a substitute for a BDD scenario.
+TDD tests must assert the intermediate result, not only the final percentage. This includes the separate Markdown body and YAML/TOML semantic frontmatter results, as well as merged weighting arithmetic. BDD tests must exercise the real source launcher and the compiled package entry; injecting a fake parser is not a substitute for a BDD scenario.
 
 ## Commands
 
 ```bash
 npm install
+npm run build
 npm run typecheck
 npm test              # Node test runner: regression + TDD pipeline tests
-npm run test:bdd      # Cucumber black-box CLI behavior
+npm run test:bdd      # unchanged Cucumber behavior through the source runtime
+npm run test:compiled # Compiled TDD and the same BDD feature suite
 npm run test:all
 npm run typecheck:maintenance
 npm run check:platform
@@ -37,19 +39,28 @@ when `package.json` changes the version shown by the README badge; it is not an
 installation or verification step.
 
 `npm run verify:precommit` is the mandatory final harness before a commit. It
-re-runs the application gate, checks the typed CommonJS/ES module maintenance
-boundaries, rejects unreviewed runtime platform API access, audits both
-dependency scopes, verifies the npm package contents, checks both staged and
-unstaged Git diffs for whitespace errors, and never runs the separate
-version-badge generator. Its hard-boundary rules and the commit-message
-contract are defined in
+re-runs the source and compiled application gates, checks the typed CommonJS/ES
+module maintenance boundaries, rejects unreviewed runtime platform API access,
+audits both dependency scopes, verifies the compiled npm package contents,
+checks both staged and unstaged Git diffs for whitespace errors, and never runs
+the separate version-badge generator. Its hard-boundary rules and the
+commit-message contract are defined in
 [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 
-The repository currently has no separate lint or compiled build script. The
-runtime package ships the TypeScript source and the small `bin/howdone.cjs`
-loader, so CI uses the real project checks: deterministic `npm ci`, dependency
-audit, application and maintenance typechecks, the platform-neutral source
-check, TDD/regression tests, BDD tests, and `npm run pack:check`.
+`npm run build` emits the runtime TypeScript sources as platform-neutral
+JavaScript and declarations under the ignored `dist/` directory. Relative
+`.ts` imports are rewritten to `.js` imports. The original source checkout
+preserves the native Node.js TypeScript path on Node.js 23+ and the bundled
+`tsx` path on Node.js 18.18–22. The published package and CLI entrypoint run
+the compiled JavaScript directly through Node.
+`npm run build:tests` compiles the same
+TDD files and source modules into the ignored `.test-build/` directory, copies
+their JSON fixtures, and `npm run test:tdd:compiled` runs that compiled suite.
+`npm run test:compiled` builds the runtime, runs the compiled TDD suite, and
+then runs the unchanged BDD feature suite through the compiled launcher. CI
+uses deterministic `npm ci`, dependency audits, application and maintenance
+typechecks, the platform-neutral source check, source TDD/BDD tests, compiled
+TDD/BDD tests, and package verification.
 The typed maintenance script under `scripts/` is executed through `tsx` and is
 kept outside the application `tsconfig.json` boundary.
 
@@ -63,8 +74,8 @@ and `workflow_call` remain available, so the Release workflow can still invoke
 the reusable CI gate.
 
 Each operating-system job runs the same Node.js 18, 20, 22, 24, and 26
-matrix, including dependency audit, typecheck, platform API checks, TDD, BDD,
-and package checks.
+matrix, including dependency audit, typecheck, platform API checks, source and
+compiled TDD/BDD tests, and package checks.
 The shared matrix and steps are declared once with YAML anchors and reused by
 the three OS jobs. Cucumber 11.3.0 is declared once in `package.json` and
 supports the project's Node.js matrix. npm `overrides` pin transitive `uuid`
@@ -97,7 +108,8 @@ the `v`-stripped tag to match both committed manifest versions; it does not
 rewrite the tested workspace before publishing. Later releases follow the same
 rule: update the manifests in a reviewed change, pass the full CI gate, and
 create the matching `v` tag. The publish job uses the `latest` dist-tag after
-the reusable CI gate passes.
+the reusable CI gate passes. The publish job installs the locked dependencies
+and rebuilds `dist/` in its fresh checkout before `npm publish`.
 
 ## Main branch policy
 
@@ -108,11 +120,12 @@ The owner may still require a pull request for any change at their discretion.
 
 ## Release package and dependency audit
 
-`npm run pack:check` runs `npm pack --dry-run --json` and verifies the package
-metadata and file allowlist. The published package contains `bin/`, `src/`,
-`docs/syntax.md`, `README.md`, `LICENSE`, and the automatically included
-`package.json`. Repository tests, development documentation, maintenance
-scripts, CI configuration, lockfiles, and version-badge data are excluded.
+`npm run pack:check` builds first, then runs `npm pack --dry-run --json` and
+verifies the package metadata and file allowlist. The compiled package contains
+`dist/`, `docs/syntax.md`, `README.md`, `LICENSE`, and the automatically included
+`package.json`. Repository source, tests, development documentation,
+maintenance scripts, CI configuration, lockfiles, and version-badge data are
+excluded.
 
 The runtime dependency graph is audited separately from development tooling.
 `npm audit --omit=dev --audit-level=moderate` protects the installed CLI, while
@@ -133,6 +146,7 @@ For local behavior checks, use the maintained TDD and BDD fixtures:
 ```bash
 npm test
 npm run test:bdd
+npm run test:compiled
 ```
 
 The TDD suite owns intermediate contracts and the BDD suite creates temporary
