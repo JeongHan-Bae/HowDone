@@ -33,7 +33,7 @@ jobs:
           node-version: 26
           registry-url: https://registry.npmjs.org
 
-      - name: Validate release tag and synchronize package version
+      - name: Validate release tag and package versions
         env:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
@@ -64,15 +64,17 @@ jobs:
           }
           NODE
 
-          npm version "${VERSION}" --no-git-tag-version
-
-          PACKAGE_VERSION="$(node -e "console.log(require('./package.json').version)")"
+          PACKAGE_VERSION="$(node --input-type=module -e 'import { readFileSync } from "node:fs"; console.log(JSON.parse(readFileSync("package.json", "utf8")).version)')"
           if [[ "${PACKAGE_VERSION}" != "${VERSION}" ]]; then
-            echo "::error::package.json version ${PACKAGE_VERSION} does not match tag version ${VERSION}."
+            echo "::error::package.json version ${PACKAGE_VERSION} does not match release tag version ${VERSION}."
             exit 1
           fi
 
-          echo "RELEASE_VERSION=${VERSION}" >> "${GITHUB_ENV}"
+          LOCK_VERSION="$(node --input-type=module -e 'import { readFileSync } from "node:fs"; console.log(JSON.parse(readFileSync("package-lock.json", "utf8")).packages[""].version)')"
+          if [[ "${LOCK_VERSION}" != "${VERSION}" ]]; then
+            echo "::error::package-lock.json version ${LOCK_VERSION} does not match release tag version ${VERSION}."
+            exit 1
+          fi
 
       - name: Publish the tagged package
         run: npm publish --tag latest

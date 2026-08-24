@@ -90,14 +90,21 @@ main CI workflow.
 The package metadata and distribution are licensed under Apache License 2.0;
 the copyright year for this repository is 2026.
 
-Formal releases are tag-driven. A tag such as `v0.1.0` or
-`v1.1.0-beta.1` is validated as npm SemVer, the leading `v` is removed, and
-`npm version VERSION --no-git-tag-version` synchronizes the publish workspace
-before `npm publish --tag latest`. This does not create a commit or a tag.
+Formal releases are tag-driven. `0.1.0` is the first formal public release.
+Before creating `v0.1.0`, both `package.json` and `package-lock.json` must
+already declare `0.1.0`. The Release workflow validates npm SemVer and requires
+the `v`-stripped tag to match both committed manifest versions; it does not
+rewrite the tested workspace before publishing. Later releases follow the same
+rule: update the manifests in a reviewed change, pass the full CI gate, and
+create the matching `v` tag. The publish job uses the `latest` dist-tag after
+the reusable CI gate passes.
 
-The initial public package is `howdone@0.0.1` and was published through the
-separate alpha bootstrap operation. Future formal versions use the tag-driven
-Release workflow and its `latest` dist-tag after the reusable CI gate passes.
+## Main branch policy
+
+After `0.1.0` is released, direct commits to `main` are reserved for the
+repository owner. Every other developer must work on a branch and submit a
+pull request; direct commits to `main` by other developers are not permitted.
+The owner may still require a pull request for any change at their discretion.
 
 ## Release package and dependency audit
 

@@ -267,6 +267,10 @@ details. Do not use nested bullets.
 Commit messages and pull request descriptions are separate formats. Do not put
 the PR headings below into a commit message.
 
+After the `0.1.0` formal release, direct commits to `main` are reserved for the
+repository owner. Every other developer must work on a branch and submit a
+pull request.
+
 A pull request description must state:
 
 - what changed and which architecture boundary owns it;

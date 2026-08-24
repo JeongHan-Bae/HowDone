@@ -1,6 +1,6 @@
 {
   "name": "howdone",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "HowDone analyzes hierarchical completion progress in Markdown task lists.",
   "type": "module",
   "bin": {
