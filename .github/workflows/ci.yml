@@ -65,6 +65,9 @@ jobs:
       - name: Typecheck maintenance files
         run: npm run typecheck:maintenance
 
+      - name: Check platform-neutral source
+        run: npm run check:platform
+
       - name: Run TDD and regression tests
         run: npm test
 

@@ -21,9 +21,10 @@ final harness run.
 
 The harness is the repository's hard contribution boundary. It runs the
 application typecheck, TDD and BDD suites in the current local Node.js
-environment, typed maintenance-file checks, the runtime and full dependency
-audits, `scripts/check-package-contents.ts` through `npm run pack:check`, and
-both staged and unstaged Git whitespace checks. It does not run
+environment, typed maintenance-file checks, the platform-neutral source
+check, the runtime and full dependency audits,
+`scripts/check-package-contents.ts` through `npm run pack:check`, and both
+staged and unstaged Git whitespace checks. It does not run
 `npm run badge:version`; version-badge generation is a separate maintenance
 operation and is never a pre-commit requirement. Do not bypass the harness with
 `git commit --no-verify`, skip a failed command, weaken a failing assertion, or
@@ -40,6 +41,7 @@ The final harness sequence is:
 ```bash
 npm run test:all
 npm run typecheck:maintenance
+npm run check:platform
 npm audit --omit=dev --audit-level=moderate
 npm audit --audit-level=moderate
 npm run pack:check
@@ -98,6 +100,14 @@ expression parser.
 Path behavior must be delegated to the target runtime's native `node:path` and
 `node:fs` implementations. Do not parse foreign operating-system path syntax
 or translate Windows paths on POSIX, or POSIX paths on Windows.
+
+Prefer platform-neutral Node.js and npm interfaces over operating-system
+branches. Do not select `npm.cmd`, `cmd.exe`, or another platform-specific
+command name when Node's shell abstraction can invoke `npm`. Do not branch on
+runtime platform or architecture unless a reproducible platform defect makes
+the neutral interface insufficient. Such an exception requires a focused
+platform test, written rationale, and explicit review. The
+`npm run check:platform` harness check rejects unreviewed platform detection.
 
 ## Test requirements
 
@@ -161,6 +171,7 @@ For local behavior checks, use the maintained TDD and BDD fixtures:
 ```bash
 npm test
 npm run test:bdd
+npm run check:platform
 ```
 
 The TDD suite owns intermediate contracts and the BDD suite creates temporary
@@ -205,6 +216,9 @@ changes:
 - `scripts/check-package-contents.ts`: verifies the published file allowlist;
   it is a typed repository maintenance script and is not included in the
   published package;
+- `scripts/check-platform-neutral.ts`: uses the TypeScript AST to reject
+  unreviewed runtime platform API access in source, tests, launchers, and
+  maintenance files; it is not included in the published package;
 - `docs/api.md`: programmatic types and output contracts;
 - `docs/architecture.md`: stage ownership and dependency direction;
 - `docs/development.md`: test-first workflow and development commands;

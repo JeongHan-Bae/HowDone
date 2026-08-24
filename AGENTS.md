@@ -56,6 +56,31 @@ Contracts belong in `src/core/**/types.ts` and `src/core/ports.ts`. Contract mod
 
 Path handling must be delegated to Node's platform-native `node:path` and `node:fs` APIs. Do not write a foreign-OS path parser or translate Windows syntax on POSIX (or POSIX syntax on Windows). The adapter resolves the string using the runtime on the target system.
 
+## Platform-neutral runtime rules
+
+Prefer platform-neutral Node.js and npm interfaces whenever they express the
+required behavior. Do not branch on `process.platform`, `process.arch`, the
+Node `os` platform APIs, Windows command shims, or shell-specific environment
+variables when Node can delegate the behavior to the runtime. For example,
+invoke npm as `npm` through Node's shell option instead of selecting
+`npm.cmd`, `cmd.exe`, or another operating-system command name in application
+or maintenance code.
+
+The default assumption is that the current runtime provides the correct
+platform behavior. A platform-specific branch is permitted only when a
+reproducible platform defect makes the neutral interface insufficient; such a
+branch requires a focused test on the affected platform, an explanation in
+the change documentation, and explicit review. Do not add a silent fallback or
+an untested operating-system branch.
+
+`npm run check:platform` is part of the pre-commit harness. It parses source,
+test, launcher, and maintenance files with the TypeScript AST and rejects
+access to runtime platform APIs such as `process.platform`, `process.arch`,
+`os.platform()`, and `os.arch()`, including escaped property names and import
+aliases. Ordinary strings and labels are not platform API evidence. A finding
+is a hard failure until the code is rewritten through a platform-neutral
+interface or the exceptional case is explicitly reviewed.
+
 ## Test taxonomy
 
 TDD and BDD are separate evidence layers. Detailed fixture construction,
@@ -97,15 +122,15 @@ Preserve these implementation invariants:
 The mandatory pre-commit boundary is `npm run verify:precommit`, as defined in
 [`CONTRIBUTING.md`](CONTRIBUTING.md). It covers the application and maintenance
 typechecks, TDD and BDD suites, runtime and full dependency audits, package
-contents, and staged/unstaged Git checks. Do not reproduce the command sequence
-here; CONTRIBUTING owns that detail.
+contents, platform-neutral source checks, and staged/unstaged Git checks. Do
+not reproduce the command sequence here; CONTRIBUTING owns that detail.
 
 `npm test` is the TDD gate. `npm run test:bdd` is the black-box behavior gate. `npm run test:all` runs typecheck, TDD, and BDD together.
 
 The project has no separate lint or compiled build command: the runtime package
 ships the TypeScript source and its execution shim. CI therefore runs the real
-checks that exist—`npm ci`, application and maintenance typechecks, TDD, BDD,
-audits, and `npm pack --dry-run`—without
+checks that exist—`npm ci`, application and maintenance typechecks, the
+platform API check, TDD, BDD, audits, and `npm pack --dry-run`—without
 adding no-op lint/build aliases. `.github/workflows/ci.yml` is reusable by the
 tag-based release workflow; publishing is permitted only after that CI job
 succeeds.
@@ -119,8 +144,10 @@ succeeds.
 - `LICENSE` records the Apache License 2.0 terms and 2026 copyright notice.
 - `scripts/update-version-badge.mjs` generates `version_badge.json` from the
   package version used by the README badge. `scripts/check-package-contents.ts`
-  verifies the npm dry-run file allowlist. Both are repository maintenance
-  scripts and are not part of the published package.
+  verifies the npm dry-run file allowlist, and
+  `scripts/check-platform-neutral.ts` rejects unreviewed platform API access.
+  These are repository maintenance scripts and are not part of the published
+  package.
 - `docs/architecture.md` records stage contracts and dependency direction.
 - `docs/api.md` records the public core/application API.
 - `docs/development.md` records test-first workflow, development commands, CI,

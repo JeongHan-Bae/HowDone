@@ -60,12 +60,12 @@ function isAllowedPackageFile(file: string): boolean {
 }
 
 function main(): void {
-  const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
   const packageMetadata = JSON.parse(
     readFileSync(new URL("../package.json", import.meta.url), "utf8"),
   ) as PackageMetadata;
-  const output = execFileSync(npmCommand, ["pack", "--dry-run", "--json"], {
+  const output = execFileSync("npm", ["pack", "--dry-run", "--json"], {
     encoding: "utf8",
+    shell: true,
     stdio: ["ignore", "pipe", "inherit"],
   });
   const report = readPackageReport(output);

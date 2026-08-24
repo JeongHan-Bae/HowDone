@@ -34,8 +34,9 @@
     "test:bdd": "cucumber-js --config test/bdd/cucumber.cjs",
     "test:all": "npm run typecheck && npm test && npm run test:bdd",
     "typecheck": "tsc --noEmit",
-    "typecheck:maintenance": "tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck scripts/check-package-contents.ts && tsc --noEmit --allowJs --checkJs --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck bin/howdone.cjs test/bdd/cucumber.cjs scripts/update-version-badge.mjs",
-    "verify:precommit": "npm run test:all && npm run typecheck:maintenance && npm audit --omit=dev --audit-level=moderate && npm audit --audit-level=moderate && npm run pack:check && git diff --check && git diff --cached --check",
+    "typecheck:maintenance": "tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck scripts/check-package-contents.ts scripts/check-platform-neutral.ts && tsc --noEmit --allowJs --checkJs --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck bin/howdone.cjs test/bdd/cucumber.cjs scripts/update-version-badge.mjs",
+    "verify:precommit": "npm run test:all && npm run typecheck:maintenance && npm run check:platform && npm audit --omit=dev --audit-level=moderate && npm audit --audit-level=moderate && npm run pack:check && git diff --check && git diff --cached --check",
+    "check:platform": "node --import tsx ./scripts/check-platform-neutral.ts",
     "pack:check": "node --import tsx ./scripts/check-package-contents.ts"
   },
   "engines": {

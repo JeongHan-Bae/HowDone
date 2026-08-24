@@ -477,6 +477,7 @@ npm run typecheck
 npm test
 npm run test:bdd
 npm run typecheck:maintenance
+npm run check:platform
 npm run pack:check
 ```
 

@@ -24,6 +24,7 @@ npm test              # Node test runner: regression + TDD pipeline tests
 npm run test:bdd      # Cucumber black-box CLI behavior
 npm run test:all
 npm run typecheck:maintenance
+npm run check:platform
 npm run pack:check
 npm audit --omit=dev --audit-level=moderate
 npm audit --audit-level=moderate
@@ -37,17 +38,18 @@ installation or verification step.
 
 `npm run verify:precommit` is the mandatory final harness before a commit. It
 re-runs the application gate, checks the typed CommonJS/ES module maintenance
-boundaries, audits both dependency scopes, verifies the npm package contents,
-checks both staged and unstaged Git diffs for whitespace errors, and never runs
-the separate version-badge generator. Its hard-boundary rules and the
-commit-message contract are defined in
+boundaries, rejects unreviewed runtime platform API access, audits both
+dependency scopes, verifies the npm package contents, checks both staged and
+unstaged Git diffs for whitespace errors, and never runs the separate
+version-badge generator. Its hard-boundary rules and the commit-message
+contract are defined in
 [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 
 The repository currently has no separate lint or compiled build script. The
 runtime package ships the TypeScript source and the small `bin/howdone.cjs`
 loader, so CI uses the real project checks: deterministic `npm ci`, dependency
-audit, application and maintenance typechecks, TDD/regression tests, BDD tests,
-and `npm run pack:check`.
+audit, application and maintenance typechecks, the platform-neutral source
+check, TDD/regression tests, BDD tests, and `npm run pack:check`.
 The typed maintenance script under `scripts/` is executed through `tsx` and is
 kept outside the application `tsconfig.json` boundary.
 
@@ -61,7 +63,8 @@ and `workflow_call` remain available, so the Release workflow can still invoke
 the reusable CI gate.
 
 Each operating-system job runs the same Node.js 18, 20, 22, 24, and 26
-matrix, including dependency audit, typecheck, TDD, BDD, and package checks.
+matrix, including dependency audit, typecheck, platform API checks, TDD, BDD,
+and package checks.
 The shared matrix and steps are declared once with YAML anchors and reused by
 the three OS jobs. Cucumber 11.3.0 is declared once in `package.json` and
 supports the project's Node.js matrix. npm `overrides` pin transitive `uuid`
@@ -112,11 +115,11 @@ reviewed before a release. Runtime parsers must support the declared Node
 engine range; the YAML and TOML adapters use `yaml` and `smol-toml`, and the
 TOML parser is intentionally kept as a direct runtime dependency rather than
 delegated to a repository maintenance script. The `glob` override remains
-pinned to `13.0.6`, the version already exercised by the project's CI. Cucumber
-declares an older 10.x range, whose published releases are deprecated; the
-override is intentionally kept in the development-only graph and reviewed
-together with Cucumber upgrades. The `uuid` override remains pinned to the
-audited fixed release.
+pinned to `13.0.6`, the version already exercised by the project's CI. The
+Cucumber dependency graph requests an older `glob` 10.x range; the override is
+intentionally kept in the development-only graph and reviewed together with
+Cucumber upgrades. It resolves that request to the audited `13.0.6` release.
+The `uuid` override remains pinned to the audited fixed release.
 
 For local behavior checks, use the maintained TDD and BDD fixtures:
 
@@ -173,6 +176,9 @@ developer material out of that file because it is shipped in the npm package.
 
 - Return non-zero status for invalid CLI input, unreadable/non-Markdown paths, invalid option values, and parser errors.
 - Use Node `node:path`/`node:fs` for platform-native path semantics; never hand-roll a Windows/POSIX path grammar.
+- Prefer platform-neutral Node.js and npm interfaces; avoid runtime platform
+  branches. `npm run check:platform` uses the TypeScript AST to reject
+  unreviewed runtime platform API access.
 - Keep business and parsing logic TypeScript. The CommonJS launcher is an execution shim only.
 - Keep application and domain code free of network access, browser APIs, and
   dynamic code generation. The CommonJS launcher may use Node's `--eval` only

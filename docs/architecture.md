@@ -18,6 +18,7 @@
 │   └── syntax.md
 ├── scripts/
 │   ├── check-package-contents.ts
+│   ├── check-platform-neutral.ts
 │   └── update-version-badge.mjs
 ├── src/
 │   ├── adapters/
