@@ -1,4 +1,4 @@
-import type { GraphemeSegmenter } from "../../core/ports.ts";
+import type { GraphemeSegmenter } from "../../core/index.ts";
 
 export class IntlGraphemeSegmenter implements GraphemeSegmenter {
   segment(text: string): string[] {

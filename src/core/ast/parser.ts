@@ -1,6 +1,7 @@
 import type {
   BlockAst,
   BlockquoteAst,
+  DocumentAst,
   CodeBlockAst,
   FrontmatterAst,
   HeadingAst,
@@ -8,7 +9,6 @@ import type {
   ListAst,
   ListItemAst,
   ParagraphAst,
-  RootAst,
   TableAst,
   ThematicBreakAst,
   UnsupportedAst,
@@ -97,6 +97,7 @@ function normalizeBlock(node: ScannedBlockNode): BlockAst {
 function normalizeFrontmatter(token: FrontmatterToken): FrontmatterAst {
   return {
     type: "frontmatter",
+    format: token.node.format,
     value: token.node.value,
   };
 }
@@ -110,18 +111,18 @@ function isFrontmatterToken(token: LexerToken): token is FrontmatterToken {
 }
 
 export class TypedAstParser implements MarkdownAstParser {
-  parse(tokens: readonly LexerToken[]): RootAst {
+  parse(tokens: readonly LexerToken[]): DocumentAst {
     return {
-      type: "root",
-      children: tokens.flatMap((token) => {
-        if (isSyntaxToken(token)) {
-          return [normalizeBlock(token.node)];
-        }
-        if (isFrontmatterToken(token)) {
-          return [normalizeFrontmatter(token)];
-        }
-        return [];
-      }),
+      type: "document",
+      frontmatter: tokens
+        .filter(isFrontmatterToken)
+        .map(normalizeFrontmatter),
+      body: {
+        type: "root",
+        children: tokens.flatMap((token) =>
+          isSyntaxToken(token) ? [normalizeBlock(token.node)] : [],
+        ),
+      },
     };
   }
 }

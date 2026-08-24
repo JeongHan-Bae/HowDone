@@ -2,6 +2,8 @@
 
 "use strict";
 
+// @ts-check
+
 const { spawnSync } = require("node:child_process");
 const { dirname, resolve } = require("node:path");
 const { pathToFileURL } = require("node:url");
@@ -10,6 +12,7 @@ const packageRoot = resolve(dirname(__dirname));
 const entryPoint = resolve(packageRoot, "src", "boot", "main.ts");
 const entryPointUrl = pathToFileURL(entryPoint).href;
 
+/** @returns {{ major: number, minor: number }} */
 function parseNodeVersion() {
   const [majorText, minorText] = process.versions.node.split(".");
   return {
@@ -18,6 +21,7 @@ function parseNodeVersion() {
   };
 }
 
+/** @returns {string} */
 function getTsxEntryPoint() {
   return pathToFileURL(require.resolve("tsx")).href;
 }

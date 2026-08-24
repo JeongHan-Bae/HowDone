@@ -1,0 +1,1493 @@
+{
+  "cases": [
+    {
+      "id": "empty-document",
+      "source": "",
+      "expectedTokenKinds": ["eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": [],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": []
+    },
+    {
+      "id": "yaml-only",
+      "source": "---\nmetadata_task: \"- [x] metadata\"\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "toml-only",
+      "source": "+++\nmetadata_task = \"- [x] metadata\"\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "yaml-with-body",
+      "source": "---\nmetadata_task: \"- [x] metadata\"\n---\n\n- ReleaseLongLabel\n  - [x] CompletedLongLabel\n  - [ ] PendingLongLabel\n",
+      "expectedTokenKinds": ["frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [],
+      "expectedRootLabels": ["ReleaseLongLabel"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 1,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "toml-with-body",
+      "source": "+++\nmetadata_task = \"- [x] metadata\"\n+++\n\n- ReleaseLongLabel\n  - [x] CompletedLongLabel\n  - [ ] PendingLongLabel\n",
+      "expectedTokenKinds": ["frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [],
+      "expectedRootLabels": ["ReleaseLongLabel"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 1,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "body-only",
+      "source": "- ReleaseLongLabel\n  - [x] CompletedLongLabel\n  - [ ] PendingLongLabel\n",
+      "expectedTokenKinds": ["syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": [],
+      "expectedChecklists": [],
+      "expectedRootLabels": ["ReleaseLongLabel"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 1,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50
+      },
+      "expectedFrontmatterMetrics": []
+    },
+    {
+      "id": "yaml-checklist-only",
+      "source": "---\nchecks:\n  build: true\n  test: false\n  publish: false\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["checks"],
+        "entries": [
+          { "label": "build", "checked": true },
+          { "label": "test", "checked": false },
+          { "label": "publish", "checked": false }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 1,
+        "nodeCount": 4,
+        "completedEquivalent": 0.3333333333333333,
+        "progress": 0.3333333333333333,
+        "percentage": 33.33333333333333
+      }]
+    },
+    {
+      "id": "toml-checklist-only",
+      "source": "+++\n[checks]\nbuild = true\ntest = false\npublish = true\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["checks"],
+        "entries": [
+          { "label": "build", "checked": true },
+          { "label": "test", "checked": false },
+          { "label": "publish", "checked": true }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 1,
+        "nodeCount": 4,
+        "completedEquivalent": 0.6666666666666666,
+        "progress": 0.6666666666666666,
+        "percentage": 66.66666666666666
+      }]
+    },
+    {
+      "id": "yaml-checklist-with-body",
+      "source": "---\nchecks:\n  build: true\n  test: false\n  publish: false\n---\n- [x] body\n",
+      "expectedTokenKinds": ["frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["checks"],
+        "entries": [
+          { "label": "build", "checked": true },
+          { "label": "test", "checked": false },
+          { "label": "publish", "checked": false }
+        ]
+      }],
+      "expectedRootLabels": ["body"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 1,
+        "nodeCount": 4,
+        "completedEquivalent": 0.3333333333333333,
+        "progress": 0.3333333333333333,
+        "percentage": 33.33333333333333
+      }],
+      "expectedCombinedMetrics": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 4,
+        "implicitNodeCount": 1,
+        "nodeCount": 5,
+        "completedEquivalent": 1.3333333333333333,
+        "progress": 0.6666666666666666,
+        "percentage": 66.66666666666666
+      },
+      "expectedWeightedCombinedMetrics": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 4,
+        "implicitNodeCount": 1,
+        "nodeCount": 5,
+        "completedEquivalent": 1.3333333333333333,
+        "progress": 0.6666666666666666,
+        "percentage": 66.66666666666666
+      }
+    },
+    {
+      "id": "yaml-toml-multiple-with-body",
+      "source": "---\nchecks:\n  build: true\n---\n\n+++\n[checks]\ntest = false\n+++\n\n- [ ] Publish\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["yaml", "toml"],
+      "expectedChecklists": [
+        {
+          "type": "checklist",
+          "path": ["checks"],
+          "entries": [{ "label": "build", "checked": true }]
+        },
+        {
+          "type": "checklist",
+          "path": ["checks"],
+          "entries": [{ "label": "test", "checked": false }]
+        }
+      ],
+      "expectedRootLabels": ["Publish"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100
+        },
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 0,
+          "progress": 0,
+          "percentage": 0
+        }
+      ],
+      "expectedCombinedMetrics": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 1,
+        "progress": 0.3333333333333333,
+        "percentage": 33.33333333333333
+      },
+      "expectedWeightedCombinedMetrics": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 0.75,
+        "progress": 0.25,
+        "percentage": 25
+      }
+    },
+    {
+      "id": "yaml-toml-multiple-only",
+      "source": "---\nchecks:\n  build: true\n---\n\n+++\n[checks]\ntest = false\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml", "toml"],
+      "expectedChecklists": [
+        {
+          "type": "checklist",
+          "path": ["checks"],
+          "entries": [{ "label": "build", "checked": true }]
+        },
+        {
+          "type": "checklist",
+          "path": ["checks"],
+          "entries": [{ "label": "test", "checked": false }]
+        }
+      ],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100
+        },
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 0,
+          "progress": 0,
+          "percentage": 0
+        }
+      ]
+    },
+    {
+      "id": "yaml-named-boolean-sequence",
+      "source": "---\nrelease_states:\n  - true\n  - false\n  - [true, false]\n  - true\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release_states"],
+        "entries": [
+          { "label": "0", "checked": true },
+          { "label": "1", "checked": false },
+          {
+            "label": "2",
+            "checked": null,
+            "children": [
+              { "label": "2.0", "checked": true },
+              { "label": "2.1", "checked": false }
+            ]
+          },
+          { "label": "3", "checked": true }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 5,
+        "implicitNodeCount": 2,
+        "nodeCount": 7,
+        "completedEquivalent": 0.625,
+        "progress": 0.625,
+        "percentage": 62.5
+      }]
+    },
+    {
+      "id": "yaml-named-container-with-unnamed-sequence",
+      "source": "---\nchecks:\n  named:\n    build: true\n    test: false\n  unnamed:\n    - [true, false]\n    - [true, true]\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [
+        {
+          "type": "checklist",
+          "path": ["checks", "named"],
+          "entries": [
+            { "label": "build", "checked": true },
+            { "label": "test", "checked": false }
+          ]
+        },
+        {
+          "type": "checklist",
+          "path": ["checks", "unnamed"],
+          "entries": [
+            {
+              "label": "0",
+              "checked": null,
+              "children": [
+                { "label": "0.0", "checked": true },
+                { "label": "0.1", "checked": false }
+              ]
+            },
+            {
+              "label": "1",
+              "checked": null,
+              "children": [
+                { "label": "1.0", "checked": true },
+                { "label": "1.1", "checked": true }
+              ]
+            }
+          ]
+        }
+      ],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 2,
+        "explicitCheckboxCount": 6,
+        "implicitNodeCount": 4,
+        "nodeCount": 10,
+        "completedEquivalent": 1.25,
+        "progress": 0.625,
+        "percentage": 62.5
+      }]
+    },
+    {
+      "id": "yaml-root-sequence-is-not-checklist",
+      "source": "---\n- true\n- false\n- [true, false]\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "yaml-root-boolean-map-is-not-checklist",
+      "source": "---\nenable: true\npublish: false\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "toml-root-boolean-map-is-not-checklist",
+      "source": "+++\nenable = true\npublish = false\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "yaml-named-boolean-sequence-with-invalid-leaf",
+      "source": "---\nrelease_states:\n  - true\n  - false\n  - - true\n    - unknown\n  - true\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "yaml-named-boolean-sequence-with-empty-nested-list",
+      "source": "---\nrelease_states:\n  - true\n  - []\n  - false\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "toml-named-boolean-sequence",
+      "source": "+++\nvalues = [[true, false], [true, true]]\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["values"],
+        "entries": [
+          {
+            "label": "0",
+            "checked": null,
+            "children": [
+              { "label": "0.0", "checked": true },
+              { "label": "0.1", "checked": false }
+            ]
+          },
+          {
+            "label": "1",
+            "checked": null,
+            "children": [
+              { "label": "1.0", "checked": true },
+              { "label": "1.1", "checked": true }
+            ]
+          }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 4,
+        "implicitNodeCount": 3,
+        "nodeCount": 7,
+        "completedEquivalent": 0.75,
+        "progress": 0.75,
+        "percentage": 75
+      }]
+    },
+    {
+      "id": "toml-named-container-with-unnamed-sequence",
+      "source": "+++\n[checks]\nunnamed = [[true, false], [true, true]]\n\n[checks.named]\nbuild = true\ntest = false\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [
+        {
+          "type": "checklist",
+          "path": ["checks", "unnamed"],
+          "entries": [
+            {
+              "label": "0",
+              "checked": null,
+              "children": [
+                { "label": "0.0", "checked": true },
+                { "label": "0.1", "checked": false }
+              ]
+            },
+            {
+              "label": "1",
+              "checked": null,
+              "children": [
+                { "label": "1.0", "checked": true },
+                { "label": "1.1", "checked": true }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "checklist",
+          "path": ["checks", "named"],
+          "entries": [
+            { "label": "build", "checked": true },
+            { "label": "test", "checked": false }
+          ]
+        }
+      ],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 2,
+        "explicitCheckboxCount": 6,
+        "implicitNodeCount": 4,
+        "nodeCount": 10,
+        "completedEquivalent": 1.25,
+        "progress": 0.625,
+        "percentage": 62.5
+      }]
+    },
+    {
+      "id": "toml-named-boolean-sequence-with-invalid-leaf",
+      "source": "+++\nvalues = [[true, false], [\"unknown\"]]\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "yaml-named-checklist",
+      "source": "---\nrelease_items:\n  - name: README describes CLI usage\n    done: true\n  - name: README contains no development instructions\n    done: true\n  - name: Development instructions moved to AGENTS.md\n    done: false\n  - name: NPM README renders correctly\n    done: false\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release_items"],
+        "entries": [
+          { "label": "README describes CLI usage", "checked": true },
+          { "label": "README contains no development instructions", "checked": true },
+          { "label": "Development instructions moved to AGENTS.md", "checked": false },
+          { "label": "NPM README renders correctly", "checked": false }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 4,
+        "implicitNodeCount": 1,
+        "nodeCount": 5,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50
+      }]
+    },
+    {
+      "id": "toml-named-checklist",
+      "source": "+++\n[[release_items]]\nname = \"README describes CLI usage\"\ndone = true\n\n[[release_items]]\nname = \"README contains no development instructions\"\ndone = true\n\n[[release_items]]\nname = \"Development instructions moved to AGENTS.md\"\ndone = false\n\n[[release_items]]\nname = \"NPM README renders correctly\"\ndone = false\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release_items"],
+        "entries": [
+          { "label": "README describes CLI usage", "checked": true },
+          { "label": "README contains no development instructions", "checked": true },
+          { "label": "Development instructions moved to AGENTS.md", "checked": false },
+          { "label": "NPM README renders correctly", "checked": false }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 4,
+        "implicitNodeCount": 1,
+        "nodeCount": 5,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50
+      }]
+    },
+    {
+      "id": "yaml-single-named-record",
+      "source": "---\nrelease_item:\n  name: Single named task\n  done: true\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release_item"],
+        "entries": [
+          { "label": "Single named task", "checked": true }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 1,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }]
+    },
+    {
+      "id": "yaml-named-record-with-extra-fields",
+      "source": "---\nrelease_item:\n  name: Build documentation\n  details: release documentation\n  done: true\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release_item"],
+        "entries": [
+          { "label": "Build documentation", "checked": true }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 1,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }]
+    },
+    {
+      "id": "toml-named-record-with-extra-fields",
+      "source": "+++\n[[release_items]]\nname = \"Build documentation\"\ndetails = \"release documentation\"\ndone = true\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release_items"],
+        "entries": [
+          { "label": "Build documentation", "checked": true }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 1,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }]
+    },
+    {
+      "id": "yaml-root-named-record",
+      "source": "---\nrelease_item:\n  name: Root named task\n  details: root metadata\n  done: true\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release_item"],
+        "entries": [
+          { "label": "Root named task", "checked": true }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 1,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }]
+    },
+    {
+      "id": "toml-root-named-record",
+      "source": "+++\n[release_item]\nname = \"Root named task\"\ndetails = \"root metadata\"\ndone = true\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release_item"],
+        "entries": [
+          { "label": "Root named task", "checked": true }
+        ]
+      }],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 1,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }]
+    },
+    {
+      "id": "toml-named-checklist-with-invalid-record",
+      "source": "+++\n[[release_items]]\nname = \"valid\"\ndone = true\n\n[[release_items]]\nname = \"invalid\"\ndone = \"unknown\"\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "yaml-nested-checklist",
+      "source": "---\nrelease:\n  build: true\n  test: false\ntitle: Release\n---\n- [x] body\n",
+      "expectedTokenKinds": ["frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release"],
+        "entries": [
+          { "label": "build", "checked": true },
+          { "label": "test", "checked": false }
+        ]
+      }],
+      "expectedRootLabels": ["body"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 1,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50
+      }]
+    },
+    {
+      "id": "toml-nested-checklist",
+      "source": "+++\ntitle = \"Release\"\n[release]\nbuild = true\ntest = false\n+++\n- [x] body\n",
+      "expectedTokenKinds": ["frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [{
+        "type": "checklist",
+        "path": ["release"],
+        "entries": [
+          { "label": "build", "checked": true },
+          { "label": "test", "checked": false }
+        ]
+      }],
+      "expectedRootLabels": ["body"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 1,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 1,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50
+      }]
+    },
+    {
+      "id": "yaml-mixed-root-keeps-valid-named-candidates",
+      "source": "---\nrelease_states:\n  - true\n  - false\n  - [true, false]\n  - true\nrelease_checks:\n  build: true\n  test: false\nrelease_items:\n  - name: Build docs\n    done: true\n  - name: Publish docs\n    done: false\ninvalid_states:\n  - true\n  - unknown\ninvalid_object:\n  build: true\n  version: \"1.0.0\"\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [
+        {
+          "type": "checklist",
+          "path": ["release_states"],
+          "entries": [
+            { "label": "0", "checked": true },
+            { "label": "1", "checked": false },
+            {
+              "label": "2",
+              "checked": null,
+              "children": [
+                { "label": "2.0", "checked": true },
+                { "label": "2.1", "checked": false }
+              ]
+            },
+            { "label": "3", "checked": true }
+          ]
+        },
+        {
+          "type": "checklist",
+          "path": ["release_checks"],
+          "entries": [
+            { "label": "build", "checked": true },
+            { "label": "test", "checked": false }
+          ]
+        },
+        {
+          "type": "checklist",
+          "path": ["release_items"],
+          "entries": [
+            { "label": "Build docs", "checked": true },
+            { "label": "Publish docs", "checked": false }
+          ]
+        }
+      ],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 3,
+        "explicitCheckboxCount": 9,
+        "implicitNodeCount": 4,
+        "nodeCount": 13,
+        "completedEquivalent": 1.625,
+        "progress": 0.5416666666666666,
+        "percentage": 54.166666666666664
+      }]
+    },
+    {
+      "id": "yaml-mixed-named-and-unnamed-sequence",
+      "source": "---\nmixed_states:\n  - true\n  - [false, true]\n  - name: Publish documentation\n    done: false\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "toml-mixed-array-is-syntax-error",
+      "source": "+++\nrelease_states = [true, \"unknown\"]\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [],
+      "expectedError": "single type"
+    },
+    {
+      "id": "yaml-mixed-object-is-not-checklist",
+      "source": "---\nbuild: true\nversion: \"1.0.0\"\nempty: {}\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedChecklists": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [{
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }]
+    },
+    {
+      "id": "yaml-toml-toml-yaml-with-body",
+      "source": "---\nyaml_first:\n  build: true\n---\n\n+++\n[toml_first]\ntest = true\n\n[toml_second]\npublish = false\n+++\n\n+++\n[toml_third]\nship = true\n+++\n\n---\nyaml_last:\n  verify: false\n---\n\n- [ ] body\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "frontmatter", "frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["yaml", "toml", "toml", "yaml"],
+      "expectedChecklists": [
+        {
+          "type": "checklist",
+          "path": ["yaml_first"],
+          "entries": [{ "label": "build", "checked": true }]
+        },
+        {
+          "type": "checklist",
+          "path": ["toml_first"],
+          "entries": [{ "label": "test", "checked": true }]
+        },
+        {
+          "type": "checklist",
+          "path": ["toml_second"],
+          "entries": [{ "label": "publish", "checked": false }]
+        },
+        {
+          "type": "checklist",
+          "path": ["toml_third"],
+          "entries": [{ "label": "ship", "checked": true }]
+        },
+        {
+          "type": "checklist",
+          "path": ["yaml_last"],
+          "entries": [{ "label": "verify", "checked": false }]
+        }
+      ],
+      "expectedRootLabels": ["body"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100
+        },
+        {
+          "rootCount": 2,
+          "explicitCheckboxCount": 2,
+          "implicitNodeCount": 2,
+          "nodeCount": 4,
+          "completedEquivalent": 1,
+          "progress": 0.5,
+          "percentage": 50
+        },
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100
+        },
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 0,
+          "progress": 0,
+          "percentage": 0
+        }
+      ],
+      "expectedCombinedMetrics": {
+        "rootCount": 6,
+        "explicitCheckboxCount": 6,
+        "implicitNodeCount": 5,
+        "nodeCount": 11,
+        "completedEquivalent": 3,
+        "progress": 0.5,
+        "percentage": 50
+      },
+      "expectedWeightedCombinedMetrics": {
+        "rootCount": 6,
+        "explicitCheckboxCount": 6,
+        "implicitNodeCount": 5,
+        "nodeCount": 11,
+        "completedEquivalent": 1.7999999999999998,
+        "progress": 0.3,
+        "percentage": 30
+      }
+    },
+    {
+      "id": "yaml-yaml-with-body",
+      "source": "---\nfirst:\n  build: true\n---\n\n---\nsecond:\n  test: false\n---\n\n- [x] body\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["yaml", "yaml"],
+      "expectedChecklists": [
+        {
+          "type": "checklist",
+          "path": ["first"],
+          "entries": [{ "label": "build", "checked": true }]
+        },
+        {
+          "type": "checklist",
+          "path": ["second"],
+          "entries": [{ "label": "test", "checked": false }]
+        }
+      ],
+      "expectedRootLabels": ["body"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      },
+      "expectedFrontmatterMetrics": [
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100
+        },
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 0,
+          "progress": 0,
+          "percentage": 0
+        }
+      ],
+      "expectedCombinedMetrics": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 2,
+        "progress": 0.6666666666666666,
+        "percentage": 66.66666666666666
+      },
+      "expectedWeightedCombinedMetrics": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 2.25,
+        "progress": 0.75,
+        "percentage": 75
+      }
+    },
+    {
+      "id": "toml-yaml-with-body",
+      "source": "+++\n[first]\nbuild = true\n+++\n\n---\nsecond:\n  test: false\n---\n\n- [ ] body\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["toml", "yaml"],
+      "expectedChecklists": [
+        {
+          "type": "checklist",
+          "path": ["first"],
+          "entries": [{ "label": "build", "checked": true }]
+        },
+        {
+          "type": "checklist",
+          "path": ["second"],
+          "entries": [{ "label": "test", "checked": false }]
+        }
+      ],
+      "expectedRootLabels": ["body"],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100
+        },
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 0,
+          "progress": 0,
+          "percentage": 0
+        }
+      ],
+      "expectedCombinedMetrics": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 1,
+        "progress": 0.3333333333333333,
+        "percentage": 33.33333333333333
+      },
+      "expectedWeightedCombinedMetrics": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 0.75,
+        "progress": 0.25,
+        "percentage": 25
+      }
+    },
+    {
+      "id": "yaml-yaml-toml-only",
+      "source": "---\nfirst:\n  build: true\n---\n\n---\nsecond:\n  test: false\n---\n\n+++\n[third]\npublish = true\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml", "yaml", "toml"],
+      "expectedChecklists": [
+        {
+          "type": "checklist",
+          "path": ["first"],
+          "entries": [{ "label": "build", "checked": true }]
+        },
+        {
+          "type": "checklist",
+          "path": ["second"],
+          "entries": [{ "label": "test", "checked": false }]
+        },
+        {
+          "type": "checklist",
+          "path": ["third"],
+          "entries": [{ "label": "publish", "checked": true }]
+        }
+      ],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      },
+      "expectedFrontmatterMetrics": [
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100
+        },
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 0,
+          "progress": 0,
+          "percentage": 0
+        },
+        {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 1,
+          "nodeCount": 2,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100
+        }
+      ]
+    }
+  ]
+}

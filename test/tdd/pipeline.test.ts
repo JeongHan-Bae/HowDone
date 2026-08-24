@@ -4,19 +4,19 @@ import { test } from "node:test";
 import { JsonRenderer } from "../../src/adapters/output/json-renderer.ts";
 import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
 import { TerminalRenderer } from "../../src/adapters/output/terminal-renderer.ts";
-import { TypedAstParser } from "../../src/core/ast/parser.ts";
-import { runMarkdownPipeline } from "../../src/core/source/pipeline.ts";
-import { TokenKind } from "../../src/core/source/types.ts";
-import { buildProgressRoots } from "../../src/core/progress/tree-builder.ts";
 import {
+  buildProgressRoots,
   calculateNodeProgress,
+  calculateProgress,
+  runMarkdownPipeline,
   summarizeProgress,
-} from "../../src/core/progress/metrics.ts";
-import { calculateProgress } from "../../src/core/progress/analyzer.ts";
-import type { CheckboxNode } from "../../src/core/progress/types.ts";
+  TokenKind,
+  TypedAstParser,
+} from "../../src/core/index.ts";
+import type { CheckboxNode } from "../../src/core/index.ts";
 
 const source = (JSON.parse(
-  readFileSync(new URL("../fixtures/markdown-samples.json", import.meta.url), "utf8"),
+  readFileSync(new URL("./fixtures/markdown-samples.json", import.meta.url), "utf8"),
 ) as { pipelineSource: string }).pipelineSource;
 
 test("TDD source -> lexer emits frontmatter, syntax, and EOF tokens", () => {
@@ -65,18 +65,19 @@ test("TDD lexer ignores task-looking code and table text", () => {
 });
 
 test("TDD lexer -> AST parser creates a typed root AST", () => {
-  const ast = new TypedAstParser().parse(defaultRemarkLexer.lex(source));
-  assert.equal(ast.type, "root");
-  assert.deepEqual(ast.children.map((node) => node.type), [
-    "frontmatter",
+  const document = new TypedAstParser().parse(defaultRemarkLexer.lex(source));
+  assert.equal(document.type, "document");
+  assert.equal(document.frontmatter[0]?.type, "frontmatter");
+  assert.equal(document.frontmatter[0]?.format, "yaml");
+  assert.deepEqual(document.body.children.map((node) => node.type), [
     "heading",
     "list",
   ]);
 });
 
 test("TDD AST parser preserves nested list-item boundaries", () => {
-  const ast = new TypedAstParser().parse(defaultRemarkLexer.lex(source));
-  const list = ast.children.find((node) => node.type === "list");
+  const document = new TypedAstParser().parse(defaultRemarkLexer.lex(source));
+  const list = document.body.children.find((node) => node.type === "list");
   assert.equal(list?.type, "list");
   if (list?.type === "list") {
     assert.equal(list.items[0]?.children[1]?.type, "list");
@@ -104,6 +105,7 @@ test("TDD source pipeline calls lexer then parser", () => {
     },
   };
   const document = runMarkdownPipeline("- [x] task\n", lexer, parser, "tasks.md");
+  assert.equal(document.sourceText, "- [x] task\n");
   assert.deepEqual(calls, ["lex:- [x] task\n", "parse:2"]);
   assert.equal(document.sourcePath, "tasks.md");
 });
@@ -111,7 +113,7 @@ test("TDD source pipeline calls lexer then parser", () => {
 test("TDD AST -> progress tree adds implicit ancestors and drops plain branches", () => {
   const ast = new TypedAstParser().parse(
     defaultRemarkLexer.lex("- A\n  - B\n    - [x] C\n- dropped\n"),
-  );
+  ).body;
   const roots = buildProgressRoots(ast);
   assert.deepEqual(roots.map((node) => node.label), ["A"]);
   assert.equal(roots[0]?.implicit, true);
@@ -120,7 +122,7 @@ test("TDD AST -> progress tree adds implicit ancestors and drops plain branches"
 });
 
 test("TDD progress tree preserves depth labels", () => {
-  const ast = new TypedAstParser().parse(defaultRemarkLexer.lex(source));
+  const ast = new TypedAstParser().parse(defaultRemarkLexer.lex(source)).body;
   const roots = buildProgressRoots(ast);
   assert.deepEqual(
     [roots[0], roots[0]?.children[0], roots[0]?.children[0]?.children[0]].map(
@@ -161,7 +163,7 @@ test("TDD metrics calculate leaves before branches", () => {
 });
 
 test("TDD metrics expose the required numeric result fields", () => {
-  const ast = new TypedAstParser().parse(defaultRemarkLexer.lex(source));
+  const ast = new TypedAstParser().parse(defaultRemarkLexer.lex(source)).body;
   const result = calculateProgress(ast);
   assert.deepEqual(
     Object.keys(result).sort(),
@@ -185,7 +187,7 @@ test("TDD metrics expose the required numeric result fields", () => {
 test("TDD metrics average equally weighted roots", () => {
   const ast = new TypedAstParser().parse(
     defaultRemarkLexer.lex("- [x] done\n- [ ] pending\n"),
-  );
+  ).body;
   const result = summarizeProgress(buildProgressRoots(ast));
   assert.equal(result.completedEquivalent, 1);
   assert.equal(result.progress, 0.5);
@@ -195,7 +197,7 @@ test("TDD metrics average equally weighted roots", () => {
 test("TDD JSON adapter serializes the progress result without display truncation", () => {
   const ast = new TypedAstParser().parse(
     defaultRemarkLexer.lex("- [x] This label is longer than ten\n"),
-  );
+  ).body;
   const result = calculateProgress(ast);
   const json = JSON.parse(
     new JsonRenderer().render({ source: { path: "tasks.md" }, progress: result }),
@@ -207,7 +209,7 @@ test("TDD JSON adapter serializes the progress result without display truncation
 test("TDD JSON adapter truncates labels only when display options request it", () => {
   const ast = new TypedAstParser().parse(
     defaultRemarkLexer.lex("- [x] 123456789012345\n"),
-  );
+  ).body;
   const result = calculateProgress(ast);
   const json = JSON.parse(
     new JsonRenderer().render(
@@ -228,7 +230,7 @@ test("TDD JSON adapter truncates labels only when display options request it", (
 test("TDD terminal adapter truncates only terminal labels", () => {
   const ast = new TypedAstParser().parse(
     defaultRemarkLexer.lex("- [x] This label is longer than ten\n"),
-  );
+  ).body;
   const result = calculateProgress(ast);
   const output = new TerminalRenderer().render(
     "tree",

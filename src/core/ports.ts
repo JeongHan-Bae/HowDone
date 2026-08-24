@@ -1,4 +1,5 @@
-import type { RootAst } from "./ast/types.ts";
+import type { DocumentAst } from "./ast/types.ts";
+import type { FrontmatterAst } from "./ast/types.ts";
 import type { ResolvedDisplayOptions } from "./config/types.ts";
 import type { ProgressReport, ProgressResult } from "./progress/types.ts";
 import type { LexerToken } from "./source/types.ts";
@@ -8,11 +9,19 @@ export interface MarkdownLexer {
 }
 
 export interface MarkdownAstParser {
-  parse(tokens: readonly LexerToken[]): RootAst;
+  parse(tokens: readonly LexerToken[]): DocumentAst;
+}
+
+export interface FrontmatterValueParser {
+  parse(frontmatter: FrontmatterAst): unknown;
 }
 
 export interface MarkdownFileReader {
   read(filePath: string): Promise<string>;
+}
+
+export interface WarningPort {
+  warn(message: string): void;
 }
 
 export interface GraphemeSegmenter {
@@ -22,7 +31,7 @@ export interface GraphemeSegmenter {
 export interface TerminalOutputPort {
   render(
     mode: "default" | "tree" | "details",
-    result: ProgressResult,
+    report: ProgressReport | ProgressResult,
     options: ResolvedDisplayOptions,
   ): string;
 }

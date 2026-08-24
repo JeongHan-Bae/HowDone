@@ -1,0 +1,36 @@
+{
+  "pathVariants": [
+    {
+      "kind": "relative",
+      "segments": [
+        "fixtures",
+        "relative.md"
+      ],
+      "absolute": false
+    },
+    {
+      "kind": "relative-space",
+      "segments": [
+        "fixtures",
+        "space tasks",
+        "relative.markdown"
+      ],
+      "absolute": false
+    },
+    {
+      "kind": "absolute",
+      "segments": [
+        "absolute.md"
+      ],
+      "absolute": true
+    },
+    {
+      "kind": "absolute-space",
+      "segments": [
+        "absolute space",
+        "absolute.markdown"
+      ],
+      "absolute": true
+    }
+  ]
+}

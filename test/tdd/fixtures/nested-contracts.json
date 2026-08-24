@@ -107,13 +107,67 @@
       "precision": 2,
       "showTrailingZeros": false
     },
-    "expected": {
-      "progress": 0.75,
-      "percentage": 75,
-      "rootLabel": "Rel...",
-      "branchLabel": "Pha...",
-      "firstLeafLabel": "Com...",
-      "secondLeafLabel": "Pen..."
+    "expectedReport": {
+      "source": {
+        "path": "fixtures/tasks.md"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 0.75,
+        "progress": 0.75,
+        "percentage": 75,
+        "roots": [
+          {
+            "label": "Rel...",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Pha...",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "Com...",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  },
+                  {
+                    "label": "Pen...",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 2
+                  }
+                ],
+                "progress": 0.5,
+                "depth": 1
+              },
+              {
+                "label": "Dir...",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 0.75,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "terminalOutput": {
+      "tree": "Overall completion: 75%\n\n└─ [75%] Rel...\n   ├─ [50%] Pha...\n   │  ├─ [100%] Com...\n   │  └─ [0%] Pen...\n   └─ [100%] Dir...\n",
+      "details": "Overall completion: 75%\n\nOverall statistics:\n- Root nodes: 1\n- Explicit checkboxes: 3\n- Implicit nodes: 2\n- Statistical nodes: 5\n- Equivalent completed: 0.75 / 1\n\nLevel statistics:\n- Level 1: 1 node, 0 leaf nodes, 1 branch node\n- Level 2: 2 nodes, 1 leaf node, 1 branch node\n- Level 3: 2 nodes, 2 leaf nodes, 0 branch nodes\n\nRoot statistics:\n- Rel...: 75%, 2 child nodes\n"
     }
   }
 }

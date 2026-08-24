@@ -1,4 +1,4 @@
-import type { ProgressFormat } from "../../core/config/types.ts";
+import type { ProgressFormat } from "../../core/index.ts";
 
 export type OutputMode = "default" | "tree" | "details" | "json";
 
@@ -8,10 +8,16 @@ export interface ParsedArguments {
   path?: string;
   mode: OutputMode;
   format: ProgressFormat;
+  formatExplicit: boolean;
   precision?: number;
   showTrailingZeros?: boolean;
   maxLabelClusters?: number;
   noTruncate: boolean;
+  mergeFrontmatter: boolean;
+  frontmatterWeight?: number;
+  frontmatterWeightInput?: string;
+  silent: boolean;
+  strict: boolean;
 }
 
 export class ArgumentError extends Error {
@@ -34,6 +40,14 @@ function parsePositiveInteger(value: string): number {
     );
   }
   return parsed;
+}
+
+function parseFrontmatterWeight(value: string): number | undefined {
+  if (!/^\d+(?:\.\d+)?$/u.test(value)) return undefined;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 && parsed < 1
+    ? parsed
+    : undefined;
 }
 
 function parsePrecision(value: string): number {
@@ -89,12 +103,18 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
   let mode: OutputMode = "default";
   let format: ProgressFormat = "percentage";
   let requestedFormat: ProgressFormat | undefined;
+  let formatExplicit = false;
   let precision: number | undefined;
   let showTrailingZeros: boolean | undefined;
   let maxLabelClusters: number | undefined;
   let help = false;
   let version = false;
   let noTruncate = false;
+  let mergeFrontmatter = false;
+  let frontmatterWeight: number | undefined;
+  let frontmatterWeightInput: string | undefined;
+  let silent = false;
+  let strict = false;
   let positionalOnly = false;
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -138,6 +158,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
       const nextFormat = argument.slice(2) as ProgressFormat;
       format = chooseProgressFormat(requestedFormat, nextFormat);
       requestedFormat = format;
+      formatExplicit = true;
       continue;
     }
     if (argument === "--format") {
@@ -148,6 +169,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
       const nextFormat = parseProgressFormat(value);
       format = chooseProgressFormat(requestedFormat, nextFormat);
       requestedFormat = format;
+      formatExplicit = true;
       index += 1;
       continue;
     }
@@ -159,6 +181,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
       const nextFormat = parseProgressFormat(value);
       format = chooseProgressFormat(requestedFormat, nextFormat);
       requestedFormat = format;
+      formatExplicit = true;
       continue;
     }
     if (argument === "--precision") {
@@ -200,6 +223,37 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
       noTruncate = true;
       continue;
     }
+    if (argument === "--silent" || argument === "-s") {
+      silent = true;
+      continue;
+    }
+    if (argument === "--merge-frontmatter") {
+      mergeFrontmatter = true;
+      continue;
+    }
+    if (argument === "--strict") {
+      strict = true;
+      continue;
+    }
+    if (argument === "--frontmatter-weight") {
+      const value = argv[index + 1];
+      if (value === undefined) {
+        throw new ArgumentError("--frontmatter-weight requires a value.");
+      }
+      frontmatterWeightInput = value;
+      frontmatterWeight = parseFrontmatterWeight(value);
+      index += 1;
+      continue;
+    }
+    if (argument.startsWith("--frontmatter-weight=")) {
+      const value = argument.slice("--frontmatter-weight=".length);
+      if (value.length === 0) {
+        throw new ArgumentError("--frontmatter-weight requires a value.");
+      }
+      frontmatterWeightInput = value;
+      frontmatterWeight = parseFrontmatterWeight(value);
+      continue;
+    }
     if (argument === "--max-label-clusters") {
       const value = argv[index + 1];
       if (value === undefined) {
@@ -226,6 +280,12 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
     path = argument;
   }
 
+  if (noTruncate && maxLabelClusters !== undefined) {
+    throw new ArgumentError(
+      "--no-truncate and --max-label-clusters are mutually exclusive.",
+    );
+  }
+
   if (precision !== undefined) {
     validatePrecisionForFormat(precision, format);
   }
@@ -236,9 +296,17 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
     path,
     mode,
     format,
+    formatExplicit,
     precision,
     showTrailingZeros,
     maxLabelClusters,
     noTruncate,
+    mergeFrontmatter,
+    frontmatterWeight,
+    ...(frontmatterWeightInput === undefined
+      ? {}
+      : { frontmatterWeightInput }),
+    silent,
+    strict,
   };
 }

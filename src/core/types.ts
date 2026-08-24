@@ -2,6 +2,7 @@ export type {
   BlockAst,
   BlockquoteAst,
   CodeBlockAst,
+  DocumentAst,
   FrontmatterAst,
   HeadingAst,
   HtmlAst,
@@ -16,9 +17,16 @@ export type {
   ResolvedDisplayOptions,
 } from "./config/types.ts";
 export type {
+  FrontmatterChecklist,
+  FrontmatterChecklistEntry,
+  FrontmatterDocument,
+} from "./frontmatter/types.ts";
+export type {
   CheckboxNode,
+  FrontmatterProgress,
   LayerStatistics,
   ProgressReport,
+  ProgressPresentation,
   ProgressResult,
 } from "./progress/types.ts";
 export type {

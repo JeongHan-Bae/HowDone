@@ -1,0 +1,107 @@
+{
+  "cases": [
+    {
+      "id": "ordered-and-unordered-lists-retain-task-ancestors",
+      "source": "1. Release\n   * Notes with no checkbox\n   * [x] Build\n2. Archive\n   - [ ] Publish\n",
+      "expectedRoots": [
+        {
+          "label": "Release",
+          "checked": null,
+          "implicit": true,
+          "children": [
+            {
+              "label": "Build",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 1
+            }
+          ],
+          "progress": 1,
+          "depth": 0
+        },
+        {
+          "label": "Archive",
+          "checked": null,
+          "implicit": true,
+          "children": [
+            {
+              "label": "Publish",
+              "checked": false,
+              "implicit": false,
+              "children": [],
+              "progress": 0,
+              "depth": 1
+            }
+          ],
+          "progress": 0,
+          "depth": 0
+        }
+      ],
+      "expectedMetrics": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 2,
+        "nodeCount": 4,
+        "completedEquivalent": 1,
+        "progress": 0.5,
+        "percentage": 50
+      }
+    },
+    {
+      "id": "explicit-parent-state-is-ignored",
+      "source": "- [x] Release\n  - [ ] Build\n  - [x] Publish\n",
+      "expectedRoots": [
+        {
+          "label": "Release",
+          "checked": true,
+          "implicit": false,
+          "children": [
+            {
+              "label": "Build",
+              "checked": false,
+              "implicit": false,
+              "children": [],
+              "progress": 0,
+              "depth": 1
+            },
+            {
+              "label": "Publish",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 1
+            }
+          ],
+          "progress": 0.5,
+          "depth": 0
+        }
+      ],
+      "expectedMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 0,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50
+      }
+    },
+    {
+      "id": "plain-list-without-task-descendants-is-discarded",
+      "source": "- Release notes\n  1. Design notes\n     - Implementation notes\n",
+      "expectedRoots": [],
+      "expectedMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    }
+  ]
+}

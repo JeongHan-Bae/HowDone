@@ -1,11 +1,10 @@
-import { TypedAstParser } from "../core/ast/parser.ts";
-import { runMarkdownPipeline } from "../core/source/pipeline.ts";
-import type { RootAst } from "../core/ast/types.ts";
+import { runMarkdownPipeline, TypedAstParser } from "../core/index.ts";
+import type { DocumentAst } from "../core/index.ts";
 import { defaultRemarkLexer } from "../adapters/markdown/remark-lexer.ts";
 
 const defaultAstParser = new TypedAstParser();
 
-export function parseMarkdown(source: string): RootAst {
+export function parseMarkdown(source: string): DocumentAst {
   return runMarkdownPipeline(
     source,
     defaultRemarkLexer,

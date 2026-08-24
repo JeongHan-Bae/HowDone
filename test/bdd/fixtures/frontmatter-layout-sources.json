@@ -1,0 +1,56 @@
+{
+  "cases": [
+    {
+      "id": "empty-document",
+      "source": ""
+    },
+    {
+      "id": "body-only",
+      "source": "- [x] body\n"
+    },
+    {
+      "id": "yaml-only",
+      "source": "---\ntitle: YAML\n---\n"
+    },
+    {
+      "id": "toml-only",
+      "source": "+++\ntitle = \"TOML\"\n+++\n"
+    },
+    {
+      "id": "yaml-with-body",
+      "source": "---\ntitle: YAML\n---\n\n- [x] body\n"
+    },
+    {
+      "id": "toml-with-body",
+      "source": "+++\ntitle = \"TOML\"\n+++\n\n- [ ] body\n"
+    },
+    {
+      "id": "yaml-yaml-frontmatter-only",
+      "source": "---\ntitle: First\n---\n\n---\ntitle: Second\n---\n"
+    },
+    {
+      "id": "yaml-toml-frontmatter-only",
+      "source": "---\ntitle: YAML\n---\n\n+++\ntitle = \"TOML\"\n+++\n"
+    },
+    {
+      "id": "toml-yaml-frontmatter-only",
+      "source": "+++\ntitle = \"TOML\"\n+++\n\n---\ntitle: YAML\n---\n"
+    },
+    {
+      "id": "toml-toml-frontmatter-only",
+      "source": "+++\ntitle = \"First\"\n+++\n\n+++\ntitle = \"Second\"\n+++\n"
+    },
+    {
+      "id": "yaml-toml-yaml-with-body",
+      "source": "---\ntitle: YAML one\n---\n\n+++\ntitle = \"TOML\"\n+++\n\n---\ntitle: YAML two\n---\n\n- [x] body\n"
+    },
+    {
+      "id": "toml-yaml-toml-with-body",
+      "source": "+++\ntitle = \"TOML one\"\n+++\n\n---\ntitle: YAML\n---\n\n+++\ntitle = \"TOML two\"\n+++\n\n- [ ] body\n"
+    },
+    {
+      "id": "frontmatter-after-body-is-invalid",
+      "source": "- [x] body\n\n---\ntitle: Late\n---\n"
+    }
+  ]
+}

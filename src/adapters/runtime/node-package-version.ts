@@ -5,6 +5,6 @@ interface PackageMetadata {
 }
 
 const require = createRequire(import.meta.url);
-const packageMetadata = require("../../package.json") as PackageMetadata;
+const packageMetadata = require("../../../package.json") as PackageMetadata;
 
-export const VERSION = packageMetadata.version;
+export const packageVersion = packageMetadata.version;

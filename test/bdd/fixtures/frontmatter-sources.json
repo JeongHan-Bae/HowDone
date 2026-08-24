@@ -1,0 +1,160 @@
+{
+  "cases": [
+    {
+      "id": "empty-document",
+      "source": ""
+    },
+    {
+      "id": "yaml-only",
+      "source": "---\nmetadata_task: \"- [x] metadata\"\n---\n"
+    },
+    {
+      "id": "toml-only",
+      "source": "+++\nmetadata_task = \"- [x] metadata\"\n+++\n"
+    },
+    {
+      "id": "yaml-with-body",
+      "source": "---\nmetadata_task: \"- [x] metadata\"\n---\n\n- ReleaseLongLabel\n  - [x] CompletedLongLabel\n  - [ ] PendingLongLabel\n"
+    },
+    {
+      "id": "toml-with-body",
+      "source": "+++\nmetadata_task = \"- [x] metadata\"\n+++\n\n- ReleaseLongLabel\n  - [x] CompletedLongLabel\n  - [ ] PendingLongLabel\n"
+    },
+    {
+      "id": "body-only",
+      "source": "- ReleaseLongLabel\n  - [x] CompletedLongLabel\n  - [ ] PendingLongLabel\n"
+    },
+    {
+      "id": "yaml-checklist-only",
+      "source": "---\nchecks:\n  build: true\n  test: false\n  publish: false\n---\n"
+    },
+    {
+      "id": "toml-checklist-only",
+      "source": "+++\n[checks]\nbuild = true\ntest = false\npublish = true\n+++\n"
+    },
+    {
+      "id": "yaml-checklist-with-body",
+      "source": "---\nchecks:\n  build: true\n  test: false\n  publish: false\n---\n- [x] body\n"
+    },
+    {
+      "id": "yaml-toml-multiple-with-body",
+      "source": "---\nchecks:\n  build: true\n---\n\n+++\n[checks]\ntest = false\n+++\n\n- [ ] Publish\n"
+    },
+    {
+      "id": "yaml-toml-multiple-only",
+      "source": "---\nchecks:\n  build: true\n---\n\n+++\n[checks]\ntest = false\n+++\n"
+    },
+    {
+      "id": "yaml-named-boolean-sequence",
+      "source": "---\nrelease_states:\n  - true\n  - false\n  - [true, false]\n  - true\n---\n"
+    },
+    {
+      "id": "yaml-named-container-with-unnamed-sequence",
+      "source": "---\nchecks:\n  named:\n    build: true\n    test: false\n  unnamed:\n    - [true, false]\n    - [true, true]\n---\n"
+    },
+    {
+      "id": "yaml-root-sequence-is-not-checklist",
+      "source": "---\n- true\n- false\n- [true, false]\n---\n"
+    },
+    {
+      "id": "yaml-root-boolean-map-is-not-checklist",
+      "source": "---\nenable: true\npublish: false\n---\n"
+    },
+    {
+      "id": "toml-root-boolean-map-is-not-checklist",
+      "source": "+++\nenable = true\npublish = false\n+++\n"
+    },
+    {
+      "id": "yaml-named-boolean-sequence-with-invalid-leaf",
+      "source": "---\nrelease_states:\n  - true\n  - false\n  - - true\n    - unknown\n  - true\n---\n"
+    },
+    {
+      "id": "yaml-named-boolean-sequence-with-empty-nested-list",
+      "source": "---\nrelease_states:\n  - true\n  - []\n  - false\n---\n"
+    },
+    {
+      "id": "toml-named-boolean-sequence",
+      "source": "+++\nvalues = [[true, false], [true, true]]\n+++\n"
+    },
+    {
+      "id": "toml-named-container-with-unnamed-sequence",
+      "source": "+++\n[checks]\nunnamed = [[true, false], [true, true]]\n\n[checks.named]\nbuild = true\ntest = false\n+++\n"
+    },
+    {
+      "id": "toml-named-boolean-sequence-with-invalid-leaf",
+      "source": "+++\nvalues = [[true, false], [\"unknown\"]]\n+++\n"
+    },
+    {
+      "id": "yaml-named-checklist",
+      "source": "---\nrelease_items:\n  - name: README describes CLI usage\n    done: true\n  - name: README contains no development instructions\n    done: true\n  - name: Development instructions moved to AGENTS.md\n    done: false\n  - name: NPM README renders correctly\n    done: false\n---\n"
+    },
+    {
+      "id": "toml-named-checklist",
+      "source": "+++\n[[release_items]]\nname = \"README describes CLI usage\"\ndone = true\n\n[[release_items]]\nname = \"README contains no development instructions\"\ndone = true\n\n[[release_items]]\nname = \"Development instructions moved to AGENTS.md\"\ndone = false\n\n[[release_items]]\nname = \"NPM README renders correctly\"\ndone = false\n+++\n"
+    },
+    {
+      "id": "yaml-single-named-record",
+      "source": "---\nrelease_item:\n  name: Single named task\n  done: true\n---\n"
+    },
+    {
+      "id": "yaml-named-record-with-extra-fields",
+      "source": "---\nrelease_item:\n  name: Build documentation\n  details: release documentation\n  done: true\n---\n"
+    },
+    {
+      "id": "toml-named-record-with-extra-fields",
+      "source": "+++\n[[release_items]]\nname = \"Build documentation\"\ndetails = \"release documentation\"\ndone = true\n+++\n"
+    },
+    {
+      "id": "yaml-root-named-record",
+      "source": "---\nrelease_item:\n  name: Root named task\n  details: root metadata\n  done: true\n---\n"
+    },
+    {
+      "id": "toml-root-named-record",
+      "source": "+++\n[release_item]\nname = \"Root named task\"\ndetails = \"root metadata\"\ndone = true\n+++\n"
+    },
+    {
+      "id": "toml-named-checklist-with-invalid-record",
+      "source": "+++\n[[release_items]]\nname = \"valid\"\ndone = true\n\n[[release_items]]\nname = \"invalid\"\ndone = \"unknown\"\n+++\n"
+    },
+    {
+      "id": "yaml-nested-checklist",
+      "source": "---\nrelease:\n  build: true\n  test: false\ntitle: Release\n---\n- [x] body\n"
+    },
+    {
+      "id": "toml-nested-checklist",
+      "source": "+++\ntitle = \"Release\"\n[release]\nbuild = true\ntest = false\n+++\n- [x] body\n"
+    },
+    {
+      "id": "yaml-mixed-root-keeps-valid-named-candidates",
+      "source": "---\nrelease_states:\n  - true\n  - false\n  - [true, false]\n  - true\nrelease_checks:\n  build: true\n  test: false\nrelease_items:\n  - name: Build docs\n    done: true\n  - name: Publish docs\n    done: false\ninvalid_states:\n  - true\n  - unknown\ninvalid_object:\n  build: true\n  version: \"1.0.0\"\n---\n"
+    },
+    {
+      "id": "yaml-mixed-named-and-unnamed-sequence",
+      "source": "---\nmixed_states:\n  - true\n  - [false, true]\n  - name: Publish documentation\n    done: false\n---\n"
+    },
+    {
+      "id": "toml-mixed-array-is-syntax-error",
+      "source": "+++\nrelease_states = [true, \"unknown\"]\n+++\n"
+    },
+    {
+      "id": "yaml-mixed-object-is-not-checklist",
+      "source": "---\nbuild: true\nversion: \"1.0.0\"\nempty: {}\n---\n"
+    },
+    {
+      "id": "yaml-toml-toml-yaml-with-body",
+      "source": "---\nyaml_first:\n  build: true\n---\n\n+++\n[toml_first]\ntest = true\n\n[toml_second]\npublish = false\n+++\n\n+++\n[toml_third]\nship = true\n+++\n\n---\nyaml_last:\n  verify: false\n---\n\n- [ ] body\n"
+    },
+    {
+      "id": "yaml-yaml-with-body",
+      "source": "---\nfirst:\n  build: true\n---\n\n---\nsecond:\n  test: false\n---\n\n- [x] body\n"
+    },
+    {
+      "id": "toml-yaml-with-body",
+      "source": "+++\n[first]\nbuild = true\n+++\n\n---\nsecond:\n  test: false\n---\n\n- [ ] body\n"
+    },
+    {
+      "id": "yaml-yaml-toml-only",
+      "source": "---\nfirst:\n  build: true\n---\n\n---\nsecond:\n  test: false\n---\n\n+++\n[third]\npublish = true\n+++\n"
+    }
+  ]
+}

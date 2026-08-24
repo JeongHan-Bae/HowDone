@@ -3,17 +3,17 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import { toString } from "mdast-util-to-string";
+import { TokenKind } from "../../core/index.ts";
 import type {
   FrontmatterToken,
   LexerToken,
+  MarkdownLexer,
   ScannedBlockNode,
   ScannedListItemNode,
   SourcePosition,
   SyntaxNodeToken,
   TokenSpan,
-} from "../../core/source/types.ts";
-import { TokenKind } from "../../core/source/types.ts";
-import type { MarkdownLexer } from "../../core/ports.ts";
+} from "../../core/index.ts";
 
 interface RemarkPosition {
   start: SourcePosition;
@@ -137,11 +137,15 @@ export class RemarkLexer implements MarkdownLexer {
   private readonly processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
-    .use(remarkFrontmatter);
+    .use(remarkFrontmatter, [
+      { type: "yaml", marker: "-", anywhere: true },
+      { type: "toml", marker: "+", anywhere: true },
+    ]);
 
   lex(source: string): LexerToken[] {
     const root = asRemarkNode(this.processor.parse(source));
     const tokens: LexerToken[] = [];
+    let hasBody = false;
 
     for (const child of nodeChildren(root)) {
       const span = sourceSpan(child, source);
@@ -151,11 +155,17 @@ export class RemarkLexer implements MarkdownLexer {
       };
 
       if (child.type === "yaml" || child.type === "toml") {
+        if (hasBody) {
+          throw new Error(
+            "Frontmatter must appear before Markdown body content.",
+          );
+        }
         const token: FrontmatterToken = {
           ...base,
           kind: TokenKind.frontmatter,
           node: {
             type: "frontmatter",
+            format: child.type,
             value: child.value ?? "",
           },
         };
@@ -167,6 +177,7 @@ export class RemarkLexer implements MarkdownLexer {
       if (scanned === undefined) {
         continue;
       }
+      hasBody = true;
       const token: SyntaxNodeToken = {
         ...base,
         kind: TokenKind.syntaxNode,

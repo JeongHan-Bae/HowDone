@@ -5,25 +5,18 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
 import { parseArguments } from "../src/application/cli/args.ts";
-import { resolveDisplayOptions } from "../src/core/config/options.ts";
 import {
   run,
-  VERSION,
 } from "../src/application/analyze.ts";
 import type { CliDependencies, CliIO } from "../src/application/types.ts";
 import { NodeMarkdownFileReader } from "../src/adapters/filesystem/node-file-reader.ts";
+import { defaultTomlValueParser } from "../src/adapters/frontmatter/toml-value-parser.ts";
+import { defaultYamlValueParser } from "../src/adapters/frontmatter/yaml-value-parser.ts";
+import { packageVersion } from "../src/adapters/runtime/node-package-version.ts";
 import { parseMarkdown } from "../src/boot/pipeline.ts";
 import { defaultRemarkLexer } from "../src/adapters/markdown/remark-lexer.ts";
-import { TypedAstParser } from "../src/core/ast/parser.ts";
-import { runMarkdownPipeline } from "../src/core/source/pipeline.ts";
-import { TokenKind } from "../src/core/source/types.ts";
 import { JsonRenderer } from "../src/adapters/output/json-renderer.ts";
 import { TerminalRenderer } from "../src/adapters/output/terminal-renderer.ts";
-import {
-  collectLayerStatistics,
-  calculateProgress,
-  flattenProgressNodes,
-} from "../src/core/progress/analyzer.ts";
 import {
   countGraphemeClusters,
   truncateLabel,
@@ -33,14 +26,23 @@ import {
   formatPercentage,
   formatProgress,
 } from "../src/adapters/output/terminal-renderer.ts";
-import type { RootAst } from "../src/core/ast/types.ts";
+import {
+  calculateProgress,
+  collectLayerStatistics,
+  flattenProgressNodes,
+  resolveDisplayOptions,
+  runMarkdownPipeline,
+  TokenKind,
+  TypedAstParser,
+} from "../src/core/index.ts";
+import type { RootAst } from "../src/core/index.ts";
 
 const fixedSample = (JSON.parse(
-  readFileSync(new URL("./fixtures/markdown-samples.json", import.meta.url), "utf8"),
+  readFileSync(new URL("./tdd/fixtures/markdown-samples.json", import.meta.url), "utf8"),
 ) as { fixedSample: string }).fixedSample;
 
 function resultOf(markdown: string) {
-  return calculateProgress(parseMarkdown(markdown));
+  return calculateProgress(parseMarkdown(markdown).body);
 }
 
 function labels(markdown: string): string[] {
@@ -68,9 +70,13 @@ function dependenciesFor(markdown: string): CliDependencies {
   return {
     lexer: defaultRemarkLexer,
     parser: new TypedAstParser(),
+    yamlValueParser: defaultYamlValueParser,
+    tomlValueParser: defaultTomlValueParser,
     fileReader: { read: async () => markdown },
     terminalRenderer: new TerminalRenderer(),
     jsonRenderer: new JsonRenderer(),
+    warning: { warn: () => {} },
+    version: packageVersion,
   };
 }
 
@@ -414,7 +420,7 @@ test("63: keeps a blockquote list outside the document root", () => {
   assert.equal(result.explicitCheckboxCount, 0);
 });
 
-test("64: ignores task-looking text in a TOML-like paragraph", () => {
+test("64: ignores task-looking text in TOML frontmatter", () => {
   const result = resultOf("+++\ntask = '[x] no list'\n+++\n");
   assert.equal(result.nodeCount, 0);
 });
@@ -532,7 +538,7 @@ test("85: renders the version", async () => {
   const output = capture();
   const exitCode = await run(["--version"], output.io, dependenciesFor(""));
   assert.equal(exitCode, 0);
-  assert.equal(output.stdout(), `${VERSION}\n`);
+    assert.equal(output.stdout(), `${packageVersion}\n`);
 });
 
 test("86: rejects a missing path", async () => {
@@ -708,11 +714,12 @@ test("108: tree output reports no statistical nodes", async () => {
 });
 
 test("109: parser adapter returns a library-independent document", () => {
-  const document: RootAst = parseMarkdown("- [x] task\n");
-  assert.equal(document.children[0]?.type, "list");
-  if (document.children[0]?.type === "list") {
-    assert.equal(document.children[0].items[0]?.children[0]?.type, "paragraph");
-    assert.equal(document.children[0].items[0]?.checked, true);
+  const document = parseMarkdown("- [x] task\n");
+  const body: RootAst = document.body;
+  assert.equal(body.children[0]?.type, "list");
+  if (body.children[0]?.type === "list") {
+    assert.equal(body.children[0].items[0]?.children[0]?.type, "paragraph");
+    assert.equal(body.children[0].items[0]?.checked, true);
   }
 });
 
@@ -761,7 +768,7 @@ test("110: the core can calculate a manually supplied document", () => {
 test("111: does not mutate the source text", () => {
   const source = "- [x] unchanged\n";
   const before = source;
-  calculateProgress(parseMarkdown(source));
+  calculateProgress(parseMarkdown(source).body);
   assert.equal(source, before);
 });
 
@@ -805,9 +812,13 @@ test("118: supports a .markdown file through the CLI adapter", async () => {
     const exitCode = await run([filePath], output.io, {
       lexer: defaultRemarkLexer,
       parser: new TypedAstParser(),
+      yamlValueParser: defaultYamlValueParser,
+      tomlValueParser: defaultTomlValueParser,
       fileReader: new NodeMarkdownFileReader(),
       terminalRenderer: new TerminalRenderer(),
       jsonRenderer: new JsonRenderer(),
+      warning: { warn: () => {} },
+      version: packageVersion,
     });
     assert.equal(exitCode, 0);
     assert.equal(output.stdout(), "100%\n");
@@ -847,7 +858,7 @@ test("121: emits typed lexer tokens before AST parsing", () => {
   assert.equal(pipeline.tokens[0]?.kind, TokenKind.frontmatter);
   assert.ok(pipeline.tokens.some((token) => token.kind === TokenKind.syntaxNode));
   assert.equal(pipeline.tokens.at(-1)?.kind, TokenKind.eof);
-  assert.equal(pipeline.ast.children[1]?.type, "list");
+  assert.equal(pipeline.ast.body.children[0]?.type, "list");
 });
 
 test("122: lexer tokens preserve source spans", () => {
@@ -859,9 +870,9 @@ test("122: lexer tokens preserve source spans", () => {
 
 test("123: AST contracts contain explicit list-item state", () => {
   const ast = parseMarkdown("- [X] Done\n");
-  assert.equal(ast.children[0]?.type, "list");
-  if (ast.children[0]?.type === "list") {
-    assert.equal(ast.children[0].items[0]?.checked, true);
+  assert.equal(ast.body.children[0]?.type, "list");
+  if (ast.body.children[0]?.type === "list") {
+    assert.equal(ast.body.children[0].items[0]?.checked, true);
   }
 });
 

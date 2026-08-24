@@ -1,10 +1,56 @@
 import type { RootAst } from "../ast/types.ts";
+import type { FrontmatterFormat } from "../ast/types.ts";
+import { buildFrontmatterRoots } from "../frontmatter/tree-builder.ts";
+import type { FrontmatterDocument } from "../frontmatter/types.ts";
 import { buildProgressRoots } from "./tree-builder.ts";
-import { summarizeProgress } from "./metrics.ts";
-import type { CheckboxNode, LayerStatistics, ProgressResult } from "./types.ts";
+import { combineProgressResults, summarizeProgress } from "./metrics.ts";
+import type {
+  CheckboxNode,
+  FrontmatterProgress,
+  LayerStatistics,
+  ProgressResult,
+} from "./types.ts";
 
 export function calculateProgress(ast: RootAst): ProgressResult {
   return summarizeProgress(buildProgressRoots(ast));
+}
+
+export function calculateFrontmatterProgress(
+  format: FrontmatterFormat,
+  document: FrontmatterDocument,
+): FrontmatterProgress {
+  return {
+    format,
+    checklists: document.checklists,
+    progress: summarizeProgress(buildFrontmatterRoots(document)),
+  };
+}
+
+export function calculateCombinedProgress(
+  markdown: ProgressResult,
+  frontmatter: readonly FrontmatterProgress[],
+  requestedFrontmatterWeight?: number,
+): ProgressResult {
+  const frontmatterResult = combineProgressResults(
+    frontmatter.map((section) => section.progress),
+  );
+  const totalRoots = markdown.rootCount + frontmatterResult.rootCount;
+  if (frontmatterResult.rootCount === 0) return markdown;
+  if (markdown.rootCount === 0) return frontmatterResult;
+
+  const combined = combineProgressResults([frontmatterResult, markdown]);
+  const frontmatterWeight = requestedFrontmatterWeight ??
+    frontmatterResult.rootCount / totalRoots;
+  const progress = requestedFrontmatterWeight === undefined
+    ? combined.progress
+    : frontmatterResult.progress * frontmatterWeight +
+      markdown.progress * (1 - frontmatterWeight);
+  return {
+    ...combined,
+    completedEquivalent: progress * totalRoots,
+    progress,
+    percentage: progress * 100,
+  };
 }
 
 export function collectLayerStatistics(

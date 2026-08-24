@@ -40,3 +40,18 @@ export function summarizeProgress(roots: CheckboxNode[]): ProgressResult {
     roots,
   };
 }
+
+function cloneNode(node: CheckboxNode): CheckboxNode {
+  return {
+    ...node,
+    children: node.children.map(cloneNode),
+  };
+}
+
+export function combineProgressResults(
+  results: readonly ProgressResult[],
+): ProgressResult {
+  return summarizeProgress(
+    results.flatMap((result) => result.roots.map(cloneNode)),
+  );
+}

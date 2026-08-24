@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/ci.yml"
       - "bin/**"
+      - "scripts/**"
       - "src/**"
       - "test/**"
       - "package.json"
@@ -15,6 +16,7 @@ on:
     paths:
       - ".github/workflows/ci.yml"
       - "bin/**"
+      - "scripts/**"
       - "src/**"
       - "test/**"
       - "package.json"
@@ -51,11 +53,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Audit dependencies
+      - name: Audit runtime dependencies
+        run: npm audit --omit=dev --audit-level=moderate
+
+      - name: Audit all dependencies
         run: npm audit --audit-level=moderate
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Typecheck maintenance files
+        run: npm run typecheck:maintenance
 
       - name: Run TDD and regression tests
         run: npm test

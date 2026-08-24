@@ -1,4 +1,4 @@
-import type { RootAst } from "../ast/types.ts";
+import type { DocumentAst } from "../ast/types.ts";
 
 export const TokenKind = {
   frontmatter: "frontmatter",
@@ -91,6 +91,7 @@ export type ScannedBlockNode =
 
 export interface ScannedFrontmatterNode {
   type: "frontmatter";
+  format: "yaml" | "toml";
   value: string;
 }
 
@@ -112,5 +113,5 @@ export interface SourceDocument {
   sourceText: string;
   sourcePath?: string;
   tokens: LexerToken[];
-  ast: RootAst;
+  ast: DocumentAst;
 }

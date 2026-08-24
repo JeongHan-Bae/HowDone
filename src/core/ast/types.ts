@@ -1,6 +1,14 @@
+export type FrontmatterFormat = "yaml" | "toml";
+
 export interface RootAst {
   type: "root";
   children: BlockAst[];
+}
+
+export interface DocumentAst {
+  type: "document";
+  frontmatter: FrontmatterAst[];
+  body: RootAst;
 }
 
 export interface ParagraphAst {
@@ -59,6 +67,7 @@ export interface UnsupportedAst {
 
 export interface FrontmatterAst {
   type: "frontmatter";
+  format: FrontmatterFormat;
   value: string;
 }
 
@@ -71,5 +80,4 @@ export type BlockAst =
   | TableAst
   | HtmlAst
   | ThematicBreakAst
-  | UnsupportedAst
-  | FrontmatterAst;
+  | UnsupportedAst;

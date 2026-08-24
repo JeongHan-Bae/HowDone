@@ -30,7 +30,6 @@
       "1",
       "--keep-trailing-zeros",
       "--max-label-clusters=4",
-      "--no-truncate",
       "--",
       "-daily tasks.md"
     ],
@@ -40,10 +39,11 @@
       "path": "-daily tasks.md",
       "mode": "json",
       "format": "decimal",
+      "formatExplicit": true,
       "precision": 1,
       "showTrailingZeros": true,
       "maxLabelClusters": 4,
-      "noTruncate": true
+      "noTruncate": false
     }
   },
   "validArguments": {
@@ -52,7 +52,10 @@
       "--precision=0",
       "--percentage",
       "--trim-trailing-zeros",
-      "--details"
+      "--details",
+      "--merge-frontmatter",
+      "--frontmatter-weight=0.5",
+      "--strict"
     ],
     "expected": {
       "help": false,
@@ -60,10 +63,15 @@
       "path": "tasks.md",
       "mode": "details",
       "format": "percentage",
+      "formatExplicit": true,
       "precision": 0,
       "showTrailingZeros": false,
       "maxLabelClusters": null,
-      "noTruncate": false
+      "noTruncate": false,
+      "mergeFrontmatter": true,
+      "frontmatterWeight": 0.5,
+      "frontmatterWeightInput": "0.5",
+      "strict": true
     }
   },
   "boundaryArguments": {
@@ -81,6 +89,7 @@
       "path": "tasks.md",
       "mode": "default",
       "format": "percentage",
+      "formatExplicit": true,
       "precision": 100,
       "showTrailingZeros": null,
       "maxLabelClusters": 9007199254740991,
@@ -155,6 +164,18 @@
     {
       "argv": ["--max-label-clusters", "9007199254740992"],
       "message": "positive safe integer"
+    },
+    {
+      "argv": ["--no-truncate", "--max-label-clusters", "5"],
+      "message": "mutually exclusive"
+    },
+    {
+      "argv": ["--frontmatter-weight"],
+      "message": "requires a value"
+    },
+    {
+      "argv": ["--frontmatter-weight="],
+      "message": "requires a value"
     },
     {
       "argv": ["--show-trailing-zeros", "--no-trailing-zeros"],

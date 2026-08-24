@@ -10,13 +10,16 @@ import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { test } from "node:test";
 import { NodeMarkdownFileReader } from "../../src/adapters/filesystem/node-file-reader.ts";
+import { defaultTomlValueParser } from "../../src/adapters/frontmatter/toml-value-parser.ts";
+import { defaultYamlValueParser } from "../../src/adapters/frontmatter/yaml-value-parser.ts";
 import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
 import { JsonRenderer } from "../../src/adapters/output/json-renderer.ts";
 import { TerminalRenderer } from "../../src/adapters/output/terminal-renderer.ts";
+import { packageVersion } from "../../src/adapters/runtime/node-package-version.ts";
 import { run } from "../../src/application/analyze.ts";
 import type { ParsedArguments } from "../../src/application/cli/args.ts";
 import { parseArguments } from "../../src/application/cli/args.ts";
-import { TypedAstParser } from "../../src/core/ast/parser.ts";
+import { TypedAstParser } from "../../src/core/index.ts";
 
 interface PathVariant {
   kind: "relative" | "relative-space" | "absolute" | "absolute-space";
@@ -30,10 +33,16 @@ interface ArgumentExpectation {
   path: string;
   mode: ParsedArguments["mode"];
   format: ParsedArguments["format"];
+  formatExplicit?: boolean;
   precision: number | null;
   showTrailingZeros: boolean | null;
   maxLabelClusters: number | null;
   noTruncate: boolean;
+  mergeFrontmatter?: boolean;
+  frontmatterWeight?: number | null;
+  frontmatterWeightInput?: string | null;
+  silent?: boolean;
+  strict?: boolean;
 }
 
 interface ArgumentFixture {
@@ -56,7 +65,7 @@ interface CliPathFixtures {
 }
 
 const fixture = JSON.parse(
-  readFileSync(new URL("../fixtures/cli-paths.json", import.meta.url), "utf8"),
+  readFileSync(new URL("./fixtures/cli-paths.json", import.meta.url), "utf8"),
 ) as CliPathFixtures;
 
 interface CapturedOutput {
@@ -101,6 +110,10 @@ function dependencies(baseDirectory: string) {
     fileReader: new NodeMarkdownFileReader(baseDirectory),
     terminalRenderer: new TerminalRenderer(),
     jsonRenderer: new JsonRenderer(),
+    yamlValueParser: defaultYamlValueParser,
+    tomlValueParser: defaultTomlValueParser,
+    warning: { warn: () => {} },
+    version: packageVersion,
   };
 }
 
@@ -111,10 +124,18 @@ function expectedArguments(value: ArgumentExpectation): ParsedArguments {
     path: value.path,
     mode: value.mode,
     format: value.format,
+    formatExplicit: value.formatExplicit ?? false,
     precision: value.precision ?? undefined,
     showTrailingZeros: value.showTrailingZeros ?? undefined,
     maxLabelClusters: value.maxLabelClusters ?? undefined,
     noTruncate: value.noTruncate,
+    mergeFrontmatter: value.mergeFrontmatter ?? false,
+    frontmatterWeight: value.frontmatterWeight ?? undefined,
+    ...(value.frontmatterWeightInput === undefined
+      ? {}
+      : { frontmatterWeightInput: value.frontmatterWeightInput ?? undefined }),
+    silent: value.silent ?? false,
+    strict: value.strict ?? false,
   };
 }
 
@@ -216,6 +237,26 @@ test("TDD rejects argument boundary values without falling through", () => {
       invalid.argv.join(" "),
     );
   }
+});
+
+test("TDD defers frontmatter weight legality to the merge operation", () => {
+  const illegal = parseArguments([
+    "--merge-frontmatter",
+    "--frontmatter-weight",
+    "0",
+  ]);
+  assert.equal(illegal.frontmatterWeight, undefined);
+  assert.equal(illegal.frontmatterWeightInput, "0");
+
+  const validWithoutMerge = parseArguments([
+    "--frontmatter-weight",
+    "0.5",
+  ]);
+  assert.equal(validWithoutMerge.frontmatterWeight, 0.5);
+  assert.equal(validWithoutMerge.frontmatterWeightInput, "0.5");
+
+  const silent = parseArguments(["--silent", "-s", "tasks.md"]);
+  assert.equal(silent.silent, true);
 });
 
 test("TDD composes a native path with every display option through the app port", async () => {

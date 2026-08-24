@@ -1,13 +1,13 @@
-import type { TerminalOutputPort, GraphemeSegmenter } from "../../core/ports.ts";
 import type {
   CheckboxNode,
+  GraphemeSegmenter,
+  ProgressReport,
   ProgressResult,
-} from "../../core/progress/types.ts";
-import { collectLayerStatistics } from "../../core/progress/analyzer.ts";
-import type {
   ProgressFormat,
   ResolvedDisplayOptions,
-} from "../../core/config/types.ts";
+  TerminalOutputPort,
+} from "../../core/index.ts";
+import { collectLayerStatistics } from "../../core/index.ts";
 import { defaultGraphemeSegmenter } from "../unicode/intl-grapheme-segmenter.ts";
 import {
   countGraphemeClusters,
@@ -178,12 +178,50 @@ export class TerminalRenderer implements TerminalOutputPort {
 
   render(
     mode: "default" | "tree" | "details",
-    result: ProgressResult,
+    input: ProgressReport | ProgressResult,
     options: ResolvedDisplayOptions,
   ): string {
-    if (mode === "tree") return renderTree(result, options, this.segmenter);
-    if (mode === "details") return renderDetails(result, options, this.segmenter);
-    return renderDefault(result, options);
+    const report: ProgressReport = "source" in input
+      ? input
+      : {
+          source: { path: "" },
+          markdown: input,
+          frontmatter: [],
+          presentation: "separate",
+          progress: input,
+        };
+    const markdown = report.markdown ?? report.progress;
+    const frontmatter = report.frontmatter ?? [];
+    const presentation = report.presentation ?? "separate";
+    const markdownPresent = report.markdownPresent ?? report.markdown !== undefined;
+    const frontmatterPresent = report.frontmatterPresent ?? frontmatter.length > 0;
+    const nestedPresentation =
+      (markdownPresent && frontmatterPresent) || frontmatter.length > 1;
+    if (
+      mode === "default" ||
+      presentation === "merged" ||
+      !nestedPresentation
+    ) {
+      if (mode === "tree") return renderTree(report.progress, options, this.segmenter);
+      if (mode === "details") return renderDetails(report.progress, options, this.segmenter);
+      return renderDefault(report.progress, options);
+    }
+
+    const sections = frontmatter.map((section) => ({
+      title: `Frontmatter (${section.format.toUpperCase()})`,
+      result: section.progress,
+    }));
+    if (markdownPresent) {
+      sections.push({ title: "Markdown", result: markdown });
+    }
+
+    const rendered = sections.map(({ title, result }) => {
+      const body = mode === "tree"
+        ? renderTree(result, options, this.segmenter)
+        : renderDetails(result, options, this.segmenter);
+      return `${title}:\n\n${body.trimEnd()}`;
+    });
+    return `${rendered.join("\n\n")}\n`;
   }
 }
 

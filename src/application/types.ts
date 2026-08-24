@@ -3,8 +3,10 @@ import type {
   MarkdownAstParser,
   MarkdownFileReader,
   MarkdownLexer,
+  FrontmatterValueParser,
   TerminalOutputPort,
-} from "../core/ports.ts";
+  WarningPort,
+} from "../core/index.ts";
 
 export interface CliIO {
   stdout: { write(chunk: string): void };
@@ -14,7 +16,11 @@ export interface CliIO {
 export interface CliDependencies {
   lexer: MarkdownLexer;
   parser: MarkdownAstParser;
+  yamlValueParser: FrontmatterValueParser;
+  tomlValueParser: FrontmatterValueParser;
   fileReader: MarkdownFileReader;
   terminalRenderer: TerminalOutputPort;
   jsonRenderer: JsonOutputPort;
+  warning: WarningPort;
+  version: string;
 }

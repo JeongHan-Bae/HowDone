@@ -1,4 +1,9 @@
 import "./pipeline.test.ts";
 import "./pipeline-features.test.ts";
+import "./markdown-tree-contracts.test.ts";
+import "./frontmatter-contracts.test.ts";
+import "./frontmatter-layouts.test.ts";
+import "./output-contracts.test.ts";
+import "./help.test.ts";
 import "./cli-paths.test.ts";
 import "./nested-contracts.test.ts";

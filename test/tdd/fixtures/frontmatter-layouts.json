@@ -1,0 +1,225 @@
+{
+  "cases": [
+    {
+      "id": "empty-document",
+      "source": "",
+      "expectedTokenKinds": ["eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": [],
+      "expectedValues": [],
+      "expectedRootLabels": [],
+      "expectedBodyMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "body-only",
+      "source": "- [x] body\n",
+      "expectedTokenKinds": ["syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": [],
+      "expectedValues": [],
+      "expectedRootLabels": ["body"],
+      "expectedBodyMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }
+    },
+    {
+      "id": "yaml-only",
+      "source": "---\ntitle: YAML\n---\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml"],
+      "expectedValues": ["title: YAML"],
+      "expectedRootLabels": [],
+      "expectedBodyMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "toml-only",
+      "source": "+++\ntitle = \"TOML\"\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml"],
+      "expectedValues": ["title = \"TOML\""],
+      "expectedRootLabels": [],
+      "expectedBodyMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "yaml-with-body",
+      "source": "---\ntitle: YAML\n---\n\n- [x] body\n",
+      "expectedTokenKinds": ["frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["yaml"],
+      "expectedValues": ["title: YAML"],
+      "expectedRootLabels": ["body"],
+      "expectedBodyMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }
+    },
+    {
+      "id": "toml-with-body",
+      "source": "+++\ntitle = \"TOML\"\n+++\n\n- [ ] body\n",
+      "expectedTokenKinds": ["frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["toml"],
+      "expectedValues": ["title = \"TOML\""],
+      "expectedRootLabels": ["body"],
+      "expectedBodyMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "yaml-yaml-frontmatter-only",
+      "source": "---\ntitle: First\n---\n\n---\ntitle: Second\n---\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml", "yaml"],
+      "expectedValues": ["title: First", "title: Second"],
+      "expectedRootLabels": [],
+      "expectedBodyMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "yaml-toml-frontmatter-only",
+      "source": "---\ntitle: YAML\n---\n\n+++\ntitle = \"TOML\"\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["yaml", "toml"],
+      "expectedValues": ["title: YAML", "title = \"TOML\""],
+      "expectedRootLabels": [],
+      "expectedBodyMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "toml-yaml-frontmatter-only",
+      "source": "+++\ntitle = \"TOML\"\n+++\n\n---\ntitle: YAML\n---\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml", "yaml"],
+      "expectedValues": ["title = \"TOML\"", "title: YAML"],
+      "expectedRootLabels": [],
+      "expectedBodyMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "toml-toml-frontmatter-only",
+      "source": "+++\ntitle = \"First\"\n+++\n\n+++\ntitle = \"Second\"\n+++\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "eof"],
+      "expectedAstTypes": [],
+      "expectedFormats": ["toml", "toml"],
+      "expectedValues": ["title = \"First\"", "title = \"Second\""],
+      "expectedRootLabels": [],
+      "expectedBodyMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "yaml-toml-yaml-with-body",
+      "source": "---\ntitle: YAML one\n---\n\n+++\ntitle = \"TOML\"\n+++\n\n---\ntitle: YAML two\n---\n\n- [x] body\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["yaml", "toml", "yaml"],
+      "expectedValues": ["title: YAML one", "title = \"TOML\"", "title: YAML two"],
+      "expectedRootLabels": ["body"],
+      "expectedBodyMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }
+    },
+    {
+      "id": "toml-yaml-toml-with-body",
+      "source": "+++\ntitle = \"TOML one\"\n+++\n\n---\ntitle: YAML\n---\n\n+++\ntitle = \"TOML two\"\n+++\n\n- [ ] body\n",
+      "expectedTokenKinds": ["frontmatter", "frontmatter", "frontmatter", "syntax-node", "eof"],
+      "expectedAstTypes": ["list"],
+      "expectedFormats": ["toml", "yaml", "toml"],
+      "expectedValues": ["title = \"TOML one\"", "title: YAML", "title = \"TOML two\""],
+      "expectedRootLabels": ["body"],
+      "expectedBodyMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "frontmatter-after-body-is-invalid",
+      "source": "- [x] body\n\n---\ntitle: Late\n---\n",
+      "expectedLexerError": "Frontmatter must appear before Markdown body content."
+    }
+  ]
+}

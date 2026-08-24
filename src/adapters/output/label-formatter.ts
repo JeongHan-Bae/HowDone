@@ -1,9 +1,11 @@
-import type { GraphemeSegmenter } from "../../core/ports.ts";
-import type { ResolvedDisplayOptions } from "../../core/config/types.ts";
 import {
   DEFAULT_ELLIPSIS,
   DEFAULT_MAX_LABEL_CLUSTERS,
-} from "../../core/config/types.ts";
+} from "../../core/index.ts";
+import type {
+  GraphemeSegmenter,
+  ResolvedDisplayOptions,
+} from "../../core/index.ts";
 import { defaultGraphemeSegmenter } from "../unicode/intl-grapheme-segmenter.ts";
 
 export function truncateLabel(

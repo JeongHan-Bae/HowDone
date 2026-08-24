@@ -1,0 +1,40 @@
+{
+  "cases": [
+    {
+      "id": "body-only-flat",
+      "source": "- [x] body\n",
+      "expectedKeys": ["source", "progress"],
+      "expectedProgress": 1,
+      "expectedPercentage": 100,
+      "expectedTreeSections": []
+    },
+    {
+      "id": "frontmatter-only-flat",
+      "source": "---\nchecks:\n  build: true\n  test: false\n---\n",
+      "expectedKeys": ["source", "progress"],
+      "expectedProgress": 0.5,
+      "expectedPercentage": 50,
+      "expectedTreeSections": []
+    },
+    {
+      "id": "body-and-frontmatter-nested",
+      "source": "---\nchecks:\n  build: true\n  test: false\n---\n\n- [ ] body\n",
+      "expectedKeys": ["source", "progress", "presentation", "frontmatter", "markdown"],
+      "expectedProgress": 0.25,
+      "expectedPercentage": 25,
+      "expectedMarkdownProgress": 0,
+      "expectedFrontmatterProgress": 0.5,
+      "expectedFrontmatterFormats": ["yaml"],
+      "expectedTreeSections": ["Frontmatter (YAML):", "Markdown:"]
+    },
+    {
+      "id": "multiple-frontmatter-nested",
+      "source": "---\nchecks:\n  build: true\n---\n\n+++\n[checks]\npublish = false\n+++\n",
+      "expectedKeys": ["source", "progress", "presentation", "frontmatter"],
+      "expectedProgress": 0.5,
+      "expectedPercentage": 50,
+      "expectedFrontmatterFormats": ["yaml", "toml"],
+      "expectedTreeSections": ["Frontmatter (YAML):", "Frontmatter (TOML):"]
+    }
+  ]
+}
