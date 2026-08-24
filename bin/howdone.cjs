@@ -19,7 +19,7 @@ function parseNodeVersion() {
 }
 
 function getTsxEntryPoint() {
-  return require.resolve("tsx");
+  return pathToFileURL(require.resolve("tsx")).href;
 }
 
 const nodeVersion = parseNodeVersion();
