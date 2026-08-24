@@ -1,0 +1,172 @@
+{
+  "markdown": "- ParentLong\n  - [x] ChildLong\n  - [ ] pending\n",
+  "pathVariants": [
+    {
+      "kind": "relative",
+      "segments": ["fixtures", "relative.md"],
+      "absolute": false
+    },
+    {
+      "kind": "relative-space",
+      "segments": ["fixtures", "space tasks", "relative.markdown"],
+      "absolute": false
+    },
+    {
+      "kind": "absolute",
+      "segments": ["absolute.md"],
+      "absolute": true
+    },
+    {
+      "kind": "absolute-space",
+      "segments": ["absolute space", "absolute.markdown"],
+      "absolute": true
+    }
+  ],
+  "mixedArguments": {
+    "argv": [
+      "--json",
+      "--format=decimal",
+      "--precision",
+      "1",
+      "--keep-trailing-zeros",
+      "--max-label-clusters=4",
+      "--no-truncate",
+      "--",
+      "-daily tasks.md"
+    ],
+    "expected": {
+      "help": false,
+      "version": false,
+      "path": "-daily tasks.md",
+      "mode": "json",
+      "format": "decimal",
+      "precision": 1,
+      "showTrailingZeros": true,
+      "maxLabelClusters": 4,
+      "noTruncate": true
+    }
+  },
+  "validArguments": {
+    "argv": [
+      "tasks.md",
+      "--precision=0",
+      "--percentage",
+      "--trim-trailing-zeros",
+      "--details"
+    ],
+    "expected": {
+      "help": false,
+      "version": false,
+      "path": "tasks.md",
+      "mode": "details",
+      "format": "percentage",
+      "precision": 0,
+      "showTrailingZeros": false,
+      "maxLabelClusters": null,
+      "noTruncate": false
+    }
+  },
+  "boundaryArguments": {
+    "argv": [
+      "tasks.md",
+      "--format=percentage",
+      "--precision",
+      "100",
+      "--max-label-clusters",
+      "9007199254740991"
+    ],
+    "expected": {
+      "help": false,
+      "version": false,
+      "path": "tasks.md",
+      "mode": "default",
+      "format": "percentage",
+      "precision": 100,
+      "showTrailingZeros": null,
+      "maxLabelClusters": 9007199254740991,
+      "noTruncate": false
+    }
+  },
+  "invalidArguments": [
+    {
+      "argv": ["--format"],
+      "message": "requires decimal or percentage"
+    },
+    {
+      "argv": ["--format="],
+      "message": "requires decimal or percentage"
+    },
+    {
+      "argv": ["--format", "binary"],
+      "message": "must be decimal or percentage"
+    },
+    {
+      "argv": ["--format", "--json"],
+      "message": "must be decimal or percentage"
+    },
+    {
+      "argv": ["--precision"],
+      "message": "requires a value"
+    },
+    {
+      "argv": ["--precision="],
+      "message": "requires a value"
+    },
+    {
+      "argv": ["--precision", "--tree"],
+      "message": "non-negative integer"
+    },
+    {
+      "argv": ["--precision", "-1"],
+      "message": "non-negative integer"
+    },
+    {
+      "argv": ["--precision", "101"],
+      "message": "0 through 100"
+    },
+    {
+      "argv": ["--precision", "9007199254740992"],
+      "message": "0 through 100"
+    },
+    {
+      "argv": ["--format", "decimal", "--precision", "0"],
+      "message": "at least 1"
+    },
+    {
+      "argv": ["--max-label-clusters"],
+      "message": "requires a value"
+    },
+    {
+      "argv": ["--max-label-clusters="],
+      "message": "requires a value"
+    },
+    {
+      "argv": ["--max-label-clusters", "--tree"],
+      "message": "positive integer"
+    },
+    {
+      "argv": ["--max-label-clusters", "0"],
+      "message": "positive"
+    },
+    {
+      "argv": ["--max-label-clusters", "1.5"],
+      "message": "positive"
+    },
+    {
+      "argv": ["--max-label-clusters", "9007199254740992"],
+      "message": "positive safe integer"
+    },
+    {
+      "argv": ["--show-trailing-zeros", "--no-trailing-zeros"],
+      "message": "mutually exclusive"
+    },
+    {
+      "argv": ["--tree", "--json"],
+      "message": "mutually exclusive"
+    },
+    {
+      "argv": ["--", "first.md", "second.md"],
+      "message": "Only one"
+    }
+  ]
+}

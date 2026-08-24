@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { JsonRenderer } from "../../src/adapters/output/json-renderer.ts";
 import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
@@ -14,18 +15,9 @@ import {
 import { calculateProgress } from "../../src/core/progress/analyzer.ts";
 import type { CheckboxNode } from "../../src/core/progress/types.ts";
 
-const source = `---
-title: Pipeline fixture
----
-
-# Ignored heading
-
-- A
-  - B
-    - [x] C1
-    - [ ] C2
-  - [x] D
-`;
+const source = (JSON.parse(
+  readFileSync(new URL("../fixtures/markdown-samples.json", import.meta.url), "utf8"),
+) as { pipelineSource: string }).pipelineSource;
 
 test("TDD source -> lexer emits frontmatter, syntax, and EOF tokens", () => {
   const tokens = defaultRemarkLexer.lex(source);

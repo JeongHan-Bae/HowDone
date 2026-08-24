@@ -1,0 +1,119 @@
+{
+  "source": "- Release\n  - Phase\n    - [x] Completed child\n    - [ ] Pending child\n  - [x] Direct child\n",
+  "expectedRootsBeforeMetrics": [
+    {
+      "label": "Release",
+      "checked": null,
+      "implicit": true,
+      "progress": 0,
+      "depth": 0,
+      "children": [
+        {
+          "label": "Phase",
+          "checked": null,
+          "implicit": true,
+          "progress": 0,
+          "depth": 1,
+          "children": [
+            {
+              "label": "Completed child",
+              "checked": true,
+              "implicit": false,
+              "progress": 0,
+              "depth": 2,
+              "children": []
+            },
+            {
+              "label": "Pending child",
+              "checked": false,
+              "implicit": false,
+              "progress": 0,
+              "depth": 2,
+              "children": []
+            }
+          ]
+        },
+        {
+          "label": "Direct child",
+          "checked": true,
+          "implicit": false,
+          "progress": 0,
+          "depth": 1,
+          "children": []
+        }
+      ]
+    }
+  ],
+  "expectedMetrics": {
+    "rootCount": 1,
+    "explicitCheckboxCount": 3,
+    "implicitNodeCount": 2,
+    "nodeCount": 5,
+    "completedEquivalent": 0.75,
+    "progress": 0.75,
+    "percentage": 75,
+    "roots": [
+      {
+        "label": "Release",
+        "checked": null,
+        "implicit": true,
+        "progress": 0.75,
+        "depth": 0,
+        "children": [
+          {
+            "label": "Phase",
+            "checked": null,
+            "implicit": true,
+            "progress": 0.5,
+            "depth": 1,
+            "children": [
+              {
+                "label": "Completed child",
+                "checked": true,
+                "implicit": false,
+                "progress": 1,
+                "depth": 2,
+                "children": []
+              },
+              {
+                "label": "Pending child",
+                "checked": false,
+                "implicit": false,
+                "progress": 0,
+                "depth": 2,
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "Direct child",
+            "checked": true,
+            "implicit": false,
+            "progress": 1,
+            "depth": 1,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "jsonOutput": {
+    "sourcePath": "fixtures/tasks.md",
+    "options": {
+      "maxLabelClusters": 3,
+      "ellipsis": "...",
+      "truncate": true,
+      "progressFormat": "percentage",
+      "precision": 2,
+      "showTrailingZeros": false
+    },
+    "expected": {
+      "progress": 0.75,
+      "percentage": 75,
+      "rootLabel": "Rel...",
+      "branchLabel": "Pha...",
+      "firstLeafLabel": "Com...",
+      "secondLeafLabel": "Pen..."
+    }
+  }
+}

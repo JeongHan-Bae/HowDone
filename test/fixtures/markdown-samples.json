@@ -1,0 +1,4 @@
+{
+  "fixedSample": "- A\n  - B\n    - [x] C1\n    - [ ] C2\n  - [x] D\n",
+  "pipelineSource": "---\ntitle: Pipeline fixture\n---\n\n# Ignored heading\n\n- A\n  - B\n    - [x] C1\n    - [ ] C2\n  - [x] D\n"
+}

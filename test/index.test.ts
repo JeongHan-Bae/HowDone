@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { test } from "node:test";
 import { parseArguments } from "../src/application/cli/args.ts";
 import { resolveDisplayOptions } from "../src/core/config/options.ts";
@@ -34,12 +35,9 @@ import {
 } from "../src/adapters/output/terminal-renderer.ts";
 import type { RootAst } from "../src/core/ast/types.ts";
 
-const fixedSample = `- A
-  - B
-    - [x] C1
-    - [ ] C2
-  - [x] D
-`;
+const fixedSample = (JSON.parse(
+  readFileSync(new URL("./fixtures/markdown-samples.json", import.meta.url), "utf8"),
+) as { fixedSample: string }).fixedSample;
 
 function resultOf(markdown: string) {
   return calculateProgress(parseMarkdown(markdown));
@@ -429,12 +427,18 @@ test("66: truncates ASCII labels over the limit", () => {
   assert.equal(truncateLabel("12345678901", 10), "1234567890...");
 });
 
-test("67: counts Chinese characters as graphemes", () => {
-  assert.equal(truncateLabel("这是一个非常长的任务名称", 10), "这是一个非常长的任务...");
+test("67: counts escaped Unicode characters as graphemes", () => {
+  assert.equal(
+    truncateLabel("\u8fd9\u662f\u4e00\u4e2a\u975e\u5e38\u957f\u7684\u4efb\u52a1\u540d\u79f0", 10),
+    "\u8fd9\u662f\u4e00\u4e2a\u975e\u5e38\u957f\u7684\u4efb\u52a1...",
+  );
 });
 
 test("68: truncates mixed Chinese and English labels", () => {
-  assert.equal(truncateLabel("任务Task名称", 6), "任务Task...");
+  assert.equal(
+    truncateLabel("\u4efb\u52a1Task\u540d\u79f0", 6),
+    "\u4efb\u52a1Task...",
+  );
 });
 
 test("69: keeps emoji clusters intact", () => {
@@ -579,7 +583,8 @@ test("92: accepts a path after --", () => {
 });
 
 test("93: keeps a platform path string as a path argument", () => {
-  assert.equal(parseArguments(["C:\\Docs\\任务.md"]).path, "C:\\Docs\\任务.md");
+  const platformPath = resolve(process.cwd(), "Docs", "\u4efb\u52a1.md");
+  assert.equal(parseArguments([platformPath]).path, platformPath);
 });
 
 test("94: resolves a relative Markdown file through the Node adapter", async () => {
@@ -595,7 +600,7 @@ test("94: resolves a relative Markdown file through the Node adapter", async () 
 
 test("95: reads an absolute Unicode path with spaces", async () => {
   const directory = await temporaryDirectory();
-  const filePath = join(directory, "我的 tasks.md");
+  const filePath = join(directory, "\u6211\u7684 tasks.md");
   try {
     await writeFile(filePath, "- [x] done\n", "utf8");
     const text = await new NodeMarkdownFileReader().read(filePath);
@@ -813,11 +818,11 @@ test("118: supports a .markdown file through the CLI adapter", async () => {
 
 test("119: reads UTF-8 Chinese content", async () => {
   const directory = await temporaryDirectory();
-  const filePath = join(directory, "任务.md");
+  const filePath = join(directory, "\u4efb\u52a1.md");
   try {
-    await writeFile(filePath, "- [x] 已完成\n", "utf8");
+    await writeFile(filePath, "- [x] \u5df2\u5b8c\u6210\n", "utf8");
     const source = await readFile(filePath, "utf8");
-    assert.equal(resultOf(source).roots[0]?.label, "已完成");
+    assert.equal(resultOf(source).roots[0]?.label, "\u5df2\u5b8c\u6210");
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
