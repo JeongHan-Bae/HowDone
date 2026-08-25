@@ -1,6 +1,6 @@
 {
   "name": "howdone-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "HowDone's primary CLI product and howdone command executor.",
   "type": "module",
   "bin": {
@@ -30,7 +30,7 @@
     "node": ">=18.18"
   },
   "dependencies": {
-    "howdone": "0.1.1",
+    "howdone": "0.1.2",
     "mdast-util-to-string": "^4.0.0",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.0",

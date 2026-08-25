@@ -1,4 +1,4 @@
-import type { RuntimeDependency } from "../../core/index.ts";
+import type { RuntimeDependency } from "howdone";
 
 export interface HelpOption {
   command: string;

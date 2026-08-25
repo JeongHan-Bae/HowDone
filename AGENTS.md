@@ -250,7 +250,10 @@ the ordinary pre-commit harness.
   `docs/architecture.md`, `docs/development.md`, `AGENTS.md`, `test/README.md`,
   `test/AGENTS.md`, and `CONTRIBUTING.md` are also not subject to the package
   README link rule.
-- `scripts/update-version-badge.mjs` generates `version_badge.json`.
+- `scripts/update-version-badge.mjs` generates `version_badge.json` from the
+  Core version and `version_badge_cli.json` from the CLI version. These two
+  generated badges are release metadata, not application or package code; the
+  independent badge workflow owns their commits.
   `scripts/check-package-contents.ts`, `scripts/check-platform-neutral.ts`,
   `scripts/validate-release.mjs`, and `scripts/run-compiled-tests.mjs` are
   maintenance scripts; none is published as application runtime code.

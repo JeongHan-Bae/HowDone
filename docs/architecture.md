@@ -70,6 +70,7 @@ product and command executor. The CLI's command-line names are `howdone` and
 │   │   └── types.ts
 │   ├── boot/
 │   │   ├── cli-main.ts
+│   │   ├── entrypoint.ts
 │   │   ├── main.ts
 │   │   └── pipeline.ts
 │   └── core/
@@ -108,7 +109,8 @@ product and command executor. The CLI's command-line names are `howdone` and
 ├── tsconfig.cli-build.json
 ├── tsconfig.json
 ├── tsconfig.test-build.json
-└── version_badge.json
+├── version_badge.json
+└── version_badge_cli.json
 ```
 
 ## Pipeline
@@ -250,7 +252,8 @@ root; it imports the public core/application package and supplies the same
 adapters, including the package metadata reader and process-warning sink. The
 package metadata adapter reads the CLI package's own version and runtime
 dependency metadata from `packages/cli/package.json`; the repository badge
-script reads the core version and is not a runtime dependency. The published
+script reads the Core and CLI package versions and is not a runtime dependency.
+The published
 `howdone/application` entry exposes the port boundary for consumers that
 provide their own implementations. The `howdone` package contains no adapter
 or CLI bin, while both CLI bin aliases start the compiled `dist/boot/cli-main.js`.

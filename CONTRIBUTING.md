@@ -256,12 +256,13 @@ one by one:
 
 ```bash
 git add -A
-git restore --staged -- version_badge.json
+git restore --staged -- version_badge.json version_badge_cli.json
 ```
 
-The second command removes only the generated badge from the index while
-leaving its working-tree copy intact. `version_badge.json` is updated by the
-independent badge workflow and must not be included in an ordinary change.
+The second command removes only the two generated badges from the index while
+leaving their working-tree copies intact. `version_badge.json` and
+`version_badge_cli.json` are updated by the independent badge workflow and must
+not be included in an ordinary code change.
 After staging, inspect `git status --short`: every other staged path must be
 intentional. If an unexpected untracked artifact is not part of the project,
 add a narrow rule for that artifact to `.gitignore`, then repeat the staging
@@ -276,9 +277,10 @@ changes:
 - `README.md`: installation, usage, and user-visible behavior;
 - `docs/syntax.md`: standalone user-facing Markdown and YAML/TOML syntax;
 - `LICENSE`: the repository's Apache License 2.0 terms and copyright notice;
-- `scripts/update-version-badge.mjs`: generates the core package version shown by
-  the README badge in `version_badge.json`; it is not a runtime dependency
-  and is not included in the published package;
+- `scripts/update-version-badge.mjs`: generates the Core and CLI package
+  versions shown by the README badges in `version_badge.json` and
+  `version_badge_cli.json`; it is not a runtime dependency and is not included
+  in the published package;
 - `scripts/check-package-contents.ts`: verifies the published file allowlist;
   it is a typed repository maintenance script and is not included in the
   published package;

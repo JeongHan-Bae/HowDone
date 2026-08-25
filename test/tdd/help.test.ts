@@ -46,7 +46,7 @@ test("TDD help content keeps usage, options, and sections structured", () => {
   assert.deepEqual(format?.argument, "decimal|percentage");
   assert.deepEqual(percentage?.argument, "");
   assert.ok(HELP_SECTIONS.options.every((option) =>
-    option.description.every((line) => typeof line === "string")
+    option.description.every((line: unknown) => typeof line === "string")
   ));
 
   const helpText = renderHelpText(HELP_SECTIONS, packageRuntimeDependencies);

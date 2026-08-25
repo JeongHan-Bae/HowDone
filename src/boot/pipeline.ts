@@ -1,5 +1,5 @@
-import { runMarkdownPipeline, TypedAstParser } from "../core/index.ts";
-import type { DocumentAst } from "../core/index.ts";
+import { runMarkdownPipeline, TypedAstParser } from "howdone";
+import type { DocumentAst } from "howdone";
 import { defaultRemarkLexer } from "../adapters/markdown/remark-lexer.ts";
 
 const defaultAstParser = new TypedAstParser();

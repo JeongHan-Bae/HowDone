@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
-import { calculateProgress, TypedAstParser } from "../../src/core/index.ts";
-import type { CheckboxNode, ProgressResult } from "../../src/core/index.ts";
+import { calculateProgress, TypedAstParser } from "howdone";
+import type { CheckboxNode, ProgressResult } from "howdone";
 
 interface MarkdownTreeCase {
   id: string;

@@ -1,4 +1,4 @@
-import type { CheckboxNode } from "../progress/types.ts";
+import type { CheckboxNode } from "howdone";
 import type {
   FrontmatterChecklist,
   FrontmatterChecklistEntry,

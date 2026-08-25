@@ -1,13 +1,11 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
 import {
-  calculateProgress,
-  TokenKind,
-  TypedAstParser,
-} from "../../src/core/index.ts";
-import type { ProgressResult } from "../../src/core/index.ts";
+  assertExpectedLexerError,
+  parseAndAssertFrontmatterSyntax,
+} from "./frontmatter-assertions.ts";
+import type { ProgressResult, TokenKind } from "howdone";
 
 type ProgressMetrics = Pick<
   ProgressResult,
@@ -54,26 +52,14 @@ function metrics(result: ProgressResult): ProgressMetrics {
 
 for (const fixture of fixtures.cases) {
   test(`TDD frontmatter layout ${fixture.id} matches the syntax contract`, () => {
-    if (fixture.expectedLexerError !== undefined) {
-      assert.throws(
-        () => defaultRemarkLexer.lex(fixture.source),
-        (error: unknown) =>
-          error instanceof Error && error.message.includes(fixture.expectedLexerError!),
-      );
+    if (assertExpectedLexerError(fixture.source, fixture.expectedLexerError)) {
       return;
     }
 
-    const tokens = defaultRemarkLexer.lex(fixture.source);
-    const document = new TypedAstParser().parse(tokens);
-    const result = calculateProgress(document.body);
-
-    assert.deepEqual(tokens.map((token) => token.kind), fixture.expectedTokenKinds);
-    assert.deepEqual(
-      document.body.children.map((node) => node.type),
+    const { document, result } = parseAndAssertFrontmatterSyntax(
+      fixture.source,
+      fixture.expectedTokenKinds,
       fixture.expectedAstTypes,
-    );
-    assert.deepEqual(
-      document.frontmatter.map((section) => section.format),
       fixture.expectedFormats,
     );
     assert.deepEqual(

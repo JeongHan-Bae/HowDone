@@ -82,6 +82,7 @@ test/
 │   │   ├── output-contracts.json
 │   │   └── pipeline-features.json
 │   ├── cli-paths.test.ts
+│   ├── frontmatter-assertions.ts
 │   ├── frontmatter-contracts.test.ts
 │   ├── frontmatter-layouts.test.ts
 │   ├── help.test.ts

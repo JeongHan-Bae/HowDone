@@ -7,7 +7,7 @@ import type {
   RuntimeDependency,
   TerminalOutputPort,
   WarningPort,
-} from "../core/index.ts";
+} from "howdone";
 
 export interface CliIO {
   stdout: { write(chunk: string): void };

@@ -19,6 +19,11 @@
     alt="Version"
     width="196"
   >
+  <img
+    src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/version_badge_cli.json"
+    alt="CLI Version"
+    width="196"
+  >
 </p>
 
 <div align="center">
@@ -62,8 +67,7 @@ npx howdone task.md
 
 Run this in the project where you want to use the published CLI:
 
-The remote commands below apply to paired releases beginning with `0.1.2`;
-the repository's `0.1.1` is not that paired remote release.
+The remote Core and CLI versions are paired exactly beginning with `0.1.2`.
 
 ```bash
 npm install howdone-cli

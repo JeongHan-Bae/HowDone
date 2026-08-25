@@ -15,7 +15,7 @@ Use the smallest boundary that proves the change:
    changes.
 5. Update `README.md`, `docs/syntax.md`, `docs/api.md`, `docs/architecture.md`,
    `AGENTS.md`, `CONTRIBUTING.md`, `test/AGENTS.md`, `LICENSE`, or the generated
-   version badge when the corresponding
+   version badges when the corresponding
    user/API/architecture/development/metadata contract changes.
 6. Run the full verification gate.
 
@@ -44,9 +44,10 @@ npm outdated --include=dev
 npm run verify:precommit
 ```
 
-`npm run badge:version` is a separate release-maintenance command. Run it only
-when `packages/core/package.json` changes the version shown by the README badge; it is not an
-installation or verification step.
+`npm run badge:version` is a separate release-maintenance command. It reads
+both package manifests and writes the Core badge to `version_badge.json` and
+the CLI badge to `version_badge_cli.json`; it is not an installation or
+verification step.
 
 `npm run verify:precommit` is the mandatory final harness before a commit. It
 re-runs the source and compiled application gates, checks the typed CommonJS/ES
@@ -118,14 +119,22 @@ calls that same workflow first; its
 `publish` job has `needs: ci`, so npm publishing cannot run when any CI check
 fails.
 
-The README status badge follows the `main` branch CI workflow. Its version
-badge is generated from `packages/core/package.json` by `npm run badge:version`, which
-updates `version_badge.json`. The script is repository maintenance only; the
-runtime package-version adapter reads the published package's own metadata.
+The README status badge follows the `main` branch CI workflow. Its two version
+badges are generated from `packages/core/package.json` and
+`packages/cli/package.json` by `npm run badge:version`, which updates
+`version_badge.json` and `version_badge_cli.json`. The Core badge uses the
+existing cyan color; the CLI badge uses the common light IndianRed color
+`#CD5C5C`. The script is repository maintenance only; the runtime
+package-version adapter reads the published package's own metadata.
 The independent Update Version Badge workflow runs this script on `main`
-pushes that change `packages/core/package.json` and can also be started with
-`workflow_dispatch`. It commits the generated file through the authorized SSH
-identity; its badge update does not retrigger the main CI workflow. The
+pushes that change either package manifest and can also be started with
+`workflow_dispatch`. It stages both generated files, checks whether either
+changed, and commits only the changed badge files through the authorized SSH
+identity. Its generated commit body includes a Core version line, a CLI version
+line, or both as applicable; when neither badge changes, it does not commit.
+The workflow uses the versions emitted by the badge generator and does not
+perform a second package-version inspection.
+The badge update does not retrigger the main CI workflow. The
 workflow uses `SSH_SIGNING_KEY` for the signed commit and
 `SSH_AUTH_KEY` for the GitHub push identity, and skips unauthorized actors.
 `SSH_SIGNING_KEY` does not grant repository access. Because the `main` rules

@@ -13,12 +13,12 @@ import {
   classifyFrontmatter,
   resolveDisplayOptions,
   TypedAstParser,
-} from "../../src/core/index.ts";
+} from "howdone";
 import type {
   FrontmatterAst,
   FrontmatterValueParser,
   ProgressReport,
-} from "../../src/core/index.ts";
+} from "howdone";
 
 function valueParserFor(section: FrontmatterAst): FrontmatterValueParser {
   return section.format === "yaml"

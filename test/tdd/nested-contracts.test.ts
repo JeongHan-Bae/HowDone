@@ -9,8 +9,8 @@ import {
   calculateProgress,
   summarizeProgress,
   TypedAstParser,
-} from "../../src/core/index.ts";
-import type { ResolvedDisplayOptions } from "../../src/core/index.ts";
+} from "howdone";
+import type { ResolvedDisplayOptions } from "howdone";
 
 interface JsonOutputFixture {
   sourcePath: string;

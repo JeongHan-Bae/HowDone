@@ -1,4 +1,4 @@
-import type { ProgressFormat } from "../../core/index.ts";
+import type { ProgressFormat } from "howdone";
 
 export type OutputMode = "default" | "tree" | "details" | "json";
 
@@ -113,11 +113,10 @@ function requireStandaloneCommand(
 export function parseArguments(argv: readonly string[]): ParsedArguments {
   let path: string | undefined;
   let mode: OutputMode = "default";
-  let format: ProgressFormat = "percentage";
-  let requestedFormat: ProgressFormat | undefined;
+  let requestedFormat: ProgressFormat | undefined = undefined;
   let formatExplicit = false;
   let precision: number | undefined;
-  let showTrailingZeros: boolean | undefined;
+  let showTrailingZeros: boolean | undefined = undefined;
   let maxLabelClusters: number | undefined;
   let help = false;
   let version = false;
@@ -176,8 +175,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
     }
     if (argument === "--decimal" || argument === "--percentage") {
       const nextFormat = argument.slice(2) as ProgressFormat;
-      format = chooseProgressFormat(requestedFormat, nextFormat);
-      requestedFormat = format;
+      requestedFormat = chooseProgressFormat(requestedFormat, nextFormat);
       formatExplicit = true;
       continue;
     }
@@ -187,8 +185,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
         throw new ArgumentError("--format requires decimal or percentage.");
       }
       const nextFormat = parseProgressFormat(value);
-      format = chooseProgressFormat(requestedFormat, nextFormat);
-      requestedFormat = format;
+      requestedFormat = chooseProgressFormat(requestedFormat, nextFormat);
       formatExplicit = true;
       index += 1;
       continue;
@@ -199,8 +196,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
         throw new ArgumentError("--format requires decimal or percentage.");
       }
       const nextFormat = parseProgressFormat(value);
-      format = chooseProgressFormat(requestedFormat, nextFormat);
-      requestedFormat = format;
+      requestedFormat = chooseProgressFormat(requestedFormat, nextFormat);
       formatExplicit = true;
       continue;
     }
@@ -306,6 +302,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
     );
   }
 
+  const format = requestedFormat ?? "percentage";
   if (precision !== undefined) {
     validatePrecisionForFormat(precision, format);
   }

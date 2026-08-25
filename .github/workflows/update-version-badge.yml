@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "packages/core/package.json"
+      - "packages/cli/package.json"
       - ".github/workflows/update-version-badge.yml"
       - "scripts/update-version-badge.mjs"
   workflow_dispatch:
@@ -28,13 +29,14 @@ jobs:
         with:
           node-version: "18.x"
 
-      - name: Generate Version Files
+      - name: Generate Version Badges
+        id: generate_badges
         run: npm run badge:version
 
-      - name: Check if Version Files changed
+      - name: Check if Version Badges changed
         id: check_diff
         run: |
-          git add version_badge.json
+          git add version_badge.json version_badge_cli.json
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -51,22 +53,8 @@ jobs:
             echo "authorized=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Exit if not changed or unauthorized
-        if: >
-          steps.check_diff.outputs.changed != 'true' ||
-          steps.check_author.outputs.authorized != 'true'
-        run: |
-          echo "Skipping update due to no generated changes or unauthorized actor."
-          exit 0
-
-      - name: Extract core package version
-        id: version
-        run: |
-          version=$(node --input-type=module -e \
-            "import { readFileSync } from 'node:fs'; console.log(JSON.parse(readFileSync('packages/core/package.json', 'utf8')).version)")
-          echo "project_version=$version" >> "$GITHUB_OUTPUT"
-
       - name: Set up SSH keys
+        if: steps.check_diff.outputs.changed == 'true' && steps.check_author.outputs.authorized == 'true'
         env:
           SSH_SIGNING_KEY: ${{ secrets.SSH_SIGNING_KEY }}
           SSH_AUTH_KEY: ${{ secrets.SSH_AUTH_KEY }}
@@ -106,6 +94,7 @@ jobs:
           ssh -T git@github.com || true
 
       - name: Configure Git for Signed Commits
+        if: steps.check_diff.outputs.changed == 'true' && steps.check_author.outputs.authorized == 'true'
         run: |
           git config --global gpg.format ssh
           git config --global user.signingkey ~/.ssh/id_ed25519_signing
@@ -113,13 +102,29 @@ jobs:
           git config --global user.name "JeongHan-Bae"
           git config --global user.email "mastropseudo@gmail.com"
 
-      - name: Commit and push Version Files
+      - name: Commit and push Version Badges
+        if: steps.check_diff.outputs.changed == 'true' && steps.check_author.outputs.authorized == 'true'
         run: |
           set -euo pipefail
-          git add version_badge.json
+          git add version_badge.json version_badge_cli.json
           if git diff --cached --quiet; then
-            echo "No version file changes to commit."
+            echo "No version badge changes to commit."
             exit 0
           fi
-          git commit -S -m "auto-update(version): ${{ steps.version.outputs.project_version }}"
+          core_message=""
+          cli_message=""
+          if ! git diff --cached --quiet -- version_badge.json; then
+            core_message="Core version: ${{ steps.generate_badges.outputs.core_version }}"
+          fi
+          if ! git diff --cached --quiet -- version_badge_cli.json; then
+            cli_message="CLI version: ${{ steps.generate_badges.outputs.cli_version }}"
+          fi
+          if [ -n "$core_message" ] && [ -n "$cli_message" ]; then
+            commit_body="$(printf '%s\n%s' "$core_message" "$cli_message")"
+          elif [ -n "$core_message" ]; then
+            commit_body="$core_message"
+          else
+            commit_body="$cli_message"
+          fi
+          git commit -S -m "auto-update(version): sync generated badges" -m "$commit_body"
           git push "git@github.com:${{ github.repository }}.git"

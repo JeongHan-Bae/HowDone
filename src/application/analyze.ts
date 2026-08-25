@@ -5,7 +5,7 @@ import {
   classifyFrontmatter,
   resolveDisplayOptions,
   runMarkdownPipeline,
-} from "../core/index.ts";
+} from "howdone";
 import {
   parseArguments,
   ArgumentError,
