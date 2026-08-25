@@ -11,7 +11,7 @@ import {
   ArgumentError,
 } from "./cli/args.ts";
 import type { ParsedArguments } from "./cli/args.ts";
-import { HELP_TEXT } from "./cli/help.ts";
+import { HELP_SECTIONS, renderHelpText } from "./cli/help.ts";
 import type { CliDependencies, CliIO } from "./types.ts";
 
 function errorMessage(error: unknown): string {
@@ -83,7 +83,9 @@ export async function run(
   }
 
   if (argumentsValue.help) {
-    io.stdout.write(HELP_TEXT);
+    io.stdout.write(
+      renderHelpText(HELP_SECTIONS, dependencies.runtimeDependencies),
+    );
     return 0;
   }
   if (argumentsValue.version) {

@@ -1,0 +1,8 @@
+{
+  "json-body-complete": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
+  "json-body-half": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
+  "json-one-header": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
+  "json-one-header-body": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
+  "json-two-headers": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
+  "json-two-headers-body": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } }
+}

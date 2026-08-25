@@ -1,0 +1,7 @@
+{
+  "cases": [
+    { "input": "default|100|body", "code": "terminal-complete-body" },
+    { "input": "default|50|first", "code": "terminal-half-first" },
+    { "input": "default|100|checks", "code": "terminal-complete-checks" }
+  ]
+}

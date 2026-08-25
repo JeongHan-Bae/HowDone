@@ -65,22 +65,37 @@ jobs:
             console.error("Expected vX.Y.Z or vX.Y.Z-prerelease, using npm SemVer.");
             process.exit(1);
           }
+          const { readFileSync } = await import("node:fs");
+          const core = JSON.parse(readFileSync("packages/core/package.json", "utf8"));
+          const cli = JSON.parse(readFileSync("packages/cli/package.json", "utf8"));
+          const lock = JSON.parse(readFileSync("package-lock.json", "utf8"));
+
+          for (const [name, metadata] of [["core", core], ["cli", cli]]) {
+            if (metadata.version !== version) {
+              console.error(`::error::${name} package version ${metadata.version} does not match release tag version ${version}.`);
+              process.exit(1);
+            }
+          }
+
+          const lockPackages = lock.packages ?? {};
+          for (const [path, metadata] of [["packages/core", core], ["packages/cli", cli]]) {
+            if (lockPackages[path]?.version !== metadata.version) {
+              console.error(`::error::package-lock.json entry ${path} is not synchronized with ${metadata.name}@${metadata.version}.`);
+              process.exit(1);
+            }
+          }
+
+          if (cli.dependencies?.howdone !== core.version) {
+            console.error(`::error::CLI dependency howdone ${cli.dependencies?.howdone} does not match core version ${core.version}.`);
+            process.exit(1);
+          }
           NODE
 
-          PACKAGE_VERSION="$(node --input-type=module -e 'import { readFileSync } from "node:fs"; console.log(JSON.parse(readFileSync("package.json", "utf8")).version)')"
-          if [[ "${PACKAGE_VERSION}" != "${VERSION}" ]]; then
-            echo "::error::package.json version ${PACKAGE_VERSION} does not match release tag version ${VERSION}."
-            exit 1
-          fi
-
-          LOCK_VERSION="$(node --input-type=module -e 'import { readFileSync } from "node:fs"; console.log(JSON.parse(readFileSync("package-lock.json", "utf8")).packages[""].version)')"
-          if [[ "${LOCK_VERSION}" != "${VERSION}" ]]; then
-            echo "::error::package-lock.json version ${LOCK_VERSION} does not match release tag version ${VERSION}."
-            exit 1
-          fi
-
       - name: Build release package
-        run: npm run build
+        run: npm run build:cli
 
-      - name: Publish the tagged package
-        run: npm publish --tag latest
+      - name: Publish the core package
+        run: npm publish --workspace packages/core --tag latest --access public
+
+      - name: Publish the CLI package
+        run: npm publish --workspace packages/cli --tag latest --access public

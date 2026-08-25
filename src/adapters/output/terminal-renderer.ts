@@ -6,8 +6,8 @@ import type {
   ProgressFormat,
   ResolvedDisplayOptions,
   TerminalOutputPort,
-} from "../../core/index.ts";
-import { collectLayerStatistics } from "../../core/index.ts";
+} from "howdone";
+import { collectLayerStatistics } from "howdone";
 import { defaultGraphemeSegmenter } from "../unicode/intl-grapheme-segmenter.ts";
 import {
   countGraphemeClusters,

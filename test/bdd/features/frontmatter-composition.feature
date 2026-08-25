@@ -1,11 +1,20 @@
 Feature: Frontmatter composition and merge behavior
   These scenarios prove source order, separate channels, and explicit frontmatter merging.
 
-  Scenario: Frontmatter after body content is invalid
-    Given the frontmatter layout fixture "frontmatter-after-body-is-invalid"
+  Scenario Outline: Formatter-shaped blocks after body content remain Markdown
+    Given the frontmatter layout fixture "<fixture>"
     When I run howdone with arguments "tasks.md --json"
-    Then the command fails
-    And stderr contains "Frontmatter must appear before Markdown body content."
+    Then the command succeeds
+    And stderr is empty
+    And stdout is valid JSON
+    And stdout JSON has keys "source,progress"
+    And stdout JSON reports progress "1" and percentage "100"
+    And stdout does not contain "\"frontmatter\""
+
+    Examples:
+      | fixture                                 |
+      | yaml-shaped-block-after-body-is-markdown |
+      | toml-shaped-block-after-body-is-markdown |
 
   Scenario: YAML booleans form a single-source semantic checklist in JSON
     Given the frontmatter fixture "yaml-checklist-only"

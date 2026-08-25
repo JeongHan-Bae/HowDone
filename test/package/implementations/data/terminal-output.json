@@ -1,0 +1,5 @@
+{
+  "terminal-complete-body": { "template": "consumer-terminal:{mode}:{percentage}:{label}" },
+  "terminal-half-first": { "template": "consumer-terminal:{mode}:{percentage}:{label}" },
+  "terminal-complete-checks": { "template": "consumer-terminal:{mode}:{percentage}:{label}" }
+}

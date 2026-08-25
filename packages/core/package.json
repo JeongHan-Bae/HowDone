@@ -1,0 +1,43 @@
+{
+  "name": "howdone",
+  "version": "0.1.1",
+  "description": "HowDone's framework-independent hexagonal progress analysis API.",
+  "type": "module",
+  "main": "./dist/core/index.js",
+  "types": "./dist/core/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/core/index.d.ts",
+      "source": "./source/core/index.ts",
+      "import": "./dist/core/index.js"
+    },
+    "./application": {
+      "types": "./dist/application/index.d.ts",
+      "source": "./source/application/index.ts",
+      "import": "./dist/application/index.js"
+    }
+  },
+  "files": [
+    "dist/core",
+    "dist/application",
+    "docs/api.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JeongHan-Bae/HowDone.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JeongHan-Bae/HowDone/issues"
+  },
+  "homepage": "https://github.com/JeongHan-Bae/HowDone#readme",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "engines": {
+    "node": ">=18.18"
+  }
+}

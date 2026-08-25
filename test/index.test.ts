@@ -12,7 +12,10 @@ import type { CliDependencies, CliIO } from "../src/application/types.ts";
 import { NodeMarkdownFileReader } from "../src/adapters/filesystem/node-file-reader.ts";
 import { defaultTomlValueParser } from "../src/adapters/frontmatter/toml-value-parser.ts";
 import { defaultYamlValueParser } from "../src/adapters/frontmatter/yaml-value-parser.ts";
-import { packageVersion } from "../src/adapters/runtime/node-package-version.ts";
+import {
+  packageRuntimeDependencies,
+  packageVersion,
+} from "../src/adapters/runtime/node-package-version.ts";
 import { parseMarkdown } from "../src/boot/pipeline.ts";
 import { defaultRemarkLexer } from "../src/adapters/markdown/remark-lexer.ts";
 import { JsonRenderer } from "../src/adapters/output/json-renderer.ts";
@@ -77,6 +80,7 @@ function dependenciesFor(markdown: string): CliDependencies {
     jsonRenderer: new JsonRenderer(),
     warning: { warn: () => {} },
     version: packageVersion,
+    runtimeDependencies: packageRuntimeDependencies,
   };
 }
 
@@ -819,6 +823,7 @@ test("118: supports a .markdown file through the CLI adapter", async () => {
       jsonRenderer: new JsonRenderer(),
       warning: { warn: () => {} },
       version: packageVersion,
+      runtimeDependencies: packageRuntimeDependencies,
     });
     assert.equal(exitCode, 0);
     assert.equal(output.stdout(), "100%\n");

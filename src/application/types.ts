@@ -4,6 +4,7 @@ import type {
   MarkdownFileReader,
   MarkdownLexer,
   FrontmatterValueParser,
+  RuntimeDependency,
   TerminalOutputPort,
   WarningPort,
 } from "../core/index.ts";
@@ -23,4 +24,5 @@ export interface CliDependencies {
   jsonRenderer: JsonOutputPort;
   warning: WarningPort;
   version: string;
+  runtimeDependencies: readonly RuntimeDependency[];
 }

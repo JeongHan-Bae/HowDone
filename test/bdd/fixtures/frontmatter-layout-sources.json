@@ -49,8 +49,12 @@
       "source": "+++\ntitle = \"TOML one\"\n+++\n\n---\ntitle: YAML\n---\n\n+++\ntitle = \"TOML two\"\n+++\n\n- [ ] body\n"
     },
     {
-      "id": "frontmatter-after-body-is-invalid",
-      "source": "- [x] body\n\n---\ntitle: Late\n---\n"
+      "id": "yaml-shaped-block-after-body-is-markdown",
+      "source": "- [x] body\n\n---\nchecks:\n  build: true\n  test: false\n---\n\n# After\n"
+    },
+    {
+      "id": "toml-shaped-block-after-body-is-markdown",
+      "source": "- [x] body\n\n+++\n[checks]\nbuild = true\ntest = false\n+++\n\n# After\n"
     }
   ]
 }

@@ -1,0 +1,41 @@
+{
+  "name": "howdone-cli",
+  "version": "0.1.1",
+  "description": "HowDone's command-line adapter and executable.",
+  "type": "module",
+  "bin": {
+    "howdone": "./dist/boot/cli-main.js"
+  },
+  "files": [
+    "dist",
+    "docs/syntax.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JeongHan-Bae/HowDone.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JeongHan-Bae/HowDone/issues"
+  },
+  "homepage": "https://github.com/JeongHan-Bae/HowDone#readme",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "engines": {
+    "node": ">=18.18"
+  },
+  "dependencies": {
+    "howdone": "0.1.1",
+    "mdast-util-to-string": "^4.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "smol-toml": "^1.8.0",
+    "unified": "^11.0.5",
+    "yaml": "^2.9.0"
+  }
+}

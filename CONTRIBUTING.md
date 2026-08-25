@@ -20,17 +20,20 @@ of its checks is useful while iterating, but it is not a substitute for the
 final harness run.
 
 The harness is the repository's hard contribution boundary. It runs the
-application typecheck, source TDD and source BDD suites, compiled TDD and
-compiled BDD parity suites, typed maintenance-file checks, the
-platform-neutral source check, the runtime and full dependency audits,
-`scripts/check-package-contents.ts` through `npm run pack:check`, and both
-staged and unstaged Git whitespace checks. The compiled parity suites build
-with development tools but execute the packed JavaScript package from a
-temporary `npm install --omit=dev` environment, so the application under test
-can resolve only its published `dependencies`. The test runner's Cucumber and
-TypeScript tooling remains outside that application process. It does not run
-`npm run badge:version`; version-badge generation is a separate maintenance
-operation and is never a pre-commit requirement. Do not bypass the harness with
+application typecheck, source TDD and source BDD suites, the published-package
+consumer suite, compiled TDD and compiled BDD parity suites, typed
+maintenance-file checks, the platform-neutral source check, the runtime and
+full dependency audits, `scripts/check-package-contents.ts` through
+`npm run pack:check`, and both staged and unstaged Git whitespace checks. The
+compiled CLI parity suites build with development tools but execute staged
+compiled JavaScript packages from a temporary production-dependency sandbox, so
+the CLI under test can resolve only its published `dependencies`. The separate
+package consumer suite stages the compiled core as `node_modules/howdone` in an
+isolated sandbox and uses the repository's resolved dependencies without an
+installation step. The test runner's Cucumber and TypeScript tooling remains
+outside the application process. It does not run `npm run badge:version`;
+version-badge generation is a separate maintenance operation and is never a
+pre-commit requirement. Do not bypass the harness with
 `git commit --no-verify`, skip a failed command, weaken a failing assertion, or
 replace the command with an unrecorded local alternative. If a check cannot run
 in the current environment, the commit must wait until it can run or the exact
@@ -82,8 +85,9 @@ these ownership boundaries:
   calls the application.
 - `bin/howdone.cjs` is the repository source execution shim only. It keeps the
   original native TypeScript path on Node.js 23+ and the bundled `tsx` path on
-  Node.js 18.18–22. The package `howdone` bin points directly to the compiled
-  `dist/boot/main.js` entry.
+  Node.js 18.18–22. The `howdone-cli` bin points directly to the compiled
+  `packages/cli/dist/boot/cli-main.js` entry and depends on the matching
+  `howdone` core package.
 
 Do not add loose business modules to the `src` root. Core modules must not
 import adapters, CLI code, Node filesystem APIs, or terminal libraries; adapters
@@ -117,12 +121,17 @@ platform test, written rationale, and explicit review. The
 
 ## Test requirements
 
-The project has three complementary evidence layers:
+The project has four complementary evidence layers:
 
 - `test/tdd/` proves each pipeline boundary and intermediate contract.
 - `test/bdd/features/` and `test/bdd/steps/` exercise the real source launcher
   and the compiled package entry with Cucumber. The runtime is selected by the
   test command, never by using an implicit runtime fallback.
+- `test/package/` exercises the public package entry as a consumer with
+  test-owned port implementations. `implementations/` contains the user
+  adapters and paired JSON input/code and code/output fixtures; `tdd/` checks
+  every mapped pipeline boundary; and `bdd/` composes all document fixtures
+  through the staged package.
 - `test/index.test.ts` holds the broad regression and edge-case matrix.
 
 Use TDD for stage behavior and BDD for user-visible behavior. In particular,
@@ -156,7 +165,8 @@ input returns a non-zero status.
 
 The source checkout keeps its original runtime choice: Node.js 23+ uses native
 TypeScript and Node.js 18.18–22 uses the bundled `tsx` loader. The published
-package and published CLI run compiled JavaScript from `dist/` and do not
+package and published CLI run compiled JavaScript from their package `dist/`
+directories and do not
 depend on Node's native TypeScript stripping. Earlier Node.js versions than
 18.18 are unsupported.
 
@@ -164,7 +174,7 @@ Install dependencies with:
 
 ```bash
 npm install
-npm run build
+npm run build:cli
 ```
 
 The mandatory final pre-commit gate is the same harness described above:
@@ -181,6 +191,7 @@ For local behavior checks, use the maintained TDD and BDD fixtures:
 ```bash
 npm test
 npm run test:bdd
+npm run test:package
 npm run test:compiled
 npm run check:platform
 ```
@@ -221,7 +232,7 @@ changes:
 - `README.md`: installation, usage, and user-visible behavior;
 - `docs/syntax.md`: standalone user-facing Markdown and YAML/TOML syntax;
 - `LICENSE`: the repository's Apache License 2.0 terms and copyright notice;
-- `scripts/update-version-badge.mjs`: generates the package version shown by
+- `scripts/update-version-badge.mjs`: generates the core package version shown by
   the README badge in `version_badge.json`; it is not a runtime dependency
   and is not included in the published package;
 - `scripts/check-package-contents.ts`: verifies the published file allowlist;

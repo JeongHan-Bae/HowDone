@@ -24,6 +24,11 @@ export interface WarningPort {
   warn(message: string): void;
 }
 
+export interface RuntimeDependency {
+  name: string;
+  version: string;
+}
+
 export interface GraphemeSegmenter {
   segment(text: string): string[];
 }

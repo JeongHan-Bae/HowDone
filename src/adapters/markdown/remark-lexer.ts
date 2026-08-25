@@ -3,7 +3,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import { toString } from "mdast-util-to-string";
-import { TokenKind } from "../../core/index.ts";
+import { TokenKind } from "howdone";
 import type {
   FrontmatterToken,
   LexerToken,
@@ -13,7 +13,7 @@ import type {
   SourcePosition,
   SyntaxNodeToken,
   TokenSpan,
-} from "../../core/index.ts";
+} from "howdone";
 
 interface RemarkPosition {
   start: SourcePosition;
@@ -134,7 +134,7 @@ function eofPosition(source: string): SourcePosition {
 }
 
 export class RemarkLexer implements MarkdownLexer {
-  private readonly processor = unified()
+  private readonly frontmatterProcessor = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkFrontmatter, [
@@ -142,44 +142,57 @@ export class RemarkLexer implements MarkdownLexer {
       { type: "toml", marker: "+", anywhere: true },
     ]);
 
-  lex(source: string): LexerToken[] {
-    const root = asRemarkNode(this.processor.parse(source));
-    const tokens: LexerToken[] = [];
-    let hasBody = false;
+  private readonly markdownProcessor = unified()
+    .use(remarkParse)
+    .use(remarkGfm);
 
-    for (const child of nodeChildren(root)) {
+  lex(source: string): LexerToken[] {
+    const frontmatterRoot = asRemarkNode(
+      this.frontmatterProcessor.parse(source),
+    );
+    const leadingFrontmatter: Array<{
+      node: RemarkNode;
+      span: TokenSpan;
+    }> = [];
+    for (const child of nodeChildren(frontmatterRoot)) {
+      if (child.type !== "yaml" && child.type !== "toml") break;
       const span = sourceSpan(child, source);
+      if (leadingFrontmatter.length === 0 && span.start.offset !== 0) break;
+      leadingFrontmatter.push({ node: child, span });
+    }
+
+    const bodyStartOffset = leadingFrontmatter.at(-1)?.span.end.offset ?? 0;
+    const markdownRoot = asRemarkNode(this.markdownProcessor.parse(source));
+    const tokens: LexerToken[] = [];
+
+    for (const { node: child, span } of leadingFrontmatter) {
       const base = {
         ...span,
         lexeme: lexeme(span, source),
       };
 
-      if (child.type === "yaml" || child.type === "toml") {
-        if (hasBody) {
-          throw new Error(
-            "Frontmatter must appear before Markdown body content.",
-          );
-        }
-        const token: FrontmatterToken = {
-          ...base,
-          kind: TokenKind.frontmatter,
-          node: {
-            type: "frontmatter",
-            format: child.type,
-            value: child.value ?? "",
-          },
-        };
-        tokens.push(token);
-        continue;
-      }
+      const token: FrontmatterToken = {
+        ...base,
+        kind: TokenKind.frontmatter,
+        node: {
+          type: "frontmatter",
+          format: child.type === "yaml" ? "yaml" : "toml",
+          value: child.value ?? "",
+        },
+      };
+      tokens.push(token);
+    }
 
+    for (const child of nodeChildren(markdownRoot)) {
+      const span = sourceSpan(child, source);
+      if (span.start.offset < bodyStartOffset) continue;
       const scanned = toScannedBlock(child);
       if (scanned === undefined) {
         continue;
       }
-      hasBody = true;
       const token: SyntaxNodeToken = {
-        ...base,
+        ...span,
+        lexeme: lexeme(span, source),
         kind: TokenKind.syntaxNode,
         node: scanned,
       };

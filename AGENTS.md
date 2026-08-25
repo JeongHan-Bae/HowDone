@@ -21,14 +21,17 @@ compiled entry:
 
 ```text
 bin/howdone.cjs      -> src/boot/main.ts -> src/application/analyze.ts
-package bin howdone  -> dist/boot/main.js -> dist/application/analyze.js
+howdone-cli bin      -> packages/cli/dist/boot/cli-main.js -> howdone/application
 ```
 
 `bin/howdone.cjs` preserves the source checkout behavior: Node.js 23 or later
 uses native TypeScript execution and Node.js 18.18 through 22 uses the bundled
-`tsx` loader. The published package maps its CLI directly to the compiled
-artifact and does not ship the source tree. The source launcher must not
-contain domain or parsing behavior.
+`tsx` loader. The published `howdone` package contains only the compiled
+core/application API and has no runtime dependencies or bin. The published
+`howdone-cli` package maps its executable directly to the compiled artifact,
+depends on the matching core package and adapter libraries, and does not ship
+the source tree. The source launcher must not contain domain or parsing
+behavior.
 Every `.cjs` and `.mjs` file must declare its types at its own boundary: use
 `// @ts-check` with JSDoc typedefs and annotations for JavaScript files, and
 TypeScript interfaces or type aliases for `.ts` maintenance scripts. These
@@ -90,13 +93,15 @@ interface or the exceptional case is explicitly reviewed.
 
 ## Test taxonomy
 
-TDD and BDD are separate evidence layers. Detailed fixture construction,
-independent-oracle rules, semantic Markdown generation, native path testing,
-step design, and test verification live in [`test/AGENTS.md`](test/AGENTS.md).
+TDD, BDD, and published-package consumer tests are separate evidence layers.
+Detailed fixture construction, independent-oracle rules, semantic Markdown
+generation, native path testing, step design, and test verification live in
+[`test/AGENTS.md`](test/AGENTS.md).
 This section only records the repository-level taxonomy:
 
 - `test/tdd/` verifies each pipeline boundary and intermediate contract: source to lexer tokens, lexer tokens to AST, AST to statistical tree, tree to completion metrics, and metrics to terminal/JSON output.
 - `test/bdd/features/` and `test/bdd/steps/` verify user-visible command behavior through the real source launcher and, for compiled parity, the compiled package entry. These scenarios cover final stdout, JSON, exit status, paths, options, and errors.
+- `test/package/` verifies the published core package as a consumer would use it. It stages the public entry and supplies test-owned implementations of the published ports; its metadata test also checks the CLI package relationship.
 - TDD inputs and independent intermediate oracles belong under
   `test/tdd/fixtures/`; BDD source-only inputs belong under
   `test/bdd/fixtures/`. Do not create a shared fixture merely because two
@@ -128,27 +133,41 @@ Preserve these implementation invariants:
 
 The mandatory pre-commit boundary is `npm run verify:precommit`, as defined in
 [`CONTRIBUTING.md`](CONTRIBUTING.md). It covers the application and maintenance
-typechecks, TDD and BDD suites, runtime and full dependency audits, package
-contents, platform-neutral source checks, and staged/unstaged Git checks. Do
-not reproduce the command sequence here; CONTRIBUTING owns that detail.
+typechecks, TDD, BDD, and published-package consumer suites, runtime and full
+dependency audits, package contents, platform-neutral source checks, and
+staged/unstaged Git checks. Do not reproduce the command sequence here;
+CONTRIBUTING owns that detail.
 
 `npm test` is the unchanged source TDD gate. `npm run test:bdd` is the
 unchanged source black-box behavior gate. `npm run test:compiled` runs the
-compiled TDD and the same BDD features against the compiled CLI.
+compiled TDD, published-package consumer, and the same BDD features against
+the compiled CLI.
 `npm run test:all` runs both source and compiled gates together.
 
-Compiled verification first uses development tools to build the artifacts, then
-packs the package and installs it in a temporary isolated npm project with
-`--omit=dev`. The compiled TDD suite and compiled CLI child processes run from
-that production-only installation, so a passing result cannot be supplied by
-`tsx`, Cucumber, TypeScript, or another development dependency. Cucumber
-remains test orchestration infrastructure; it is not part of the CLI runtime
-dependency proof.
+Compiled CLI verification first uses development tools to build the artifacts,
+then stages both compiled packages and the CLI's resolved production dependency
+closure in a temporary isolated project. The compiled TDD suite and compiled
+CLI child processes run from that production-only staging, so a passing CLI
+result cannot be supplied by `tsx`, Cucumber, TypeScript, or another
+development dependency.
 
-The project has a real TypeScript build command. It emits one platform-neutral
-JavaScript package under `dist/`, rewrites relative TypeScript imports to
-`.js`, and emits declarations for the public core API. CI runs the source
-checks, the compiled TDD and BDD checks, and the package-content check from the
+The published-package consumer suite is a separate sandbox test. It stages the
+compiled core as `node_modules/howdone`, copies the repository's already-
+resolved dependencies into that sandbox, and runs test-owned consumer code
+without `npm install`. It also checks the core/CLI manifest version and
+dependency relationship. On Node.js 23+ the consumer TDD files use native
+TypeScript execution; on Node.js 18.18–22 they use the bundled `tsx` loader.
+The package BDD steps invoke the same staged compiled application entry. This
+keeps the consumer test fast while proving that a user can compose the
+published compiled package through its public ports. Cucumber remains test
+orchestration infrastructure; it is not part of the CLI runtime dependency
+proof.
+
+The project has real TypeScript build commands. They emit the dependency-free
+core under `packages/core/dist/`, the CLI under `packages/cli/dist/`, rewrite
+relative TypeScript imports to `.js`, and emit declarations for the public
+core API. CI runs the source checks, the compiled TDD and BDD checks, the
+published-package consumer suite, and both package-content checks from the
 same workspace. `.github/workflows/ci.yml` is reusable by the tag-based release
 workflow; publishing is permitted only after that CI job succeeds.
 
@@ -160,14 +179,14 @@ workflow; publishing is permitted only after that CI job succeeds.
   dependency maintenance, and contribution rules out of the README.
 - `LICENSE` records the Apache License 2.0 terms and 2026 copyright notice.
 - `scripts/update-version-badge.mjs` generates `version_badge.json` from the
-  package version used by the README badge. `scripts/check-package-contents.ts`
+  core package version used by the README badge. `scripts/check-package-contents.ts`
   verifies the npm dry-run file allowlist, and
   `scripts/check-platform-neutral.ts` rejects unreviewed platform API access.
   These are repository maintenance scripts and are not part of the published
   package.
-- `scripts/run-compiled-tests.mjs` builds the test artifacts, installs the
-  packed package with production dependencies only, and runs compiled parity
-  checks from that isolated installation.
+- `scripts/run-compiled-tests.mjs` builds the test artifacts, stages both
+  compiled packages with production dependencies only, and runs compiled
+  parity checks from that isolated installation.
 - `tsconfig.build.json` defines the runtime JavaScript and declaration build;
   `tsconfig.test-build.json` defines the ignored compiled-test verification
   output. Build output is never committed.
@@ -176,7 +195,8 @@ workflow; publishing is permitted only after that CI job succeeds.
 - `docs/development.md` records test-first workflow, development commands, CI,
   release automation, and maintenance details.
 - `docs/syntax.md` is the standalone user-facing syntax contract and is included
-  in the published package. It may not link to repository or developer docs.
+  in the published `howdone-cli` package. It may not link to repository or
+  developer docs.
 - `CONTRIBUTING.md` records the mandatory pre-commit harness, development
   procedure, commit-message format, pull request, and handoff requirements.
 - `AGENTS.md` records implementation constraints and test taxonomy.

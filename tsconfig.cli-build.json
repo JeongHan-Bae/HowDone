@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": false,
+    "noEmitOnError": true,
+    "outDir": "packages/cli/dist",
+    "rootDir": "src",
+    "rewriteRelativeImportExtensions": true,
+    "sourceMap": true,
+    "paths": {}
+  },
+  "include": [
+    "src/adapters/**/*.ts",
+    "src/boot/cli-main.ts"
+  ]
+}

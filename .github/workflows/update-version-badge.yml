@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "package.json"
+      - "packages/core/package.json"
       - ".github/workflows/update-version-badge.yml"
       - "scripts/update-version-badge.mjs"
   workflow_dispatch:
@@ -59,11 +59,11 @@ jobs:
           echo "Skipping update due to no generated changes or unauthorized actor."
           exit 0
 
-      - name: Extract project version from package.json
+      - name: Extract core package version
         id: version
         run: |
           version=$(node --input-type=module -e \
-            "import { readFileSync } from 'node:fs'; console.log(JSON.parse(readFileSync('package.json', 'utf8')).version)")
+            "import { readFileSync } from 'node:fs'; console.log(JSON.parse(readFileSync('packages/core/package.json', 'utf8')).version)")
           echo "project_version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Set up SSH keys

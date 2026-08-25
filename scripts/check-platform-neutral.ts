@@ -27,7 +27,7 @@ const sourceRoots = ["src", "bin", "scripts", "test"] as const;
 const sourceExtensions = new Set([".cjs", ".js", ".mjs", ".ts", ".tsx"]);
 const scannerPath = relative(
   process.cwd(),
-  fileURLToPath(new URL("./check-platform-neutral.ts", import.meta.url)),
+  fileURLToPath(new URL("./check-platform-neutral.ts", import.meta.url).href),
 );
 const osModuleNames = new Set(["os", "node:os"]);
 const processModuleNames = new Set(["process", "node:process"]);

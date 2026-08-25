@@ -7,6 +7,9 @@ Feature: CLI basics and Markdown task trees
     Then the command succeeds
     And stdout contains "Usage:"
     And stdout contains "docs/syntax.md"
+    And stdout contains "Node.js 18.18 or newer is required."
+    And stdout contains every package.json runtime dependency
+    And stdout does not contain "tsx"
     And stderr is empty
 
   Scenario: Version is available through the real CLI entrypoint

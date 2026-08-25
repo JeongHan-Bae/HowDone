@@ -26,14 +26,14 @@ const BADGE_COLOR = "#00a8c6";
 const BADGE_STYLE = "flat";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const packagePath = resolve(projectRoot, "package.json");
+const packagePath = resolve(projectRoot, "packages", "core", "package.json");
 const badgePath = resolve(projectRoot, "version_badge.json");
 const packageText = await readFile(packagePath, { encoding: "utf8" });
 /** @type {PackageJson} */
 const packageJson = JSON.parse(packageText);
 
 if (typeof packageJson.version !== "string" || packageJson.version.length === 0) {
-  throw new Error("package.json must contain a non-empty version string");
+  throw new Error("packages/core/package.json must contain a non-empty version string");
 }
 
 const projectVersion = packageJson.version;

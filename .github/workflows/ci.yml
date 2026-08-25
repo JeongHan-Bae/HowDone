@@ -9,10 +9,12 @@ on:
       - "scripts/**"
       - "src/**"
       - "test/**"
+      - "packages/**"
       - "package.json"
       - "package-lock.json"
       - "tsconfig.json"
       - "tsconfig.build.json"
+      - "tsconfig.cli-build.json"
       - "tsconfig.test-build.json"
   pull_request:
     paths:
@@ -21,10 +23,12 @@ on:
       - "scripts/**"
       - "src/**"
       - "test/**"
+      - "packages/**"
       - "package.json"
       - "package-lock.json"
       - "tsconfig.json"
       - "tsconfig.build.json"
+      - "tsconfig.cli-build.json"
       - "tsconfig.test-build.json"
   workflow_call:
 

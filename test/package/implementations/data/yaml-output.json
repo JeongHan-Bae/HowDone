@@ -1,0 +1,4 @@
+{
+  "yaml-setup": { "checks": { "setup": true } },
+  "yaml-release": { "checks": { "release": true } }
+}

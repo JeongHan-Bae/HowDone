@@ -10,7 +10,10 @@ import { defaultYamlValueParser } from "../adapters/frontmatter/yaml-value-parse
 import { defaultFileReader } from "../adapters/filesystem/node-file-reader.ts";
 import { defaultJsonRenderer } from "../adapters/output/json-renderer.ts";
 import { defaultTerminalRenderer } from "../adapters/output/terminal-renderer.ts";
-import { packageVersion } from "../adapters/runtime/node-package-version.ts";
+import {
+  packageRuntimeDependencies,
+  packageVersion,
+} from "../adapters/runtime/node-package-version.ts";
 import { defaultWarningPort } from "../adapters/runtime/node-warning-sink.ts";
 import { run } from "../application/analyze.ts";
 import type { CliDependencies, CliIO } from "../application/types.ts";
@@ -30,6 +33,7 @@ const dependencies: CliDependencies = {
   jsonRenderer: defaultJsonRenderer,
   warning: defaultWarningPort,
   version: packageVersion,
+  runtimeDependencies: packageRuntimeDependencies,
 };
 
 export function main(): Promise<number> {

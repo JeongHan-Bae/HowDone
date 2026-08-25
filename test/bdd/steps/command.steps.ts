@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { Then, When } from "@cucumber/cucumber";
 import {
   nativePathArgument,
+  packageRuntimeDependencies,
   runHowdone,
   splitArguments,
   stderrText,
@@ -43,6 +44,16 @@ Then("stdout equals {string}", function (this: ScenarioState, expected: string) 
 Then("stdout equals the package.json version", function (this: ScenarioState) {
   assert.equal(stdoutText(this), `${packageVersion}\n`);
 });
+
+Then(
+  "stdout contains every package.json runtime dependency",
+  function (this: ScenarioState) {
+    const stdout = stdoutText(this);
+    for (const dependency of packageRuntimeDependencies) {
+      assert.ok(stdout.includes(`${dependency.name}@${dependency.version}`));
+    }
+  },
+);
 
 Then("stderr is empty", function (this: ScenarioState) {
   assert.equal(stderrText(this), "");

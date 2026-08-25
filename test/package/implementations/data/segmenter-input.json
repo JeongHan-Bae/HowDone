@@ -1,0 +1,7 @@
+{
+  "cases": [
+    { "input": "body", "code": "segment-body" },
+    { "input": "first", "code": "segment-first" },
+    { "input": "checks", "code": "segment-checks" }
+  ]
+}

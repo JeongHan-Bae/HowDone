@@ -1,24 +1,12 @@
 {
-  "name": "howdone",
-  "version": "0.1.1",
-  "description": "HowDone analyzes hierarchical completion progress in Markdown task lists.",
+  "name": "howdone-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "HowDone core and CLI workspace.",
   "type": "module",
-  "bin": {
-    "howdone": "./dist/boot/main.js"
-  },
-  "main": "./dist/core/index.js",
-  "types": "./dist/core/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/core/index.d.ts",
-      "import": "./dist/core/index.js"
-    }
-  },
-  "files": [
-    "dist",
-    "docs/syntax.md",
-    "README.md",
-    "LICENSE"
+  "workspaces": [
+    "packages/core",
+    "packages/cli"
   ],
   "repository": {
     "type": "git",
@@ -36,32 +24,25 @@
   "scripts": {
     "start": "node ./bin/howdone.cjs",
     "badge:version": "node ./scripts/update-version-badge.mjs",
-    "build": "tsc --project tsconfig.build.json",
+    "build": "node ./scripts/sync-package-artifacts.mjs && tsc --project tsconfig.build.json",
+    "build:cli": "npm run build && tsc --project tsconfig.cli-build.json",
     "build:tests": "node ./scripts/build-test-artifacts.mjs",
-    "test:tdd": "node --import tsx --test test/index.test.ts test/tdd/index.test.ts",
+    "test:tdd": "node --conditions=source --import tsx --test test/index.test.ts test/tdd/index.test.ts",
     "test:tdd:compiled": "node ./scripts/run-compiled-tests.mjs tdd",
+    "test:package": "node ./scripts/run-compiled-tests.mjs package",
     "test": "npm run test:tdd",
     "test:bdd": "node ./scripts/run-cucumber.mjs source",
     "test:bdd:compiled": "node ./scripts/run-compiled-tests.mjs bdd",
     "test:compiled": "node ./scripts/run-compiled-tests.mjs all",
     "test:all": "npm run typecheck && npm test && npm run test:bdd && npm run test:compiled",
     "typecheck": "tsc --noEmit",
-    "typecheck:maintenance": "tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck scripts/check-package-contents.ts scripts/check-platform-neutral.ts && tsc --noEmit --allowJs --checkJs --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck bin/howdone.cjs test/bdd/cucumber.cjs scripts/build-test-artifacts.mjs scripts/run-compiled-tests.mjs scripts/run-cucumber.mjs scripts/update-version-badge.mjs",
+    "typecheck:maintenance": "tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck scripts/check-package-contents.ts scripts/check-platform-neutral.ts && tsc --noEmit --allowJs --checkJs --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck bin/howdone.cjs test/bdd/cucumber.cjs test/package/bdd/cucumber.cjs scripts/build-test-artifacts.mjs scripts/run-compiled-tests.mjs scripts/run-cucumber.mjs scripts/sync-package-artifacts.mjs scripts/update-version-badge.mjs",
     "verify:precommit": "npm run test:all && npm run typecheck:maintenance && npm run check:platform && npm audit --omit=dev --audit-level=moderate && npm audit --audit-level=moderate && npm run pack:check && git diff --check && git diff --cached --check",
     "check:platform": "node --import tsx ./scripts/check-platform-neutral.ts",
-    "pack:check": "npm run build && node --import tsx ./scripts/check-package-contents.ts"
+    "pack:check": "npm run build:cli && node --import tsx ./scripts/check-package-contents.ts"
   },
   "engines": {
     "node": ">=18.18"
-  },
-  "dependencies": {
-    "mdast-util-to-string": "^4.0.0",
-    "remark-frontmatter": "^5.0.0",
-    "remark-gfm": "^4.0.0",
-    "remark-parse": "^11.0.0",
-    "smol-toml": "^1.8.0",
-    "unified": "^11.0.5",
-    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^11.3.0",

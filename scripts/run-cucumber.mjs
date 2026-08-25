@@ -4,11 +4,11 @@ import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 
-/** @typedef {"source" | "compiled"} BddRuntime */
+/** @typedef {"source" | "compiled" | "package"} BddRuntime */
 
 const runtime = /** @type {BddRuntime | undefined} */ (process.argv[2]);
-if (runtime !== "source" && runtime !== "compiled") {
-  console.error("run-cucumber: runtime must be source or compiled");
+if (runtime !== "source" && runtime !== "compiled" && runtime !== "package") {
+  console.error("run-cucumber: runtime must be source, compiled, or package");
   process.exitCode = 1;
 } else {
   const require = createRequire(import.meta.url);
@@ -21,9 +21,15 @@ if (runtime !== "source" && runtime !== "compiled") {
     "bin",
     "cucumber.js",
   );
+  const config = runtime === "package"
+    ? "test/package/bdd/cucumber.cjs"
+    : "test/bdd/cucumber.cjs";
+  const nodeArguments = runtime === "source"
+    ? ["--conditions=source", cucumberEntryPoint, "--config", config]
+    : [cucumberEntryPoint, "--config", config];
   const result = spawnSync(
     process.execPath,
-    [cucumberEntryPoint, "--config", "test/bdd/cucumber.cjs"],
+    nodeArguments,
     {
       env: {
         ...process.env,

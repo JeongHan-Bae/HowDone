@@ -1,0 +1,13 @@
+{
+  "cases": [
+    { "code": "body-only-complete", "path": "body-only-complete.md", "expected": { "frontmatterSections": 0, "bodyRootCount": 1, "percentage": 100 } },
+    { "code": "body-two-items", "path": "body-two-items.md", "expected": { "frontmatterSections": 0, "bodyRootCount": 2, "percentage": 50 } },
+    { "code": "yaml-only", "path": "yaml-only.md", "expected": { "frontmatterSections": 1, "bodyRootCount": 0, "percentage": 100 } },
+    { "code": "yaml-plus-body", "path": "yaml-plus-body.md", "expected": { "frontmatterSections": 1, "bodyRootCount": 1, "percentage": 100 } },
+    { "code": "yaml-yaml-plus-body", "path": "yaml-yaml-plus-body.md", "expected": { "frontmatterSections": 2, "bodyRootCount": 1, "percentage": 100 } },
+    { "code": "yaml-toml-plus-body", "path": "yaml-toml-plus-body.md", "expected": { "frontmatterSections": 2, "bodyRootCount": 1, "percentage": 100 } },
+    { "code": "toml-only", "path": "toml-only.md", "expected": { "frontmatterSections": 1, "bodyRootCount": 0, "percentage": 100 } },
+    { "code": "toml-yaml-plus-body", "path": "toml-yaml-plus-body.md", "expected": { "frontmatterSections": 2, "bodyRootCount": 1, "percentage": 100 } },
+    { "code": "toml-toml-plus-body", "path": "toml-toml-plus-body.md", "expected": { "frontmatterSections": 2, "bodyRootCount": 1, "percentage": 100 } }
+  ]
+}

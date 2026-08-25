@@ -40,23 +40,26 @@ For a local package path, install it directly:
 # In the HowDone checkout:
 cd /path/to/HowDone
 npm install
-npm run build
+npm run build:cli
 
 # In the consuming project:
-npm install /path/to/HowDone
+npm install /path/to/HowDone/packages/cli
 npx howdone ./tasks.md
 ```
 
-The package is published as `howdone`; install it globally or run it through `npx`:
+The CLI is published as `howdone-cli`; install it globally or run it through
+`npx`:
 
 ```bash
-npm install --global howdone
+npm install --global howdone-cli
 howdone README.md
 npx howdone README.md
 ```
 
-The npm package is `howdone` and the executable is `howdone`. Node.js 18.18 or newer is required.
-The published package contains the compiled runtime, and its `howdone` executable points to that compiled entry.
+The npm package is `howdone-cli` and the executable is `howdone`. It depends on
+the dependency-free `howdone` core package. Node.js 18.18 or newer is
+required. The published CLI contains the compiled runtime and points directly
+to its compiled entry.
 
 ## Usage
 
@@ -246,6 +249,12 @@ JSON show that source directly. A document with both a body and frontmatter uses
 sections in tree/details and nested `frontmatter`/`markdown` results in JSON;
 frontmatter is listed before Markdown because it is the source prefix.
 Multiple frontmatter sections are also kept separate in their source order.
+Frontmatter is recognized only as a top-level prefix. A `---` or `+++` block
+inserted after Markdown body content stays ordinary Markdown, even when its
+contents are valid YAML or TOML. This is the defined ambiguity rule: the
+delimiter already has Markdown meaning, especially as a thematic break, so a
+middle-of-document block is resolved as Markdown rather than frontmatter. Move
+it to the beginning when it should be metadata.
 Use `--merge-frontmatter` when you want the aggregated frontmatter result and
 the Markdown result to become one calculated result. Multiple headers can be
 merged without a body, but a frontmatter weight needs both sides to have
@@ -254,7 +263,7 @@ rules.
 
 The complete user-facing source contract, including valid Markdown, YAML, and
 TOML layouts and the exact JSON fields, is in [`docs/syntax.md`](docs/syntax.md)
-and is included in the published package.
+and is included in the published `howdone-cli` package.
 
 For example:
 
@@ -294,4 +303,4 @@ see the [development guide](https://github.com/JeongHan-Bae/HowDone/blob/main/do
 [`AGENTS.md`](https://github.com/JeongHan-Bae/HowDone/blob/main/AGENTS.md), and
 the [contribution guide](https://github.com/JeongHan-Bae/HowDone/blob/main/CONTRIBUTING.md).
 The complete user-facing [syntax contract](docs/syntax.md) is included in the
-published package.
+published `howdone-cli` package.

@@ -15,7 +15,10 @@ import { defaultYamlValueParser } from "../../src/adapters/frontmatter/yaml-valu
 import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
 import { JsonRenderer } from "../../src/adapters/output/json-renderer.ts";
 import { TerminalRenderer } from "../../src/adapters/output/terminal-renderer.ts";
-import { packageVersion } from "../../src/adapters/runtime/node-package-version.ts";
+import {
+  packageRuntimeDependencies,
+  packageVersion,
+} from "../../src/adapters/runtime/node-package-version.ts";
 import { run } from "../../src/application/analyze.ts";
 import type { ParsedArguments } from "../../src/application/cli/args.ts";
 import { parseArguments } from "../../src/application/cli/args.ts";
@@ -114,6 +117,7 @@ function dependencies(baseDirectory: string) {
     tomlValueParser: defaultTomlValueParser,
     warning: { warn: () => {} },
     version: packageVersion,
+    runtimeDependencies: packageRuntimeDependencies,
   };
 }
 

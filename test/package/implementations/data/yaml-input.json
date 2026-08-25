@@ -1,0 +1,6 @@
+{
+  "cases": [
+    { "input": "checks:\n  setup: true", "code": "yaml-setup" },
+    { "input": "checks:\n  release: true", "code": "yaml-release" }
+  ]
+}

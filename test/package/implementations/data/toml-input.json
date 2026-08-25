@@ -1,0 +1,6 @@
+{
+  "cases": [
+    { "input": "[checks]\nsetup = true", "code": "toml-setup" },
+    { "input": "[checks]\nrelease = true", "code": "toml-release" }
+  ]
+}

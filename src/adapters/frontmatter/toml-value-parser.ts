@@ -1,5 +1,5 @@
 import { parse as parseToml } from "smol-toml";
-import type { FrontmatterAst, FrontmatterValueParser } from "../../core/index.ts";
+import type { FrontmatterAst, FrontmatterValueParser } from "howdone";
 
 function tomlValueKind(value: unknown): string {
   if (Array.isArray(value)) {

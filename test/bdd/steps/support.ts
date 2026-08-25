@@ -17,6 +17,7 @@ export interface ScenarioState {
 
 interface PackageMetadata {
   version: string;
+  dependencies: Record<string, string>;
 }
 
 interface PathVariant {
@@ -57,8 +58,14 @@ export const pathFixtures = JSON.parse(
 ) as PathFixtures;
 
 export const packageVersion = (JSON.parse(
-  readFileSync(new URL("../../../package.json", import.meta.url), "utf8"),
+  readFileSync(new URL("../../../packages/cli/package.json", import.meta.url), "utf8"),
 ) as PackageMetadata).version;
+
+export const packageRuntimeDependencies = Object.entries(
+  (JSON.parse(
+    readFileSync(new URL("../../../packages/cli/package.json", import.meta.url), "utf8"),
+  ) as PackageMetadata).dependencies,
+).map(([name, version]) => ({ name, version }));
 
 export const nestedSourceFixture = JSON.parse(
   readFileSync(new URL("../fixtures/nested-sources.json", import.meta.url), "utf8"),

@@ -1,3 +1,5 @@
+import type { RuntimeDependency } from "../../core/index.ts";
+
 export interface HelpOption {
   command: string;
   argument: string;
@@ -14,7 +16,12 @@ export interface HelpSections {
   displayDefaults: string;
   optionPolicy: string;
   syntaxReference: string;
-  requirements: string;
+  requirements: HelpRequirements;
+}
+
+export interface HelpRequirements {
+  header: readonly string[];
+  footer: readonly string[];
 }
 
 function text(...lines: string[]): string {
@@ -150,8 +157,10 @@ export const HELP_SECTIONS: HelpSections = {
     "its statistical children; a plain subtree with no checkbox descendants is",
     "discarded.",
     "The body and frontmatter are independent optional channels. Frontmatter",
-    "sections form one prefix and may be YAML or TOML in any source order; a",
-    "frontmatter section after Markdown body content is invalid.",
+    "sections are recognized only as a top-level document prefix and may be",
+    "YAML or TOML in any source order. A delimiter-shaped block after Markdown",
+    "body content remains ordinary Markdown, even when its contents resemble",
+    "YAML or TOML.",
     "Repeated YAML or TOML sections are parsed independently; matching keys or",
     "table names do not merge. Recognized roots from every section are included",
     "in the report-level calculation while section order remains visible in",
@@ -232,10 +241,15 @@ export const HELP_SECTIONS: HelpSections = {
     "The complete Markdown, YAML, TOML, layout, and output contract is in",
     "docs/syntax.md in the published package.",
   ),
-  requirements: text(
-    "Node.js 23+ runs TypeScript natively. Node.js 18.18 through 22 uses the",
-    "bundled tsx fallback. Node.js versions below 18.18 are unsupported.",
-  ),
+  requirements: {
+    header: [
+      "Node.js 18.18 or newer is required.",
+      "Runtime dependencies:",
+    ],
+    footer: [
+      "These dependencies are installed with the published package.",
+    ],
+  },
 };
 
 const optionLabelWidth = 28;
@@ -257,7 +271,22 @@ function renderSection(title: string, value: string): string[] {
   return [title, ...value.split("\n").map((line) => `  ${line}`)];
 }
 
-export function renderHelpText(sections: HelpSections = HELP_SECTIONS): string {
+function renderRequirements(
+  requirements: HelpRequirements,
+  runtimeDependencies: readonly RuntimeDependency[],
+): string[] {
+  const lines = [
+    ...requirements.header,
+    ...runtimeDependencies.map(({ name, version }) => `  - ${name}@${version}`),
+    ...requirements.footer,
+  ];
+  return renderSection("Requirements:", lines.join("\n"));
+}
+
+export function renderHelpText(
+  sections: HelpSections = HELP_SECTIONS,
+  runtimeDependencies: readonly RuntimeDependency[] = [],
+): string {
   const lines = [
     "Usage:",
     `  ${sections.usage}`,
@@ -279,10 +308,8 @@ export function renderHelpText(sections: HelpSections = HELP_SECTIONS): string {
     "",
     ...renderSection("Syntax reference:", sections.syntaxReference),
     "",
-    ...renderSection("Requirements:", sections.requirements),
+    ...renderRequirements(sections.requirements, runtimeDependencies),
     "",
   ];
   return `${lines.join("\n")}\n`;
 }
-
-export const HELP_TEXT = renderHelpText();

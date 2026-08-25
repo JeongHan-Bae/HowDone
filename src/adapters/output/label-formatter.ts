@@ -1,11 +1,11 @@
 import {
   DEFAULT_ELLIPSIS,
   DEFAULT_MAX_LABEL_CLUSTERS,
-} from "../../core/index.ts";
+} from "howdone";
 import type {
   GraphemeSegmenter,
   ResolvedDisplayOptions,
-} from "../../core/index.ts";
+} from "howdone";
 import { defaultGraphemeSegmenter } from "../unicode/intl-grapheme-segmenter.ts";
 
 export function truncateLabel(

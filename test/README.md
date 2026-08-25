@@ -3,7 +3,7 @@
 The detailed rules for test construction and verification are in
 [`AGENTS.md`](AGENTS.md).
 
-The project keeps three complementary evidence layers with separate ownership:
+The project keeps four complementary evidence layers with separate ownership:
 
 ```text
 test/
@@ -31,6 +31,27 @@ test/
 │   │   ├── support.ts
 │   │   └── workspace.steps.ts
 │   └── cucumber.cjs
+├── package/
+│   ├── bdd/
+│   │   ├── cucumber.cjs
+│   │   ├── features/
+│   │   │   └── consumer.feature
+│   │   └── steps/
+│   │       └── consumer.steps.ts
+│   ├── implementations/
+│   │   ├── data/
+│   │   ├── dependencies.ts
+│   │   ├── filesystem.ts
+│   │   ├── frontmatter.ts
+│   │   ├── index.ts
+│   │   ├── markdown.ts
+│   │   ├── output.ts
+│   │   └── runtime.ts
+│   └── tdd/
+│       ├── api.test.ts
+│       ├── application.test.ts
+│       ├── package-metadata.test.ts
+│       └── pipeline.test.ts
 ├── tdd/
 │   ├── fixtures/
 │   │   ├── cli-paths.json
@@ -56,7 +77,7 @@ test/
 └── README.md test layout summary
 ```
 
-TDD tests prove `source -> tokens -> DocumentAst -> separate Markdown/frontmatter progress -> metrics -> output` one boundary at a time. Complex stage inputs and expected nested objects live in `test/tdd/fixtures/`, so TDD code only loads data and asserts contracts. BDD scenarios prove what a user sees and the exit status returned by `howdone`; their source-only inputs live in `test/bdd/fixtures/`. `npm test` and `npm run test:bdd` explicitly use the original source runtime, while `npm run test:compiled` builds, packs, and installs the compiled package with `--omit=dev` before running the compiled TDD and BDD checks. The same TDD entry files and BDD feature files run in both modes, so the broad matrix protects Unicode, display options, path, error, fixed-sample, and source-to-JavaScript parity behavior without allowing development dependencies to satisfy the compiled application.
+TDD tests prove `source -> tokens -> DocumentAst -> separate Markdown/frontmatter progress -> metrics -> output` one boundary at a time. Complex stage inputs and expected nested objects live in `test/tdd/fixtures/`, so TDD code only loads data and asserts contracts. BDD scenarios prove what a user sees and the exit status returned by `howdone`; their source-only inputs live in `test/bdd/fixtures/`. Published-package consumer tests in `test/package/` provide test-owned port implementations for the public hexagonal API. Their TDD layer verifies intermediate mappings, application output, API documentation, and core/CLI version and dependency metadata; their BDD layer composes every data-driven fixture. `npm test` and `npm run test:bdd` explicitly use the original source runtime, `npm run test:package` runs the core package consumer, and `npm run test:compiled` stages both compiled packages plus the CLI's production dependency closure before running compiled TDD, package-consumer, and BDD checks. Development dependencies cannot satisfy the published runtime proof.
 
 `test/tdd/fixtures/frontmatter-contracts.json` is the semantic YAML/TOML TDD
 fixture set. It covers
@@ -66,8 +87,8 @@ all-or-nothing invalid sequences,
 `name`/`done` records, extra record fields, nested objects, separate progress,
 and weighted merging. `test/tdd/fixtures/frontmatter-layouts.json`
 covers optional body and frontmatter channels, repeated and alternating
-YAML/TOML prefix sections, source order, and rejection of frontmatter after
-body content. A semantic failure must produce no partial checklist from that
+YAML/TOML prefix sections, source order, and late YAML/TOML-shaped delimiter
+blocks remaining in the Markdown channel. A semantic failure must produce no partial checklist from that
 failed sequence. `test/tdd/fixtures/markdown-tree-contracts.json` covers ordered and unordered
 Markdown trees, explicit parent-state precedence, implicit ancestors, and
 discarded plain subtrees. BDD uses the smaller source-only files under
