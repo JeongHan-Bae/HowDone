@@ -545,6 +545,36 @@ test("85: renders the version", async () => {
     assert.equal(output.stdout(), `${packageVersion}\n`);
 });
 
+test("renders runtime dependencies without reading Markdown", async () => {
+  const output = capture();
+  let readCount = 0;
+  const dependencies = dependenciesFor("");
+  dependencies.fileReader = {
+    read: async () => {
+      readCount += 1;
+      return "- [x] unexpected\n";
+    },
+  };
+  const exitCode = await run(["--dependencies"], output.io, dependencies);
+  assert.equal(exitCode, 0);
+  assert.equal(readCount, 0);
+  assert.equal(
+    output.stdout(),
+    `${packageRuntimeDependencies.map(({ name, version }) => `${name}@${version}`).join("\n")}\n`,
+  );
+  assert.equal(output.stderr(), "");
+});
+
+test("keeps help, version, and dependencies as standalone commands", () => {
+  for (const command of ["--help", "--version", "--dependencies"]) {
+    assert.throws(
+      () => parseArguments(["tasks.md", command]),
+      /standalone command/u,
+      command,
+    );
+  }
+});
+
 test("86: rejects a missing path", async () => {
   const output = capture();
   const exitCode = await run([], output.io, dependenciesFor(""));

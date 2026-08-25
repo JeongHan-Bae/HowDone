@@ -52,6 +52,23 @@ TOML value is not necessarily a checklist container or a checkbox. A boolean
 becomes a checkbox only when it occurs in a recognized container; a root
 boolean field is intentionally ignored.
 
+## CLI command forms
+
+The CLI exposes four independent command forms:
+
+```text
+howdone <markdown-path> [options]
+howdone --help
+howdone --version
+howdone --dependencies
+```
+
+Only the Markdown-path form enters the source pipeline. The help, version, and
+dependency forms cannot be combined with a Markdown path or analysis options.
+`--dependencies` prints the CLI's direct runtime dependencies as one
+`name@version` entry per line. `-h` aliases `--help`, and `-v` aliases
+`--version`.
+
 ## 1. Source composition
 
 ### 1.1 Two optional channels

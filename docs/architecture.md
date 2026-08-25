@@ -1,5 +1,10 @@
 # HowDone architecture
 
+HowDone is published in two parts. The `howdone` npm package is the
+framework-independent hexagonal core, while `howdone-cli` is the primary
+product and command executor. The CLI's command-line names are `howdone` and
+`howdone-cli`; it composes the default adapters around the reusable core.
+
 ## Repository layout
 
 ```text
@@ -18,13 +23,21 @@
 │   └── syntax.md
 ├── packages/
 │   ├── cli/
-│   │   └── package.json
+│   │   ├── package.json
+│   │   └── README.md
 │   └── core/
-│       └── package.json
+│       ├── source/
+│       │   ├── application/
+│       │   │   └── index.ts
+│       │   └── core/
+│       │       └── index.ts
+│       ├── package.json
+│       └── README.md
 ├── scripts/
 │   ├── build-test-artifacts.mjs
 │   ├── check-package-contents.ts
 │   ├── check-platform-neutral.ts
+│   ├── install-local.mjs
 │   ├── run-compiled-tests.mjs
 │   ├── run-cucumber.mjs
 │   ├── sync-package-artifacts.mjs
@@ -53,8 +66,10 @@
 │   │   │   ├── args.ts
 │   │   │   └── help.ts
 │   │   ├── analyze.ts
+│   │   ├── index.ts
 │   │   └── types.ts
 │   ├── boot/
+│   │   ├── cli-main.ts
 │   │   ├── main.ts
 │   │   └── pipeline.ts
 │   └── core/
@@ -80,7 +95,7 @@
 │       ├── index.ts
 │       ├── ports.ts
 │       └── types.ts
-├── test/                    BDD, TDD, published-package, and regression tests
+├── test/                    BDD, TDD, published-package, and regression tests; see test/README.md
 ├── .gitattributes
 ├── .gitignore
 ├── AGENTS.md
@@ -118,16 +133,20 @@ Markdown source
 TypeScript source is compiled by `tsconfig.build.json` into the ignored
 `packages/core/dist/` directory, and `tsconfig.cli-build.json` emits the CLI
 adapters into `packages/cli/dist/`. The compiler rewrites relative `.ts`
-imports to `.js` and emits declarations for the public core entry. The
-`howdone` package has no bin; the `howdone-cli` package bin points directly to
-`dist/boot/cli-main.js`. Repository source checks continue to use
+imports to `.js` and emits declarations for the public core entry.
+The `howdone` package is the framework-independent hexagonal core and has no
+bin; the `howdone-cli` package is the primary product and its `howdone` and
+`howdone-cli` bins point directly to `dist/boot/cli-main.js`. Repository source checks continue to use
 `bin/howdone.cjs`: Node.js 23+ uses native TypeScript execution and Node.js
 18.18–22 uses `tsx`. The source and compiled test modes select their entry
 explicitly; each mode owns its runtime contract. Compiled parity stages the
 two compiled packages and the CLI's resolved production dependency closure in
 a temporary sandbox. The test runner may use development dependencies to
 orchestrate BDD, but the package consumer and CLI application processes can
-resolve only the package's published runtime dependencies.
+resolve only the package's published runtime dependencies. The separate
+local-install parity mode installs the compiled Core and CLI from local package
+paths into another temporary sandbox, then runs the installed package entries
+and both CLI bin aliases.
 
 The repository root is the only source of the shared `LICENSE`, `docs/api.md`,
 and `docs/syntax.md` content. `scripts/sync-package-artifacts.mjs` materializes
@@ -234,4 +253,4 @@ dependency metadata from `packages/cli/package.json`; the repository badge
 script reads the core version and is not a runtime dependency. The published
 `howdone/application` entry exposes the port boundary for consumers that
 provide their own implementations. The `howdone` package contains no adapter
-or CLI bin, while the `howdone-cli` bin starts the compiled `dist/boot/cli-main.js`.
+or CLI bin, while both CLI bin aliases start the compiled `dist/boot/cli-main.js`.

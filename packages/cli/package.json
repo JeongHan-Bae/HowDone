@@ -1,10 +1,11 @@
 {
   "name": "howdone-cli",
   "version": "0.1.1",
-  "description": "HowDone's command-line adapter and executable.",
+  "description": "HowDone's primary CLI product and howdone command executor.",
   "type": "module",
   "bin": {
-    "howdone": "./dist/boot/cli-main.js"
+    "howdone": "./dist/boot/cli-main.js",
+    "howdone-cli": "./dist/boot/cli-main.js"
   },
   "files": [
     "dist",

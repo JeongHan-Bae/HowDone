@@ -85,6 +85,9 @@ jobs:
       - name: Build and run compiled TDD and BDD tests
         run: npm run test:compiled
 
+      - name: Install local packages in a sandbox and run local-install tests
+        run: npm run test:local-install
+
       - name: Verify npm package contents
         run: npm run pack:check
 

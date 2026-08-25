@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // @ts-check
 
-import { cpSync, copyFileSync, rmSync } from "node:fs";
+import { chmodSync, cpSync, copyFileSync, rmSync } from "node:fs";
 import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -35,6 +35,8 @@ for (const project of [
     { cwd: projectRoot, stdio: "inherit" },
   );
 }
+
+chmodSync(resolve(compiledCliRoot, "boot", "cli-main.js"), 0o755);
 
 rmSync(resolve(outputRoot, "src"), { recursive: true, force: true });
 cpSync(compiledRoot, resolve(outputRoot, "src"), { recursive: true });

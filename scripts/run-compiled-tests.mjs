@@ -2,6 +2,7 @@
 // @ts-check
 
 import {
+  chmodSync,
   cpSync,
   mkdirSync,
   mkdtempSync,
@@ -15,11 +16,19 @@ import { dirname, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-/** @typedef {"tdd" | "bdd" | "package" | "all"} CompiledTestMode */
-/** @typedef {{ name: string, version: string, dependencies?: Record<string, string>, optionalDependencies?: Record<string, string> }} PackageMetadata */
+/** @typedef {"tdd" | "bdd" | "package" | "local-install" | "all"} CompiledTestMode */
+/** @typedef {{ name: string, version: string, description?: string, dependencies?: Record<string, string>, optionalDependencies?: Record<string, string> }} PackageMetadata */
 const mode = /** @type {CompiledTestMode | undefined} */ (process.argv[2]);
-if (mode !== "tdd" && mode !== "bdd" && mode !== "package" && mode !== "all") {
-  throw new Error("run-compiled-tests: mode must be tdd, bdd, package, or all");
+if (
+  mode !== "tdd" &&
+  mode !== "bdd" &&
+  mode !== "package" &&
+  mode !== "local-install" &&
+  mode !== "all"
+) {
+  throw new Error(
+    "run-compiled-tests: mode must be tdd, bdd, package, local-install, or all",
+  );
 }
 
 const projectRoot = fileURLToPath(new URL("..", import.meta.url).href);
@@ -133,6 +142,60 @@ function stageCliPackage(runtimeRoot) {
   );
 }
 
+/**
+ * @param {string} sourceRoot
+ * @param {string} targetRoot
+ */
+function stageLocalPackage(sourceRoot, targetRoot) {
+  mkdirSync(targetRoot, { recursive: true });
+  cpSync(resolve(sourceRoot, "dist"), resolve(targetRoot, "dist"), {
+    recursive: true,
+  });
+  cpSync(resolve(sourceRoot, "docs"), resolve(targetRoot, "docs"), {
+    recursive: true,
+  });
+  cpSync(resolve(sourceRoot, "README.md"), resolve(targetRoot, "README.md"));
+  cpSync(resolve(sourceRoot, "LICENSE"), resolve(targetRoot, "LICENSE"));
+  cpSync(
+    resolve(sourceRoot, "package.json"),
+    resolve(targetRoot, "package.json"),
+  );
+  if (sourceRoot === cliRoot) {
+    chmodSync(resolve(targetRoot, "dist", "boot", "cli-main.js"), 0o755);
+  }
+}
+
+/** @param {string} runtimeRoot */
+function stageLocalPackageSources(runtimeRoot) {
+  const localPackageRoot = resolve(runtimeRoot, "local-packages");
+  const localCoreRoot = resolve(localPackageRoot, coreMetadata.name);
+  const localCliRoot = resolve(localPackageRoot, cliMetadata.name);
+  stageLocalPackage(coreRoot, localCoreRoot);
+  stageLocalPackage(cliRoot, localCliRoot);
+  return { localCoreRoot, localCliRoot };
+}
+
+/**
+ * @param {string} runtimeRoot
+ * @param {string} localCoreRoot
+ * @param {string} localCliRoot
+ */
+function installLocalPackages(runtimeRoot, localCoreRoot, localCliRoot) {
+  execFileSync(
+    "npm",
+    [
+      "install",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      "--package-lock=false",
+      localCoreRoot,
+      localCliRoot,
+    ],
+    { cwd: runtimeRoot, shell: true, stdio: "inherit" },
+  );
+}
+
 /** @param {string} runtimeRoot */
 function stageProductionPackages(runtimeRoot) {
   writeRuntimePackage(runtimeRoot);
@@ -186,6 +249,7 @@ function stageCorePackageFiles(runtimeRoot) {
     `${JSON.stringify({
       name: coreMetadata.name,
       version: coreMetadata.version,
+      description: coreMetadata.description,
       type: "module",
       main: "./dist/core/index.js",
       types: "./dist/core/index.d.ts",
@@ -299,6 +363,54 @@ function runCompiledBdd(runtimeRoot) {
   });
 }
 
+/** @param {string} runtimeRoot */
+function copyConsumerPackageMetadata(runtimeRoot) {
+  mkdirSync(resolve(runtimeRoot, "packages", "cli"), { recursive: true });
+  cpSync(
+    resolve(cliRoot, "package.json"),
+    resolve(runtimeRoot, "packages", "cli", "package.json"),
+  );
+}
+
+/** @param {string} runtimeRoot */
+function runInstalledCliCommands(runtimeRoot) {
+  writeFileSync(
+    resolve(runtimeRoot, "local-install-tasks.md"),
+    "- [x] Installed locally\n",
+    "utf8",
+  );
+
+  for (const command of ["howdone", "howdone-cli"]) {
+    const output = execFileSync(
+      "npm",
+      ["exec", "--offline", "--", command, "local-install-tasks.md"],
+      { cwd: runtimeRoot, encoding: "utf8", shell: true },
+    );
+    if (!output.includes("100%")) {
+      throw new Error(
+        `local-install ${command} command did not report the expected result`,
+      );
+    }
+  }
+}
+
+function runLocalInstallTests() {
+  const runtimeRoot = mkdtempSync(resolve(tmpdir(), "howdone-local-install-"));
+  try {
+    writeRuntimePackage(runtimeRoot);
+    const { localCoreRoot, localCliRoot } = stageLocalPackageSources(runtimeRoot);
+    copyConsumerPackageMetadata(runtimeRoot);
+    copyPublishedPackageTests(runtimeRoot);
+    installLocalPackages(runtimeRoot, localCoreRoot, localCliRoot);
+    runPublishedPackageTests(runtimeRoot);
+    runPublishedPackageBdd(runtimeRoot);
+    runCompiledBdd(runtimeRoot);
+    runInstalledCliCommands(runtimeRoot);
+  } finally {
+    rmSync(runtimeRoot, { recursive: true, force: true });
+  }
+}
+
 function main() {
   runNodeScript("build-test-artifacts.mjs");
 
@@ -329,6 +441,10 @@ function main() {
     } finally {
       rmSync(runtimeRoot, { recursive: true, force: true });
     }
+  }
+
+  if (mode === "local-install") {
+    runLocalInstallTests();
   }
 }
 

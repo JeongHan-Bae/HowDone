@@ -1,5 +1,9 @@
 # Development workflow
 
+HowDone is developed and published in two parts: the `howdone` npm package is
+the framework-independent hexagonal core, and `howdone-cli` is the primary
+product and command executor. The CLI command is named `howdone`.
+
 ## Test-first workflow
 
 Use the smallest boundary that proves the change:
@@ -22,11 +26,13 @@ TDD tests must assert the intermediate result, not only the final percentage. Th
 ```bash
 npm install
 npm run build:cli
+npm run install:local
 npm run typecheck
 npm test              # Node test runner: regression + TDD pipeline tests
 npm run test:bdd      # unchanged Cucumber behavior through the source runtime
 npm run test:package   # public core package consumer in an isolated sandbox
 npm run test:compiled # Compiled TDD, package consumer, and BDD feature suites
+npm run test:local-install # Local-path npm installation in an isolated sandbox
 npm run test:all
 npm run typecheck:maintenance
 npm run typecheck:release # Release workflow only
@@ -58,6 +64,9 @@ CLI adapters and compiled `packages/cli/dist/boot/cli-main.js`. Relative
 preserves the native Node.js TypeScript path on Node.js 23+ and the bundled
 `tsx` path on Node.js 18.18–22. Both published packages run compiled
 JavaScript directly through Node.
+`npm run install:local` builds both packages and installs the local `howdone`
+Core and `howdone-cli` package globally from this checkout. It does not run a
+root `npm install` as part of the local package installation.
 `npm run build:tests` compiles the same TDD files and source modules into the
 ignored `.test-build/` directory and copies their JSON fixtures. The compiled
 test commands use `scripts/run-compiled-tests.mjs`: it builds the release
@@ -67,11 +76,16 @@ closure, copies the compiled tests, and runs the compiled TDD and BDD suites.
 The package consumer stages the compiled core as `node_modules/howdone` and
 supplies test-owned port implementations, proving that a consumer can use the
 public hexagonal API without repository adapters. No test step installs from
-the network or relies on `tsx`, TypeScript, or Cucumber as an application
-runtime dependency. CI uses deterministic `npm ci`, dependency audits,
-application and maintenance typechecks, the platform-neutral source check,
-source TDD/BDD/package tests, compiled TDD/package/BDD tests, and both package
-content checks.
+the network for the direct compiled/package checks or relies on `tsx`,
+TypeScript, or Cucumber as an application runtime dependency. The separate
+`test:local-install` mode uses npm local package paths in a temporary project,
+installs the matching Core and CLI plus the CLI's production dependencies, and
+executes the installed package entries and both CLI bin aliases. It does not
+install repository development dependencies. CI uses deterministic `npm ci`,
+dependency audits, application and maintenance typechecks, the
+platform-neutral source check, source TDD/BDD/package tests, compiled
+TDD/package/BDD tests, the local-install sandbox, and both package content
+checks.
 The typed maintenance script under `scripts/` is executed through `tsx` and is
 kept outside the application `tsconfig.json` boundary.
 The release-only validator is statically typechecked by
@@ -89,7 +103,7 @@ the reusable CI gate.
 
 Each operating-system job runs the same Node.js 18, 20, 22, 24, and 26
 matrix, including dependency audit, typecheck, platform API checks, source and
-compiled TDD/BDD tests, and package checks.
+compiled TDD/BDD tests, the local-install sandbox, and package checks.
 The shared matrix and steps are declared once with YAML anchors and reused by
 the three OS jobs. Cucumber 11.3.0 is declared once in `package.json` and
 supports the project's Node.js matrix. npm `overrides` pin transitive `uuid`
@@ -127,10 +141,10 @@ the copyright year for this repository is 2026.
 
 Formal releases are tag-driven. `0.1.0` was the first formal public release.
 Starting with `0.1.2`, every published npm release uses compiled packages:
-`howdone` exposes the dependency-free core/application API and `howdone-cli`
-exposes the `howdone` bin plus CLI adapters. TypeScript source, the repository
-launcher, tests, development documentation, and maintenance scripts are not
-part of either package.
+`howdone` is the dependency-free hexagonal core/application API, while
+`howdone-cli` is the primary product that exposes the `howdone` command and CLI
+adapters. TypeScript source, the repository launcher, tests, development
+documentation, and maintenance scripts are not part of either package.
 
 The stable Release workflow accepts exactly these tag forms:
 
@@ -198,6 +212,7 @@ npm test
 npm run test:bdd
 npm run test:package
 npm run test:compiled
+npm run test:local-install
 ```
 
 The TDD suite owns intermediate contracts and the BDD suite creates temporary

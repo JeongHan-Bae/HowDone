@@ -25,46 +25,126 @@
 
 [![CI](https://github.com/JeongHan-Bae/HowDone/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/JeongHan-Bae/HowDone/actions/workflows/ci.yml)
 
-[![License](https://img.shields.io/github/license/JeongHan-Bae/HowDone)](https://github.com/JeongHan-Bae/HowDone?tab=Apache-2.0-1-ov-file#readme)
+[![License](https://img.shields.io/github/license/JeongHan-Bae/HowDone)](LICENSE)
 
 </div>
 
-**HowDone** answers “How done is this Markdown?” It is a local, cross-platform CLI that analyzes hierarchical Markdown task
-lists, calculates overall and per-level completion, and never modifies or uploads the source file.
+**HowDone** answers “How done is this Markdown?” It is a local, cross-platform
+Node.js/TypeScript project published in two packages: `howdone` is the
+framework-independent hexagonal core, and `howdone-cli` is the primary product
+and command-line executor. Its command names are `howdone` and `howdone-cli`,
+with `howdone` as the primary command. It analyzes
+hierarchical Markdown task lists, calculates overall and per-level completion,
+and never modifies or uploads the source file.
 
-## Install and run
+## Install and Run
 
-For a local package path, install it directly:
+### 1. Build and install the local Repo
+
+Run this from the HowDone checkout. The command builds both packages and
+installs the matching local Core and CLI:
 
 ```bash
-# In the HowDone checkout:
-cd /path/to/HowDone
-npm install
-npm run build:cli
-
-# In the consuming project:
-npm install /path/to/HowDone/packages/cli
-npx howdone ./tasks.md
+npm run install:local
+howdone task.md
+howdone-cli task.md
 ```
 
-The CLI is published as `howdone-cli`; install it globally or run it through
-`npx`:
+Both packages come from the checkout. If your system does not expose global
+commands directly, prefix the commands with `npx`:
+
+```bash
+npx howdone-cli task.md
+npx howdone task.md
+```
+
+### 2. Install the published CLI in a project
+
+Run this in the project where you want to use the published CLI:
+
+The remote commands below apply to paired releases beginning with `0.1.2`;
+the repository's `0.1.1` is not that paired remote release.
+
+```bash
+npm install howdone-cli
+npx howdone-cli task.md
+npx howdone task.md
+```
+
+npm downloads the published `howdone-cli` and its matching published Core.
+
+### 3. Install the published CLI globally
 
 ```bash
 npm install --global howdone-cli
-howdone README.md
-npx howdone README.md
+howdone task.md
+howdone-cli task.md
 ```
 
-The npm package is `howdone-cli` and the executable is `howdone`. It depends on
-the dependency-free `howdone` core package. Node.js 18.18 or newer is
-required. The published CLI contains the compiled runtime and points directly
-to its compiled entry.
+Use the commands directly when your system exposes global npm binaries.
 
-## Usage
+### 4. Download and run the published CLI with npx
+
+```bash
+npx howdone-cli task.md
+npx howdone task.md
+```
+
+Run `npx howdone-cli task.md` once first so npx registers the CLI package;
+after that, both command names are valid. The published CLI automatically
+installs its matching published Core dependency.
+
+### 5. Install only the published Core
+
+```bash
+npm install howdone
+```
+
+This installs only the published Core for use as a library.
+
+It does not install either CLI command. The CLI commands are `howdone` and
+`howdone-cli`.
+
+Node.js 18.18 or newer is required.
+
+## HowDone Core
+
+The `howdone` package is HowDone's framework-independent hexagonal Core. Its
+source contracts and policies are in [`src/core/`](src/core/), its package
+entry is [`packages/core/`](packages/core/), and the public API is defined in
+[`docs/api.md`](docs/api.md). The Core does not construct the default CLI
+adapters; another project supplies the ports when it uses the package.
+
+The Core application can be composed from another project like this:
+
+```ts
+import { run } from "howdone/application";
+
+const exitCode = await run(argv, io, dependencies);
+```
+
+The `io` and `dependencies` objects are supplied by the consuming project.
+Their required contracts and the complete composition example are in the
+[Core API](docs/api.md).
+
+## CLI Usage
+
+The CLI has four independent commands. Only the first command reads and
+analyzes a Markdown file:
 
 ```text
-howdone <markdown-path>
+howdone <markdown-path> [options]
+howdone --help
+howdone --version
+howdone --dependencies
+```
+
+The Markdown analysis command accepts the output and display options below.
+The help, version, and dependency commands cannot be combined with a Markdown
+path or analysis options. `-h` is an alias for `--help`, and `-v` is an alias
+for `--version`.
+
+```text
 howdone <markdown-path> --format decimal
 howdone <markdown-path> --format percentage
 howdone <markdown-path> --precision 3
@@ -78,9 +158,13 @@ howdone <markdown-path> --silent
 howdone <markdown-path> --merge-frontmatter
 howdone <markdown-path> --merge-frontmatter --frontmatter-weight 0.5
 howdone <markdown-path> --merge-frontmatter --strict
-howdone --help
-howdone --version
 ```
+
+`howdone --dependencies` prints the published CLI's direct runtime
+dependencies, one `name@version` per line. It does not read a Markdown file.
+
+The complete CLI input, output, and frontmatter syntax is defined in the
+[CLI syntax contract](docs/syntax.md).
 
 With only a Markdown path, the CLI prints the overall percentage, for example `75%`. Use `--format decimal` for a
 decimal value such as `0.75`, or `--format percentage`/`--percentage` for an explicit percentage. `--tree`, `--details`,
@@ -136,8 +220,6 @@ begins with `-`.
 | `--frontmatter-weight N` | With a valid merge and a Markdown checklist side, gives all frontmatter the share `N`, where `0 < N < 1`. |
 | `--strict` | Converts warnings into errors. |
 | `--silent`, `-s` | Suppresses process warnings. Errors are still reported; `-s` is the npm-compatible short spelling. |
-| `--help`, `-h` | Prints command usage and a summary of the supported behavior. |
-| `--version`, `-v` | Prints the installed HowDone version. |
 | `--` | Ends option parsing so the following value is treated as the path. |
 
 Defaults are explicit and stable:
@@ -299,8 +381,7 @@ HowDone is licensed under the [Apache License 2.0](LICENSE).
 Copyright 2026 JeongHan-Bae.
 
 For architecture, development, testing, release, and contribution details,
-see the [development guide](https://github.com/JeongHan-Bae/HowDone/blob/main/docs/development.md),
-[`AGENTS.md`](https://github.com/JeongHan-Bae/HowDone/blob/main/AGENTS.md), and
-the [contribution guide](https://github.com/JeongHan-Bae/HowDone/blob/main/CONTRIBUTING.md).
+see the [development guide](docs/development.md), [`AGENTS.md`](AGENTS.md), and
+the [contribution guide](CONTRIBUTING.md).
 The complete user-facing [syntax contract](docs/syntax.md) is included in the
 published `howdone-cli` package.

@@ -1,7 +1,7 @@
 {
   "name": "howdone",
   "version": "0.1.1",
-  "description": "HowDone's framework-independent hexagonal progress analysis API.",
+  "description": "HowDone's framework-independent hexagonal core package.",
   "type": "module",
   "main": "./dist/core/index.js",
   "types": "./dist/core/index.d.ts",

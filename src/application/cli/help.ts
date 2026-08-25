@@ -29,7 +29,12 @@ function text(...lines: string[]): string {
 }
 
 export const HELP_SECTIONS: HelpSections = {
-  usage: "howdone <markdown-path> [options]",
+  usage: text(
+    "howdone <markdown-path> [options]",
+    "howdone --help",
+    "howdone --version",
+    "howdone --dependencies",
+  ),
   options: [
     {
       command: "--format",
@@ -132,16 +137,6 @@ export const HELP_SECTIONS: HelpSections = {
       command: "--",
       argument: "",
       description: ["End option parsing; treat the next value as the path."],
-    },
-    {
-      command: "-h, --help",
-      argument: "",
-      description: ["Show this help message."],
-    },
-    {
-      command: "-v, --version",
-      argument: "",
-      description: ["Show the installed version."],
     },
   ],
   supportedPaths: text(
@@ -283,13 +278,21 @@ function renderRequirements(
   return renderSection("Requirements:", lines.join("\n"));
 }
 
+export function renderDependenciesText(
+  runtimeDependencies: readonly RuntimeDependency[],
+): string {
+  const lines = runtimeDependencies.map(
+    ({ name, version }) => `${name}@${version}`,
+  );
+  return lines.length === 0 ? "" : `${lines.join("\n")}\n`;
+}
+
 export function renderHelpText(
   sections: HelpSections = HELP_SECTIONS,
   runtimeDependencies: readonly RuntimeDependency[] = [],
 ): string {
   const lines = [
-    "Usage:",
-    `  ${sections.usage}`,
+    ...renderSection("Usage:", sections.usage),
     "",
     "Options:",
     ...sections.options.flatMap(renderOption),

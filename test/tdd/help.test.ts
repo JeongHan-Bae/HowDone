@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import {
   HELP_SECTIONS,
+  renderDependenciesText,
   renderHelpText,
 } from "../../src/application/cli/help.ts";
 import { packageRuntimeDependencies } from "../../src/adapters/runtime/node-package-version.ts";
@@ -21,8 +22,20 @@ const expectedRuntimeDependencies = Object.entries(
 
 test("TDD help content keeps usage, options, and sections structured", () => {
   assert.equal(typeof HELP_SECTIONS.usage, "string");
+  assert.deepEqual(HELP_SECTIONS.usage.split("\n"), [
+    "howdone <markdown-path> [options]",
+    "howdone --help",
+    "howdone --version",
+    "howdone --dependencies",
+  ]);
   assert.equal(Array.isArray(HELP_SECTIONS.options), true);
   assert.ok(HELP_SECTIONS.options.length > 0);
+  assert.equal(
+    HELP_SECTIONS.options.some((option) =>
+      option.command === "-h, --help" || option.command === "-v, --version"
+    ),
+    false,
+  );
 
   const format = HELP_SECTIONS.options.find(
     (option) => option.command === "--format",
@@ -53,5 +66,10 @@ test("TDD help content keeps usage, options, and sections structured", () => {
   assert.equal(
     helpText,
     renderHelpText(HELP_SECTIONS, packageRuntimeDependencies),
+  );
+
+  assert.equal(
+    renderDependenciesText(packageRuntimeDependencies),
+    `${expectedRuntimeDependencies.map(({ name, version }) => `${name}@${version}`).join("\n")}\n`,
   );
 });

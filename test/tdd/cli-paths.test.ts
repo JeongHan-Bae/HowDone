@@ -33,6 +33,7 @@ interface PathVariant {
 interface ArgumentExpectation {
   help: boolean;
   version: boolean;
+  dependencies?: boolean;
   path: string;
   mode: ParsedArguments["mode"];
   format: ParsedArguments["format"];
@@ -125,6 +126,7 @@ function expectedArguments(value: ArgumentExpectation): ParsedArguments {
   return {
     help: value.help,
     version: value.version,
+    dependencies: value.dependencies ?? false,
     path: value.path,
     mode: value.mode,
     format: value.format,

@@ -3,7 +3,7 @@
 The detailed rules for test construction and verification are in
 [`AGENTS.md`](AGENTS.md).
 
-The project keeps four complementary evidence layers with separate ownership:
+The project keeps separate evidence layers with separate ownership:
 
 ```text
 test/
@@ -33,13 +33,32 @@ test/
 │   └── cucumber.cjs
 ├── package/
 │   ├── bdd/
-│   │   ├── cucumber.cjs
 │   │   ├── features/
 │   │   │   └── consumer.feature
-│   │   └── steps/
-│   │       └── consumer.steps.ts
+│   │   ├── steps/
+│   │   │   └── consumer.steps.ts
+│   │   └── cucumber.cjs
 │   ├── implementations/
 │   │   ├── data/
+│   │   │   ├── json-input.json
+│   │   │   ├── json-output.json
+│   │   │   ├── lexer-input.json
+│   │   │   ├── lexer-output.json
+│   │   │   ├── parser-input.json
+│   │   │   ├── parser-output.json
+│   │   │   ├── reader-input.json
+│   │   │   ├── reader-output.json
+│   │   │   ├── segmenter-input.json
+│   │   │   ├── segmenter-output.json
+│   │   │   ├── terminal-input.json
+│   │   │   ├── terminal-output.json
+│   │   │   ├── toml-input.json
+│   │   │   ├── toml-output.json
+│   │   │   ├── warning-input.json
+│   │   │   ├── warning-output.json
+│   │   │   ├── yaml-input.json
+│   │   │   └── yaml-output.json
+│   │   ├── data.ts
 │   │   ├── dependencies.ts
 │   │   ├── filesystem.ts
 │   │   ├── frontmatter.ts
@@ -77,7 +96,10 @@ test/
 └── README.md test layout summary
 ```
 
-TDD tests prove `source -> tokens -> DocumentAst -> separate Markdown/frontmatter progress -> metrics -> output` one boundary at a time. Complex stage inputs and expected nested objects live in `test/tdd/fixtures/`, so TDD code only loads data and asserts contracts. BDD scenarios prove what a user sees and the exit status returned by `howdone`; their source-only inputs live in `test/bdd/fixtures/`. Published-package consumer tests in `test/package/` provide test-owned port implementations for the public hexagonal API. Their TDD layer verifies intermediate mappings, application output, API documentation, and core/CLI version and dependency metadata; their BDD layer composes every data-driven fixture. `npm test` and `npm run test:bdd` explicitly use the original source runtime, `npm run test:package` runs the core package consumer, and `npm run test:compiled` stages both compiled packages plus the CLI's production dependency closure before running compiled TDD, package-consumer, and BDD checks. Development dependencies cannot satisfy the published runtime proof.
+The architecture document folds the complete `test/` subtree into the summary
+entry above; this file is the authoritative test-directory tree.
+
+TDD tests prove `source -> tokens -> DocumentAst -> separate Markdown/frontmatter progress -> metrics -> output` one boundary at a time. Complex stage inputs and expected nested objects live in `test/tdd/fixtures/`, so TDD code only loads data and asserts contracts. BDD scenarios prove what a user sees and the exit status returned by `howdone`; their source-only inputs live in `test/bdd/fixtures/`. Published-package consumer tests in `test/package/` provide test-owned port implementations for the public hexagonal API. Their TDD layer verifies intermediate mappings, application output, API documentation, and core/CLI version and dependency metadata; their BDD layer composes every data-driven fixture. The package suite stages compiled files locally; it does not download a package from npm. `npm test` and `npm run test:bdd` explicitly use the original source runtime, `npm run test:package` runs the staged Core consumer, and `npm run test:compiled` stages both compiled packages plus the CLI's production dependency closure before running compiled TDD, package-consumer, and BDD checks. `npm run test:local-install` separately installs the compiled Core and CLI from local paths into a temporary sandbox and runs the installed package consumer, BDD, and both CLI bin aliases. Development dependencies cannot satisfy the compiled or locally installed runtime proofs.
 
 `test/tdd/fixtures/frontmatter-contracts.json` is the semantic YAML/TOML TDD
 fixture set. It covers

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { extname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import * as ts from "typescript";
+import ts from "typescript";
 
 interface Violation {
   file: string;

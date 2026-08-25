@@ -1,15 +1,17 @@
 # Public API
 
-This document is included in the published `howdone` core package. HowDone
-has two different composition contracts:
+This document is included in the published `howdone` core package. HowDone is
+published in two parts: `howdone` is the framework-independent hexagonal core,
+and `howdone-cli` is the primary product and command executor. Its command-line
+names are `howdone` and `howdone-cli`. The two packages expose different composition contracts:
 
 | Use | Entry | Who supplies the adapters | Dependency responsibility |
 | --- | --- | --- | --- |
-| Hexagonal package | `howdone/application` | The package consumer | The consumer supplies every port in `CliDependencies` |
-| CLI | the `howdone` bin from `howdone-cli` | HowDone's boot composition root | HowDone constructs the default adapters from `packages/cli/package.json` |
+| Hexagonal core package | `howdone/application` | The package consumer | The consumer supplies every port in `CliDependencies` |
+| Primary CLI product | the `howdone` and `howdone-cli` bins from `howdone-cli` | HowDone's boot composition root | HowDone constructs the default adapters from `packages/cli/package.json` |
 
-The hexagonal package is the reusable contract. The CLI is one application of
-that contract, not the definition of the package API.
+The hexagonal core package is the reusable contract. The CLI is the primary
+user-facing application of that contract, not the definition of the core API.
 
 ## Hexagonal package contract
 
@@ -96,7 +98,7 @@ uses only `--json` or only terminal output.
 | `TerminalOutputPort` | Render the requested terminal mode from a `ProgressReport` or `ProgressResult` and resolved display options. |
 | `JsonOutputPort` | Serialize a `ProgressReport`; optional display options apply only to explicitly requested JSON label truncation. |
 | `WarningPort` | Receive non-fatal warnings. `--silent` prevents calls and `--strict` turns warning conditions into a failed run. |
-| `version` and `runtimeDependencies` | Supply metadata for `--version` and the requirements section of `--help`; these values are not discovered by the package. |
+| `version` and `runtimeDependencies` | Supply metadata for the standalone `--version` and `--dependencies` commands and the requirements section of `--help`; these values are not discovered by the package. |
 
 `GraphemeSegmenter` is a public core port for a terminal adapter's Unicode
 label handling. It is not a separate `CliDependencies` field because the
@@ -138,17 +140,18 @@ Markdown parser, YAML/TOML decoder, Unicode segmenter, warning sink, and output
 libraries. The compiled core and application entry only consume the values and
 interfaces passed through the public contract.
 
-The `howdone` npm package is the dependency-free core/application package. It
-has no CLI bin and no adapter runtime dependencies. Its `docs/api.md` file is
-the published explanation of the hexagonal contract. The separate
-`howdone-cli` npm package contains the executable and default adapters; it
-depends on the matching `howdone` version and does not change the core package
+The `howdone` npm package is the dependency-free hexagonal core/application
+package. It has no CLI bin and no adapter runtime dependencies. Its
+`docs/api.md` file is the published explanation of the core contract. The
+separate `howdone-cli` npm package is the primary product and command
+executor; it contains the `howdone` and `howdone-cli` executables and default adapters, depends
+on the matching `howdone` version, and does not change the core package
 contract.
 
 ## CLI composition and dependencies
 
-The CLI is the default composition supplied by `howdone-cli`. Its compiled bin
-points to `dist/boot/cli-main.js`; that composition root supplies the repository's file
+The CLI is the default composition supplied by `howdone-cli`. Its compiled bins
+point to `dist/boot/cli-main.js`; that composition root supplies the repository's file
 reader, Unified/Remark Markdown lexer, YAML/TOML value parsers, Unicode
 segmenter, terminal and JSON renderers, warning sink, and package metadata
 reader. It then calls the same `run` function exported by
@@ -171,7 +174,9 @@ These are CLI adapter dependencies. A consumer may use these libraries,
 different libraries, or no parsing library at all, provided its implementations
 satisfy the published port contracts. The help requirements section is derived
 from the CLI package's dependency object, so it describes the CLI runtime
-rather than the hexagonal core.
+rather than the hexagonal core. The standalone `--dependencies` command emits
+the same direct dependency entries as `name@version` lines without entering
+the Markdown analysis pipeline.
 
 ## Core pipeline API
 
