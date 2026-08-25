@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "label": "HowDone",
+  "label": "HowDone-CLI",
   "message": "0.1.2",
   "labelColor": "#555555",
   "namedLogo": "github",
-  "color": "#00a8c6",
+  "color": "#CD5C5C",
   "style": "flat"
 }
