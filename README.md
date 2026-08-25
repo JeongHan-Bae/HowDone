@@ -19,20 +19,29 @@
     alt="Version"
     width="196"
   >
+  <br>
   <img
     src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/version_badge_cli.json"
     alt="CLI Version"
-    width="196"
+    width="216"
   >
 </p>
 
-<div align="center">
-
-[![CI](https://github.com/JeongHan-Bae/HowDone/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/JeongHan-Bae/HowDone/actions/workflows/ci.yml)
-
-[![License](https://img.shields.io/github/license/JeongHan-Bae/HowDone)](LICENSE)
-
-</div>
+<p align="center">
+  <img
+    src="https://github.com/JeongHan-Bae/HowDone/actions/workflows/ci.yml/badge.svg"
+    alt="CI"
+    width="96"
+  >
+  <br>
+  <a href="LICENSE">
+    <img
+      src="https://img.shields.io/github/license/JeongHan-Bae/HowDone"
+      alt="CLI Version"
+      width="144"
+    >
+  </a>
+</p>
 
 **HowDone** answers “How done is this Markdown?” It is a local, cross-platform
 Node.js/TypeScript project published in two packages: `howdone` is the
@@ -67,7 +76,7 @@ npx howdone task.md
 
 Run this in the project where you want to use the published CLI:
 
-The remote Core and CLI versions are paired exactly beginning with `0.1.2`.
+The published CLI installs its matching Core automatically.
 
 ```bash
 npm install howdone-cli
@@ -122,7 +131,7 @@ adapters; another project supplies the ports when it uses the package.
 The Core application can be composed from another project like this:
 
 ```ts
-import { run } from "howdone/application";
+import {run} from "howdone/application";
 
 const exitCode = await run(argv, io, dependencies);
 ```
@@ -144,9 +153,15 @@ howdone --dependencies
 ```
 
 The Markdown analysis command accepts the output and display options below.
-The help, version, and dependency commands cannot be combined with a Markdown
-path or analysis options. `-h` is an alias for `--help`, and `-v` is an alias
-for `--version`.
+The other three commands are standalone and cannot be combined with a Markdown
+path or analysis options.
+
+| Standalone command       | What it does                                                               |
+|--------------------------|----------------------------------------------------------------------------|
+| `--help`, `-h`           | Prints the CLI help.                                                       |
+| `--version`, `-v`        | Prints the CLI version.                                                    |
+| `--dependencies`         | Prints direct runtime dependencies, one `name@version` per line. It does  |
+|                          | not read a Markdown file.                                                  |
 
 ```text
 howdone <markdown-path> --format decimal
@@ -163,9 +178,6 @@ howdone <markdown-path> --merge-frontmatter
 howdone <markdown-path> --merge-frontmatter --frontmatter-weight 0.5
 howdone <markdown-path> --merge-frontmatter --strict
 ```
-
-`howdone --dependencies` prints the published CLI's direct runtime
-dependencies, one `name@version` per line. It does not read a Markdown file.
 
 The complete CLI input, output, and frontmatter syntax is defined in the
 [CLI syntax contract](docs/syntax.md).
@@ -205,26 +217,26 @@ written before or after the path. A path containing spaces may be quoted by the
 shell. Value options also accept `--option=value`. Use `--` before a path that
 begins with `-`.
 
-| Option | What it does |
-| --- | --- |
-| `<markdown-path>` | Reads one `.md` or `.markdown` file. Relative and absolute paths use the current Node platform's native rules. |
-| `--format decimal` | Prints a value from `0` to `1`, such as `0.75`. |
-| `--format percentage` | Prints a percentage, such as `75%`. This is the default. |
-| `--decimal` | Alias for `--format decimal`. |
-| `--percentage` | Alias for `--format percentage`. |
-| `--precision N` | Selects decimal places. Percentages allow `0` through `100`; decimals allow `1` through `100`. |
-| `--show-trailing-zeros` | Shows zeroes to the selected precision. `--keep-trailing-zeros` is an alias. |
-| `--no-trailing-zeros` | Hides trailing zeroes. `--trim-trailing-zeros` is an alias and this is the default. |
-| `--tree` | Shows the completion tree and derived percentage for every statistical node. |
-| `--details` | Shows overall, per-level, and per-root statistics. |
-| `--json` | Writes one real JSON object document. It can be passed directly to another command. |
-| `--max-label-clusters N` | Truncates labels to `N` Unicode grapheme clusters, preserving user-perceived characters. |
-| `--no-truncate` | Disables label truncation. It conflicts with `--max-label-clusters`. |
-| `--merge-frontmatter` | Combines at least two source components for the selected output: every frontmatter section counts once and the Markdown body counts once. |
-| `--frontmatter-weight N` | With a valid merge and a Markdown checklist side, gives all frontmatter the share `N`, where `0 < N < 1`. |
-| `--strict` | Converts warnings into errors. |
-| `--silent`, `-s` | Suppresses process warnings. Errors are still reported; `-s` is the npm-compatible short spelling. |
-| `--` | Ends option parsing so the following value is treated as the path. |
+| Option                   | What it does                                                                                                                              |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| `<markdown-path>`        | Reads one `.md` or `.markdown` file. Relative and absolute paths use the current Node platform's native rules.                            |
+| `--format decimal`       | Prints a value from `0` to `1`, such as `0.75`. `--format=decimal` is also accepted.                                                       |
+| `--format percentage`    | Prints a percentage, such as `75%`. This is the default. `--format=percentage` is also accepted.                                           |
+| `--decimal`              | Alias for `--format decimal`.                                                                                                              |
+| `--percentage`           | Alias for `--format percentage`.                                                                                                           |
+| `--precision N`          | Selects decimal places. `N` must be an integer: percentages allow `0` through `100`; decimals allow `1` through `100`.                   |
+| `--show-trailing-zeros`  | Shows zeroes to the selected precision. `--keep-trailing-zeros` is an alias.                                                              |
+| `--no-trailing-zeros`    | Hides trailing zeroes. `--trim-trailing-zeros` is an alias and this is the default.                                                        |
+| `--tree`                 | Shows the completion tree and derived percentage for every statistical node.                                                              |
+| `--details`              | Shows overall, per-level, and per-root statistics.                                                                                        |
+| `--json`                 | Writes one real JSON object document. It can be passed directly to another command.                                                       |
+| `--max-label-clusters N` | Truncates labels to `N` Unicode grapheme clusters. `N` must be a positive safe integer; it conflicts with `--no-truncate`.               |
+| `--no-truncate`          | Disables label truncation. It conflicts with `--max-label-clusters`.                                                                       |
+| `--merge-frontmatter`    | Combines at least two source components for the selected output: every frontmatter section counts once and the Markdown body counts once.  |
+| `--frontmatter-weight N` | With a valid merge and checklist roots on both sides, gives all frontmatter the share `N`, where `N` is a decimal and `0 < N < 1`.       |
+| `--strict`               | Converts warnings into errors.                                                                                                             |
+| `--silent`, `-s`         | Suppresses process warnings. Errors are still reported; `-s` is the npm-compatible short spelling.                                         |
+| `--`                     | Ends option parsing so the following value is treated as the path.                                                                        |
 
 Defaults are explicit and stable:
 
@@ -265,14 +277,21 @@ and merge examples are defined in the [syntax contract](docs/syntax.md).
 
 ## Common commands
 
+HowDone does not currently provide an interactive TTY mode or a built-in
+pager. On POSIX systems, use `less` when a tree or details report is too long
+to read in one screen. JSON can be sent to `jq` in the same way:
+
 ```bash
 # The default overall percentage
 howdone tasks.md
 
-# A detailed terminal view
-howdone tasks.md --tree --no-truncate
+# A long tree report on POSIX
+howdone tasks.md --tree | less
 
-# A machine-readable pipeline
+# A long details report on POSIX
+howdone tasks.md --details | less
+
+# A machine-readable JSON pipeline
 howdone tasks.md --json | jq '.progress.percentage'
 
 # Merge two or more frontmatter sections and/or a Markdown body
@@ -280,6 +299,12 @@ howdone tasks.md --merge-frontmatter
 
 # Give the aggregated frontmatter side half of the merged result
 howdone tasks.md --merge-frontmatter --frontmatter-weight 0.5
+```
+
+For a short detailed view without a pager, run:
+
+```bash
+howdone tasks.md --tree
 ```
 
 ## Example
@@ -317,7 +342,8 @@ library-independent document model. The core then applies these rules:
 - A plain list item with task descendants becomes an implicit statistical node.
 - A plain list item, and any plain subtree, with no task descendants is discarded.
 - Root nodes have equal weight.
-- Headings, ordinary paragraphs, code blocks, tables, HTML comments, and frontmatter strings do not create Markdown task nodes.
+- Headings, ordinary paragraphs, code blocks, tables, HTML comments, and frontmatter strings do not create Markdown task
+  nodes.
 
 ### YAML and TOML frontmatter
 

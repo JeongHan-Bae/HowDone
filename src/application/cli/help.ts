@@ -1,13 +1,16 @@
 import type { RuntimeDependency } from "howdone";
 
+export type HelpCommand = string | readonly [string, string];
+
 export interface HelpOption {
-  command: string;
+  command: HelpCommand;
   argument: string;
   description: readonly string[];
 }
 
 export interface HelpSections {
   usage: string;
+  commands: readonly HelpOption[];
   options: readonly HelpOption[];
   supportedPaths: string;
   calculationRules: string;
@@ -35,41 +38,62 @@ export const HELP_SECTIONS: HelpSections = {
     "howdone --version",
     "howdone --dependencies",
   ),
+  commands: [
+    {
+      command: ["--help", "-h"] as const,
+      argument: "",
+      description: ["Print this help; standalone."],
+    },
+    {
+      command: ["--version", "-v"] as const,
+      argument: "",
+      description: ["Print the CLI version; standalone."],
+    },
+    {
+      command: "--dependencies",
+      argument: "",
+      description: [
+        "Print direct runtime dependencies; standalone and does not read Markdown.",
+      ],
+    },
+  ],
   options: [
     {
       command: "--format",
       argument: "decimal|percentage",
       description: [
-        "Format the overall progress value. The default is an explicit",
-        "percentage; --decimal and --percentage are aliases for the two formats.",
+        "Format the overall progress value. The default is percentage.",
       ],
     },
     {
-      command: "--percentage",
+      command: ["--format decimal", "--decimal"] as const,
       argument: "",
-      description: ["Explicit percentage format (alias for --format percentage)."],
+      description: ["Select decimal output."],
+    },
+    {
+      command: ["--format percentage", "--percentage"] as const,
+      argument: "",
+      description: ["Select percentage output."],
     },
     {
       command: "--precision",
       argument: "N",
       description: [
-        "Decimal places: 0-100 for percentages, 1-100 for decimals.",
+        "N must be an integer: 0-100 for percentages, 1-100 for decimals.",
       ],
     },
     {
-      command: "--show-trailing-zeros",
+      command: ["--show-trailing-zeros", "--keep-trailing-zeros"] as const,
       argument: "",
       description: [
         "Keep zeroes to the selected precision (hidden by default).",
-        "--keep-trailing-zeros is an alias.",
       ],
     },
     {
-      command: "--no-trailing-zeros",
+      command: ["--no-trailing-zeros", "--trim-trailing-zeros"] as const,
       argument: "",
       description: [
-        "Hide trailing zeroes (the default). --trim-trailing-zeros is",
-        "an alias.",
+        "Hide trailing zeroes (the default).",
       ],
     },
     {
@@ -91,8 +115,8 @@ export const HELP_SECTIONS: HelpSections = {
       command: "--max-label-clusters",
       argument: "N",
       description: [
-        "Keep at most N Unicode grapheme clusters per label.",
-        "Conflicts with --no-truncate.",
+        "N must be a positive safe integer; keep at most N Unicode grapheme",
+        "clusters per label. Conflicts with --no-truncate.",
       ],
     },
     {
@@ -104,11 +128,10 @@ export const HELP_SECTIONS: HelpSections = {
       ],
     },
     {
-      command: "--silent",
+      command: ["--silent", "-s"] as const,
       argument: "",
       description: [
         "Suppress process warnings; errors are still reported.",
-        "-s is the npm-compatible shorthand.",
       ],
     },
     {
@@ -145,73 +168,20 @@ export const HELP_SECTIONS: HelpSections = {
   ),
   calculationRules: text(
     "Markdown checkboxes are recognized only from valid GFM task-list items.",
-    "Checkbox-looking text in code blocks, quotes, tables, ordinary text, and",
-    "frontmatter strings is not a Markdown checkbox.",
-    "Ordered and unordered list items with task descendants belong to the same",
-    "Markdown task tree. A branch ignores its own checkbox state and averages",
-    "its statistical children; a plain subtree with no checkbox descendants is",
-    "discarded.",
-    "The body and frontmatter are independent optional channels. Frontmatter",
-    "sections are recognized only as a top-level document prefix and may be",
-    "YAML or TOML in any source order. A delimiter-shaped block after Markdown",
-    "body content remains ordinary Markdown, even when its contents resemble",
-    "YAML or TOML.",
-    "Repeated YAML or TOML sections are parsed independently; matching keys or",
-    "table names do not merge. Recognized roots from every section are included",
-    "in the report-level calculation while section order remains visible in",
-    "tree, details, and JSON.",
-    "A checkbox is one recognized leaf item with a boolean state. A checklist",
-    "container is a mapping, table, sequence, or array of tables. A recognized",
-    "mapping/table requires boolean direct values; mixed parent objects are",
-    "ordinary at that level and nested candidates are evaluated independently.",
-    "A mapping/table below a named property is a checklist container when it",
-    "is non-empty and every direct value is boolean. A mapping/table with a",
-    "string name and boolean done is one named leaf, even with extra fields;",
-    "those fields are ignored. Root boolean maps are ignored.",
-    "A sequence below a named property is either an unnamed boolean sequence",
-    "(boolean leaves and unnamed nested sequences) or a named-record sequence",
-    "(every item has string name and boolean done). YAML may mix boolean leaves",
-    "with unnamed nested sequences; TOML arrays must keep one direct element",
-    "kind. Named records cannot be inserted into an unnamed sequence.",
-    "A root YAML sequence is ignored, and TOML has no bare root array.",
-    "Unnamed sequence entries use numeric dotted labels below their containing",
-    "property or table name; named-record entries use their name values as",
-    "labels.",
-    "A named property/table may contain an unnamed sequence. Once an unnamed sequence",
-    "is entered, every descendant must remain boolean or an unnamed sequence; a",
-    "named record cannot appear inside it.",
-    "One non-boolean value or an empty nested sequence invalidates that candidate.",
-    "A sequence of records is also valid when every record has a string name and",
-    "boolean done; each matching record is always one leaf checkbox. Other",
-    "record fields, including nested mappings/tables, are ignored. Container",
-    "names such as checklist and tasks have no",
-    "special meaning.",
-    "YAML collections may mix value types. TOML arrays follow TOML's homogeneous",
-    "array grammar, so a mixed scalar array is a parser error.",
-    "The source format remains authoritative; invalid TOML syntax is a parser",
-    "error before semantic checklist classification.",
-    "A leaf is 100% when checked and 0% when unchecked. A Markdown branch averages",
-    "its statistical children and ignores its own checkbox marker.",
-    "Overall completion is the equally weighted average of root nodes.",
+    "Checkbox-looking text in ordinary text, code, quotes, tables, and",
+    "frontmatter strings is ignored. Task-bearing ancestors become statistical",
+    "branches; branches average their statistical children and ignore their own",
+    "checkbox state.",
+    "Markdown and each YAML/TOML frontmatter section are separate sources.",
+    "Leaves are 100% when checked and 0% when unchecked; overall completion is",
+    "the equally weighted average of recognized root nodes.",
   ),
   frontmatterDisplay: text(
-    "A body-only document or a frontmatter-only document with one section keeps",
-    "the original single-source display shape. A body plus frontmatter, or multiple",
-    "frontmatter sections, is grouped",
-    "by source in tree, details, and JSON.",
-    "--merge-frontmatter requires at least two source components; every YAML or",
-    "TOML section counts as one component, and the Markdown body counts as one.",
-    "It aggregates all frontmatter sections before combining them with Markdown.",
-    "With no --frontmatter-weight, all frontmatter roots share one frontmatter",
-    "side, and the side's weight is frontmatter root count divided by all",
-    "frontmatter roots plus Markdown roots. Roots within frontmatter are still",
-    "equally weighted by their own root count.",
-    "A numeric weight in (0, 1) without --merge-frontmatter is invalid. A value",
-    "of 0, 1, below 0, above 1, or a non-decimal value is illegal. Both cases",
-    "emit a process warning and are ignored by default; --strict turns them into",
-    "errors. --silent suppresses those warnings.",
-    "A frontmatter-only merge may combine multiple headers, but a frontmatter",
-    "weight is invalid unless both frontmatter and Markdown have checklist roots.",
+    "Markdown and each frontmatter section are separate sources in expanded",
+    "tree, details, and JSON output. --merge-frontmatter combines the sources",
+    "for one result; --frontmatter-weight changes the frontmatter share only",
+    "when both sides contain checklist roots. See docs/syntax.md for the full",
+    "source-layout and weighting contract.",
   ),
   defaultOutput: text(
     "With only a Markdown path, howdone prints the overall percentage.",
@@ -225,6 +195,7 @@ export const HELP_SECTIONS: HelpSections = {
     "labels to 10 Unicode grapheme clusters by default; JSON labels are complete.",
   ),
   optionPolicy: text(
+    "Value options accept either --option N or --option=N.",
     "JSON ignores explicit format, precision, and trailing-zero options and",
     "emits a warning; --json --no-truncate is a silent no-op, while",
     "--json --max-label-clusters N requests JSON label truncation.",
@@ -233,8 +204,8 @@ export const HELP_SECTIONS: HelpSections = {
     "--silent suppresses them and --strict turns them into errors.",
   ),
   syntaxReference: text(
-    "The complete Markdown, YAML, TOML, layout, and output contract is in",
-    "docs/syntax.md in the published package.",
+    "The complete Markdown, YAML, TOML, layout, and output contract is in the",
+    "installed package file docs/syntax.md.",
   ),
   requirements: {
     header: [
@@ -247,15 +218,23 @@ export const HELP_SECTIONS: HelpSections = {
   },
 };
 
-const optionLabelWidth = 28;
+const optionLabelWidth = 36;
 
 function renderOption(option: HelpOption): string[] {
-  const label = [option.command, option.argument]
+  const command = Array.isArray(option.command)
+    ? option.command.join(", ")
+    : option.command;
+  const label = [command, option.argument]
     .filter((part) => part.length > 0)
     .join(" ");
   const [firstDescription = "", ...continuation] = option.description;
-  const lines = [`  ${label.padEnd(optionLabelWidth)}${firstDescription}`];
   const continuationIndent = " ".repeat(optionLabelWidth + 2);
+  const lines =
+    label.length >= optionLabelWidth
+      ? [`  ${label}`, `${continuationIndent}${firstDescription}`]
+      : [
+          `  ${label}${" ".repeat(optionLabelWidth - label.length)}${firstDescription}`,
+        ];
   lines.push(
     ...continuation.map((line) => `${continuationIndent}${line}`),
   );
@@ -290,9 +269,13 @@ export function renderDependenciesText(
 export function renderHelpText(
   sections: HelpSections = HELP_SECTIONS,
   runtimeDependencies: readonly RuntimeDependency[] = [],
+  syntaxReferencePath?: string,
 ): string {
   const lines = [
     ...renderSection("Usage:", sections.usage),
+    "",
+    "Commands:",
+    ...sections.commands.flatMap(renderOption),
     "",
     "Options:",
     ...sections.options.flatMap(renderOption),
@@ -309,7 +292,10 @@ export function renderHelpText(
     "",
     ...renderSection("Option policy:", sections.optionPolicy),
     "",
-    ...renderSection("Syntax reference:", sections.syntaxReference),
+    ...renderSection(
+      "Syntax reference:",
+      syntaxReferencePath ?? sections.syntaxReference,
+    ),
     "",
     ...renderRequirements(sections.requirements, runtimeDependencies),
     "",

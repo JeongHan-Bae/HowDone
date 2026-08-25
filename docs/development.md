@@ -35,6 +35,7 @@ npm run test:compiled # Compiled TDD, package consumer, and BDD feature suites
 npm run test:local-install # Local-path npm installation in an isolated sandbox
 npm run test:all
 npm run typecheck:maintenance
+npm run check:help
 npm run typecheck:release # Release workflow only
 npm run check:platform
 npm run pack:check
@@ -49,13 +50,17 @@ both package manifests and writes the Core badge to `version_badge.json` and
 the CLI badge to `version_badge_cli.json`; it is not an installation or
 verification step.
 
+`npm run check:help` runs the Help contract maintenance check. It verifies the
+four CLI command forms, both installed CLI bin names, every primary-command
+option, and every declared option alias in the rendered Help output.
+
 `npm run verify:precommit` is the mandatory final harness before a commit. It
 re-runs the source and compiled application gates, checks the typed CommonJS/ES
-module maintenance boundaries, rejects unreviewed runtime platform API access,
-audits both dependency scopes, verifies the compiled npm package contents,
-checks both staged and unstaged Git diffs for whitespace errors, and never runs
-the separate version-badge generator. Its hard-boundary rules and the
-commit-message contract are defined in
+module maintenance boundaries, checks the rendered CLI Help contract, rejects
+unreviewed runtime platform API access, audits both dependency scopes, verifies
+the compiled npm package contents, checks both staged and unstaged Git diffs
+for whitespace errors, and never runs the separate version-badge generator.
+Its hard-boundary rules and the commit-message contract are defined in
 [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 
 `npm run build` emits the dependency-free core and application JavaScript and

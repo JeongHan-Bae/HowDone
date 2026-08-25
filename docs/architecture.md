@@ -35,6 +35,7 @@ product and command executor. The CLI's command-line names are `howdone` and
 │       └── README.md
 ├── scripts/
 │   ├── build-test-artifacts.mjs
+│   ├── check-cli-help.ts
 │   ├── check-package-contents.ts
 │   ├── check-platform-neutral.ts
 │   ├── install-local.mjs

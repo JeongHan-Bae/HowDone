@@ -28,6 +28,10 @@ test("TDD help content keeps usage, options, and sections structured", () => {
     "howdone --version",
     "howdone --dependencies",
   ]);
+  assert.deepEqual(
+    HELP_SECTIONS.commands.map(({ command }) => command),
+    [["--help", "-h"], ["--version", "-v"], "--dependencies"],
+  );
   assert.equal(Array.isArray(HELP_SECTIONS.options), true);
   assert.ok(HELP_SECTIONS.options.length > 0);
   assert.equal(
@@ -41,10 +45,16 @@ test("TDD help content keeps usage, options, and sections structured", () => {
     (option) => option.command === "--format",
   );
   const percentage = HELP_SECTIONS.options.find(
-    (option) => option.command === "--percentage",
+    (option) =>
+      Array.isArray(option.command) && option.command.includes("--percentage"),
+  );
+  const decimal = HELP_SECTIONS.options.find(
+    (option) =>
+      Array.isArray(option.command) && option.command.includes("--decimal"),
   );
   assert.deepEqual(format?.argument, "decimal|percentage");
   assert.deepEqual(percentage?.argument, "");
+  assert.deepEqual(decimal?.argument, "");
   assert.ok(HELP_SECTIONS.options.every((option) =>
     option.description.every((line: unknown) => typeof line === "string")
   ));
@@ -66,6 +76,14 @@ test("TDD help content keeps usage, options, and sections structured", () => {
   assert.equal(
     helpText,
     renderHelpText(HELP_SECTIONS, packageRuntimeDependencies),
+  );
+  assert.match(
+    renderHelpText(
+      HELP_SECTIONS,
+      packageRuntimeDependencies,
+      "/installed/howdone-cli/docs/syntax.md",
+    ),
+    /\/installed\/howdone-cli\/docs\/syntax\.md/u,
   );
 
   assert.equal(

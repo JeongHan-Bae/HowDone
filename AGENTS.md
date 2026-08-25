@@ -254,9 +254,11 @@ the ordinary pre-commit harness.
   Core version and `version_badge_cli.json` from the CLI version. These two
   generated badges are release metadata, not application or package code; the
   independent badge workflow owns their commits.
-  `scripts/check-package-contents.ts`, `scripts/check-platform-neutral.ts`,
-  `scripts/validate-release.mjs`, and `scripts/run-compiled-tests.mjs` are
-  maintenance scripts; none is published as application runtime code.
+  `scripts/check-cli-help.ts`, `scripts/check-package-contents.ts`,
+  `scripts/check-platform-neutral.ts`, `scripts/validate-release.mjs`, and
+  `scripts/run-compiled-tests.mjs` are maintenance scripts; none is published
+  as application runtime code. The Help checker verifies the four CLI command
+  forms, both CLI bin names, and every primary-command option and alias.
 - `tsconfig.build.json` and `tsconfig.test-build.json` define ignored build
   outputs. Build output is never committed.
 - Document ownership:

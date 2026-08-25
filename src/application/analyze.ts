@@ -88,7 +88,11 @@ export async function run(
 
   if (argumentsValue.help) {
     io.stdout.write(
-      renderHelpText(HELP_SECTIONS, dependencies.runtimeDependencies),
+      renderHelpText(
+        HELP_SECTIONS,
+        dependencies.runtimeDependencies,
+        dependencies.syntaxReferencePath,
+      ),
     );
     return 0;
   }

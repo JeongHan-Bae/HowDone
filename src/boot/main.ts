@@ -15,6 +15,7 @@ import { defaultWarningPort } from "../adapters/runtime/node-warning-sink.ts";
 import { run } from "howdone/application";
 import { runIfEntrypoint } from "./entrypoint.ts";
 import type { CliDependencies, CliIO } from "howdone/application";
+import { fileURLToPath } from "node:url";
 
 const io: CliIO = {
   stdout: process.stdout,
@@ -32,6 +33,9 @@ const dependencies: CliDependencies = {
   warning: defaultWarningPort,
   version: packageVersion,
   runtimeDependencies: packageRuntimeDependencies,
+  syntaxReferencePath: fileURLToPath(
+    new URL("../../docs/syntax.md", import.meta.url),
+  ),
 };
 
 export function main(): Promise<number> {

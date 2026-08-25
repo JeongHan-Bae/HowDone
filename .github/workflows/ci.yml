@@ -73,6 +73,9 @@ jobs:
       - name: Typecheck maintenance files
         run: npm run typecheck:maintenance
 
+      - name: Check CLI Help contract
+        run: npm run check:help
+
       - name: Check platform-neutral source
         run: npm run check:platform
 

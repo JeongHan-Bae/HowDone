@@ -25,4 +25,5 @@ export interface CliDependencies {
   warning: WarningPort;
   version: string;
   runtimeDependencies: readonly RuntimeDependency[];
+  syntaxReferencePath?: string;
 }

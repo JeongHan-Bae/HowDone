@@ -27,8 +27,9 @@ application typecheck, source TDD and source BDD suites, the published-package
 consumer suite, compiled TDD and compiled BDD parity suites, typed
 maintenance-file checks, the platform-neutral source check, the runtime and
 full dependency audits, `scripts/check-package-contents.ts` through
-`npm run pack:check`, and both staged and unstaged Git whitespace checks. The
-compiled CLI parity suites build with development tools but execute staged
+`npm run pack:check`, the rendered CLI Help contract, and both staged and
+unstaged Git whitespace checks. The compiled CLI parity suites build with
+development tools but execute staged
 compiled JavaScript packages from a temporary production-dependency sandbox, so
 the CLI under test can resolve only its published `dependencies`. The separate
 package consumer suite stages the compiled core as `node_modules/howdone` in an
@@ -56,6 +57,7 @@ The final harness sequence is:
 ```bash
 npm run test:all
 npm run typecheck:maintenance
+npm run check:help
 npm run check:platform
 npm audit --omit=dev --audit-level=moderate
 npm audit --audit-level=moderate
