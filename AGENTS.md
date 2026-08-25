@@ -215,10 +215,11 @@ Final releases use `vX.Y.Z`, `vX.Y.Z-cli`, or `vX.Y.Z-core` tags. The release
 validator requires matching core/CLI major and minor versions, an exact CLI
 dependency on the current core version, synchronized lockfile entries, and
 unused npm versions for every selected target before any publish step. The
-workflow statically typechecks this release-only validator, then records a
-successful tag as a GitHub Release so an already completed release cannot be
-reused. These version and registry checks run only for a release tag, not in
-the ordinary pre-commit harness.
+workflow statically typechecks this release-only validator and publishes only
+unused npm targets. GitHub Release pages are separate release content and do
+not gate npm publication; the npm registry checks are authoritative. These
+version and registry checks run only for a release tag or an explicitly
+dispatched release run, not in the ordinary pre-commit harness.
 
 ## Documentation ownership
 

@@ -179,15 +179,17 @@ The stable Release workflow accepts exactly these tag forms:
 
 The workflow validates both workspace entries in `package-lock.json` and all
 of these relationships before publishing. It also checks that every selected
-`name@version` is absent from npm and refuses to continue if the GitHub Release
-for the tag already exists. This prevents a repeated tag from starting a
-second publish. After the selected packages publish under the `latest`
-dist-tag, the workflow confirms immediately before the CLI step that the
-exact Core dependency version is visible from npm, then creates the GitHub
-Release marker. For a `-cli` tag this check is the guard that catches a Core
+`name@version` is absent from npm. An existing GitHub Release does not by
+itself prove that npm publication completed; GitHub Release content is separate
+from the npm workflow. After the selected packages publish under the `latest`
+dist-tag, the workflow does not create or update a Release page. Immediately
+before the CLI step it confirms that the exact Core dependency version is
+visible from npm. For a `-cli` tag this check is the guard that catches a Core
 version that was forgotten or never published. npm versions cannot be
-overwritten, so a partial publish is intentionally fail-closed on a later
-retry rather than pretending the two package publishes are atomic.
+overwritten, so a partial publish is intentionally fail-closed on a later retry
+rather than pretending the two package publishes are atomic. The workflow also
+supports an explicit dispatch for rerunning a stable tag without moving that
+tag.
 
 The workflow is the only publisher for final stable releases. It does not
 accept prerelease tags; a bootstrap alpha publish is a separate, explicitly

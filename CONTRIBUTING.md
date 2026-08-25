@@ -244,17 +244,17 @@ numeric tag, the core and CLI manifests must always share their major and
 minor versions, and `howdone-cli` must declare an exact dependency on the
 current `howdone` version. The lockfile must agree with both manifests.
 
-The workflow checks the reusable CI gate, rejects an existing GitHub Release,
-and checks npm for every selected package version before it publishes anything.
-If a selected version is already published, the workflow exits without
-publishing either selected target. A successful run creates the GitHub Release
-marker after npm publication. When the CLI is selected, immediately before the
-CLI step the workflow confirms that the exact required Core version is visible
-from npm. This catches a forgotten or unpublished Core version, including for
-`-cli` tags where the Core step is intentionally skipped. npm versions are
-immutable, so a later retry after a partial external publish is deliberately
-rejected and must be handled as a release repair rather than by reusing the
-tag.
+The workflow checks the reusable CI gate and checks npm for every selected
+package version before it publishes anything. If a selected version is already
+published, the workflow exits without publishing either selected target. The
+workflow does not use a GitHub Release page as a publication gate or create one;
+release content is separate from npm publication. When the CLI is selected,
+immediately before the CLI step the workflow confirms that the exact required
+Core version is visible from npm. This catches a forgotten or unpublished Core
+version, including for `-cli` tags where the Core step is intentionally skipped.
+npm versions are immutable, so a later retry after a partial external publish is
+still rejected by the registry check. The release workflow also supports an
+explicit dispatch for rerunning a stable tag without moving that tag.
 The release-only validator is statically typechecked in that workflow; its
 version and registry checks are not run by the ordinary pre-commit harness.
 

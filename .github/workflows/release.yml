@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Stable release tag to publish"
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -20,12 +26,16 @@ jobs:
     name: Publish to npm
     needs: ci
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
     permissions:
-      contents: write
+      contents: read
       id-token: write
     steps:
       - name: Check out tagged source
         uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.release_tag || github.ref }}
 
       - name: Set up Node.js for npm Trusted Publishing
         uses: actions/setup-node@v5
@@ -39,21 +49,8 @@ jobs:
       - name: Typecheck release validator
         run: npm run typecheck:release
 
-      - name: Reject an already completed GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-          if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
-            echo "::error::GitHub release ${RELEASE_TAG} already exists; refusing to publish it again."
-            exit 1
-          fi
-
       - name: Validate release tag, versions, and registry state
         id: validate
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           node scripts/validate-release.mjs "${RELEASE_TAG}"
@@ -85,15 +82,3 @@ jobs:
       - name: Publish the CLI package
         if: steps.validate.outputs.publish_cli == 'true'
         run: npm publish --workspace packages/cli --tag latest --access public
-
-      - name: Create GitHub release marker
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-          gh release create "${RELEASE_TAG}" \
-            --repo "${GITHUB_REPOSITORY}" \
-            --verify-tag \
-            --title "${RELEASE_TAG}" \
-            --generate-notes
