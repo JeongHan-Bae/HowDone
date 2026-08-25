@@ -37,6 +37,7 @@
     "test:all": "npm run typecheck && npm test && npm run test:bdd && npm run test:compiled",
     "typecheck": "tsc --noEmit",
     "typecheck:maintenance": "tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck scripts/check-package-contents.ts scripts/check-platform-neutral.ts && tsc --noEmit --allowJs --checkJs --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck bin/howdone.cjs test/bdd/cucumber.cjs test/package/bdd/cucumber.cjs scripts/build-test-artifacts.mjs scripts/run-compiled-tests.mjs scripts/run-cucumber.mjs scripts/sync-package-artifacts.mjs scripts/update-version-badge.mjs",
+    "typecheck:release": "tsc --noEmit --allowJs --checkJs --target ES2022 --module NodeNext --moduleResolution NodeNext --types node --skipLibCheck scripts/validate-release.mjs",
     "verify:precommit": "npm run test:all && npm run typecheck:maintenance && npm run check:platform && npm audit --omit=dev --audit-level=moderate && npm audit --audit-level=moderate && npm run pack:check && git diff --check && git diff --cached --check",
     "check:platform": "node --import tsx ./scripts/check-platform-neutral.ts",
     "pack:check": "npm run build:cli && node --import tsx ./scripts/check-package-contents.ts"

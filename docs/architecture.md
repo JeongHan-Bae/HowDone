@@ -18,12 +18,8 @@
 │   └── syntax.md
 ├── packages/
 │   ├── cli/
-│   │   ├── docs/
-│   │   │   └── syntax.md
 │   │   └── package.json
 │   └── core/
-│       ├── docs/
-│       │   └── api.md
 │       └── package.json
 ├── scripts/
 │   ├── build-test-artifacts.mjs
@@ -32,7 +28,8 @@
 │   ├── run-compiled-tests.mjs
 │   ├── run-cucumber.mjs
 │   ├── sync-package-artifacts.mjs
-│   └── update-version-badge.mjs
+│   ├── update-version-badge.mjs
+│   └── validate-release.mjs
 ├── src/
 │   ├── adapters/
 │   │   ├── filesystem/
@@ -131,6 +128,13 @@ two compiled packages and the CLI's resolved production dependency closure in
 a temporary sandbox. The test runner may use development dependencies to
 orchestrate BDD, but the package consumer and CLI application processes can
 resolve only the package's published runtime dependencies.
+
+The repository root is the only source of the shared `LICENSE`, `docs/api.md`,
+and `docs/syntax.md` content. `scripts/sync-package-artifacts.mjs` materializes
+the core API and CLI syntax documents plus the shared license in the ignored
+workspace package directories before builds, package checks, and releases, so
+the npm tarballs contain the required files without maintaining duplicate
+tracked documents.
 
 The first arrow is the only Markdown syntax-engine boundary. Unified/Remark recognizes CommonMark, GFM task lists, YAML/TOML frontmatter, code blocks, tables, HTML, links, and inline content. The adapter maps the external mdast into local source tokens and source spans. No core module imports mdast. YAML/TOML syntax is decoded by the format adapter; the core classifier then applies the semantic shape rules, never Markdown checkbox text.
 

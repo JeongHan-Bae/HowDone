@@ -29,6 +29,7 @@ npm run test:package   # public core package consumer in an isolated sandbox
 npm run test:compiled # Compiled TDD, package consumer, and BDD feature suites
 npm run test:all
 npm run typecheck:maintenance
+npm run typecheck:release # Release workflow only
 npm run check:platform
 npm run pack:check
 npm audit --omit=dev --audit-level=moderate
@@ -73,6 +74,9 @@ source TDD/BDD/package tests, compiled TDD/package/BDD tests, and both package
 content checks.
 The typed maintenance script under `scripts/` is executed through `tsx` and is
 kept outside the application `tsconfig.json` boundary.
+The release-only validator is statically typechecked by
+`npm run typecheck:release` in the tag-based Release workflow; its version and
+npm registry checks are not part of the ordinary pre-commit harness.
 
 `.github/workflows/ci.yml` runs through `actions/checkout@v5` and
 `actions/setup-node@v5` on Ubuntu, macOS, and Windows. Push and pull-request
@@ -119,18 +123,41 @@ successful run cannot hide a rejected badge update.
 The package metadata and distribution are licensed under Apache License 2.0;
 the copyright year for this repository is 2026.
 
+## Release tags and package versions
+
 Formal releases are tag-driven. `0.1.0` was the first formal public release.
-Starting with `0.1.2`, every published npm release contains two compiled
-packages: `howdone` exposes the dependency-free core/application API and
-`howdone-cli` exposes the `howdone` bin plus CLI adapters. TypeScript source,
-the repository launcher, tests, development documentation, and maintenance
-scripts are not part of either package. Before creating a release tag, both
-`packages/core/package.json` and `packages/cli/package.json`, their workspace
-entries in `package-lock.json`, and the CLI's exact core dependency must agree
-with the tag version. The Release workflow validates those relationships,
-rebuilds both artifacts after the reusable CI gate passes, and publishes the
-core first followed by the CLI under the `latest` dist-tag. It is the only
-publisher for final stable releases.
+Starting with `0.1.2`, every published npm release uses compiled packages:
+`howdone` exposes the dependency-free core/application API and `howdone-cli`
+exposes the `howdone` bin plus CLI adapters. TypeScript source, the repository
+launcher, tests, development documentation, and maintenance scripts are not
+part of either package.
+
+The stable Release workflow accepts exactly these tag forms:
+
+- `vX.Y.Z` publishes both packages. Both package versions and the CLI's exact
+  `howdone` dependency must be `X.Y.Z`.
+- `vX.Y.Z-cli` publishes only `howdone-cli`. The CLI version must be `X.Y.Z`,
+  its exact core dependency must be the current `howdone` version, and the
+  core and CLI versions must share `X.Y`.
+- `vX.Y.Z-core` publishes only `howdone`. The core version must be `X.Y.Z`;
+  the local CLI manifest must still point to that exact core version, and the
+  two manifests must share `X.Y` even though the CLI is not published.
+
+The workflow validates both workspace entries in `package-lock.json` and all
+of these relationships before publishing. It also checks that every selected
+`name@version` is absent from npm and refuses to continue if the GitHub Release
+for the tag already exists. This prevents a repeated tag from starting a
+second publish. After the selected packages publish under the `latest`
+dist-tag, the workflow confirms immediately before the CLI step that the
+exact Core dependency version is visible from npm, then creates the GitHub
+Release marker. For a `-cli` tag this check is the guard that catches a Core
+version that was forgotten or never published. npm versions cannot be
+overwritten, so a partial publish is intentionally fail-closed on a later
+retry rather than pretending the two package publishes are atomic.
+
+The workflow is the only publisher for final stable releases. It does not
+accept prerelease tags; a bootstrap alpha publish is a separate, explicitly
+reviewed operation.
 
 ## Main branch policy
 

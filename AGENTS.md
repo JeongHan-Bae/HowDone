@@ -171,6 +171,15 @@ published-package consumer suite, and both package-content checks from the
 same workspace. `.github/workflows/ci.yml` is reusable by the tag-based release
 workflow; publishing is permitted only after that CI job succeeds.
 
+Final releases use `vX.Y.Z`, `vX.Y.Z-cli`, or `vX.Y.Z-core` tags. The release
+validator requires matching core/CLI major and minor versions, an exact CLI
+dependency on the current core version, synchronized lockfile entries, and
+unused npm versions for every selected target before any publish step. The
+workflow statically typechecks this release-only validator, then records a
+successful tag as a GitHub Release so an already completed release cannot be
+reused. These version and registry checks run only for a release tag, not in
+the ordinary pre-commit harness.
+
 ## Documentation ownership
 
 - `README.md` is the npm-facing user quickstart: explain that HowDone is a CLI,
@@ -184,6 +193,13 @@ workflow; publishing is permitted only after that CI job succeeds.
   `scripts/check-platform-neutral.ts` rejects unreviewed platform API access.
   These are repository maintenance scripts and are not part of the published
   package.
+- `scripts/sync-package-artifacts.mjs` copies the root `LICENSE`, `docs/api.md`,
+  and `docs/syntax.md` into the package staging directories before a build or
+  package check. Those copies are generated and ignored; the root files remain
+  the canonical documentation and license sources.
+- `scripts/validate-release.mjs` validates stable release tags, package
+  versions, exact core dependency metadata, lockfile synchronization, and npm
+  duplicate targets before the release workflow publishes.
 - `scripts/run-compiled-tests.mjs` builds the test artifacts, stages both
   compiled packages with production dependencies only, and runs compiled
   parity checks from that isolated installation.

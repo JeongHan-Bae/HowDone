@@ -205,6 +205,34 @@ Do not weaken an assertion, skip a failing scenario, or hide a known failure
 to make the gate green. If an environment-specific check cannot run, record
 the exact command, reason, and remaining risk in the change description.
 
+## Release procedure
+
+Final package releases are created by pushing a stable Git tag and allowing
+the Release workflow to publish the selected package. The accepted forms are
+`vX.Y.Z` for both packages, `vX.Y.Z-cli` for only `howdone-cli`, and
+`vX.Y.Z-core` for only `howdone`. The selected package version must match the
+numeric tag, the core and CLI manifests must always share their major and
+minor versions, and `howdone-cli` must declare an exact dependency on the
+current `howdone` version. The lockfile must agree with both manifests.
+
+The workflow checks the reusable CI gate, rejects an existing GitHub Release,
+and checks npm for every selected package version before it publishes anything.
+If a selected version is already published, the workflow exits without
+publishing either selected target. A successful run creates the GitHub Release
+marker after npm publication. When the CLI is selected, immediately before the
+CLI step the workflow confirms that the exact required Core version is visible
+from npm. This catches a forgotten or unpublished Core version, including for
+`-cli` tags where the Core step is intentionally skipped. npm versions are
+immutable, so a later retry after a partial external publish is deliberately
+rejected and must be handled as a release repair rather than by reusing the
+tag.
+The release-only validator is statically typechecked in that workflow; its
+version and registry checks are not run by the ordinary pre-commit harness.
+
+The stable workflow does not publish prerelease tags. Any bootstrap alpha
+publication is a separate manual operation and must not be confused with a
+final tag release.
+
 ## Staging changes
 
 Stage the complete change set before the final harness; do not select files

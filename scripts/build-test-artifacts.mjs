@@ -14,6 +14,12 @@ const compiledCliRoot = resolve(projectRoot, "packages", "cli", "dist");
 const outputRoot = resolve(projectRoot, ".test-build");
 const tscPath = require.resolve("typescript/bin/tsc");
 
+execFileSync(
+  process.execPath,
+  [resolve(projectRoot, "scripts", "sync-package-artifacts.mjs")],
+  { cwd: projectRoot, stdio: "inherit" },
+);
+
 rmSync(compiledRoot, { recursive: true, force: true });
 rmSync(compiledCliRoot, { recursive: true, force: true });
 rmSync(outputRoot, { recursive: true, force: true });
