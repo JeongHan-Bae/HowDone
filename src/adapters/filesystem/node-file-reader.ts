@@ -1,6 +1,6 @@
 import { readFile, stat } from "node:fs/promises";
 import { extname, resolve } from "node:path";
-import type { MarkdownFileReader } from "../../core/index.ts";
+import type { MarkdownFileReader } from "howdone";
 
 export class FileReadError extends Error {
   constructor(message: string) {

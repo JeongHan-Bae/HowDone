@@ -1,0 +1,38 @@
+{
+  "lexer-body-only-complete": {
+    "sections": [],
+    "body": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }]
+  },
+  "lexer-body-two-items": {
+    "sections": [],
+    "body": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "first" }] }, { "type": "list-item", "checked": false, "children": [{ "type": "paragraph", "text": "second" }] }] }]
+  },
+  "lexer-yaml-only": {
+    "sections": [{ "format": "yaml", "value": "checks:\n  setup: true" }],
+    "body": []
+  },
+  "lexer-yaml-plus-body": {
+    "sections": [{ "format": "yaml", "value": "checks:\n  setup: true" }],
+    "body": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }]
+  },
+  "lexer-yaml-yaml-plus-body": {
+    "sections": [{ "format": "yaml", "value": "checks:\n  setup: true" }, { "format": "yaml", "value": "checks:\n  release: true" }],
+    "body": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }]
+  },
+  "lexer-yaml-toml-plus-body": {
+    "sections": [{ "format": "yaml", "value": "checks:\n  setup: true" }, { "format": "toml", "value": "[checks]\nrelease = true" }],
+    "body": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }]
+  },
+  "lexer-toml-only": {
+    "sections": [{ "format": "toml", "value": "[checks]\nsetup = true" }],
+    "body": []
+  },
+  "lexer-toml-yaml-plus-body": {
+    "sections": [{ "format": "toml", "value": "[checks]\nsetup = true" }, { "format": "yaml", "value": "checks:\n  release: true" }],
+    "body": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }]
+  },
+  "lexer-toml-toml-plus-body": {
+    "sections": [{ "format": "toml", "value": "[checks]\nsetup = true" }, { "format": "toml", "value": "[checks]\nrelease = true" }],
+    "body": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }]
+  }
+}

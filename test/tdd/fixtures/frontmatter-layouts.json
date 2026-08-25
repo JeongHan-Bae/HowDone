@@ -217,9 +217,83 @@
       }
     },
     {
-      "id": "frontmatter-after-body-is-invalid",
-      "source": "- [x] body\n\n---\ntitle: Late\n---\n",
-      "expectedLexerError": "Frontmatter must appear before Markdown body content."
+      "id": "horizontal-rules-between-markdown-sections",
+      "source": "# First\n\nFirst paragraph.\n\n---\n\n## Second\n\nSecond paragraph.\n\n---\n\n### Third\n\nThird paragraph.\n",
+      "expectedTokenKinds": [
+        "syntax-node",
+        "syntax-node",
+        "syntax-node",
+        "syntax-node",
+        "syntax-node",
+        "syntax-node",
+        "syntax-node",
+        "syntax-node",
+        "eof"
+      ],
+      "expectedAstTypes": [
+        "heading",
+        "paragraph",
+        "thematic-break",
+        "heading",
+        "paragraph",
+        "thematic-break",
+        "heading",
+        "paragraph"
+      ],
+      "expectedFormats": [],
+      "expectedValues": [],
+      "expectedRootLabels": [],
+      "expectedBodyMetrics": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0
+      }
+    },
+    {
+      "id": "yaml-shaped-block-after-body-is-markdown",
+      "source": "- [x] body\n\n---\nchecks:\n  build: true\n  test: false\n---\n\n# After\n",
+      "expectedTokenKinds": [
+        "syntax-node",
+        "syntax-node",
+        "syntax-node",
+        "syntax-node",
+        "eof"
+      ],
+      "expectedAstTypes": ["list", "thematic-break", "heading", "heading"],
+      "expectedFormats": [],
+      "expectedValues": [],
+      "expectedRootLabels": ["body"],
+      "expectedBodyMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }
+    },
+    {
+      "id": "toml-shaped-block-after-body-is-markdown",
+      "source": "- [x] body\n\n+++\n[checks]\nbuild = true\ntest = false\n+++\n\n# After\n",
+      "expectedTokenKinds": ["syntax-node", "syntax-node", "syntax-node", "eof"],
+      "expectedAstTypes": ["list", "paragraph", "heading"],
+      "expectedFormats": [],
+      "expectedValues": [],
+      "expectedRootLabels": ["body"],
+      "expectedBodyMetrics": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100
+      }
     }
   ]
 }

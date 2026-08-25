@@ -4,9 +4,10 @@ import type {
   MarkdownFileReader,
   MarkdownLexer,
   FrontmatterValueParser,
+  RuntimeDependency,
   TerminalOutputPort,
   WarningPort,
-} from "../core/index.ts";
+} from "howdone";
 
 export interface CliIO {
   stdout: { write(chunk: string): void };
@@ -23,4 +24,5 @@ export interface CliDependencies {
   jsonRenderer: JsonOutputPort;
   warning: WarningPort;
   version: string;
+  runtimeDependencies: readonly RuntimeDependency[];
 }

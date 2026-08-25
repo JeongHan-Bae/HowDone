@@ -1,5 +1,5 @@
 import { parse as parseYaml } from "yaml";
-import type { FrontmatterAst, FrontmatterValueParser } from "../../core/index.ts";
+import type { FrontmatterAst, FrontmatterValueParser } from "howdone";
 
 export class YamlValueParser implements FrontmatterValueParser {
   parse(frontmatter: FrontmatterAst): unknown {

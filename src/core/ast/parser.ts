@@ -1,17 +1,8 @@
 import type {
   BlockAst,
-  BlockquoteAst,
   DocumentAst,
-  CodeBlockAst,
   FrontmatterAst,
-  HeadingAst,
-  HtmlAst,
-  ListAst,
   ListItemAst,
-  ParagraphAst,
-  TableAst,
-  ThematicBreakAst,
-  UnsupportedAst,
 } from "./types.ts";
 import type { MarkdownAstParser } from "../ports.ts";
 import type {
@@ -33,64 +24,46 @@ function normalizeListItem(item: ScannedListItemNode): ListItemAst {
 
 function normalizeBlock(node: ScannedBlockNode): BlockAst {
   switch (node.type) {
-    case "paragraph": {
-      const paragraph: ParagraphAst = {
+    case "paragraph":
+      return {
         type: "paragraph",
         text: node.text,
       };
-      return paragraph;
-    }
-    case "heading": {
-      const heading: HeadingAst = {
+    case "heading":
+      return {
         type: "heading",
         depth: node.depth,
         text: node.text,
       };
-      return heading;
-    }
-    case "list": {
-      const list: ListAst = {
+    case "list":
+      return {
         type: "list",
         ordered: node.ordered,
         start: node.start,
         items: node.items.map(normalizeListItem),
       };
-      return list;
-    }
-    case "blockquote": {
-      const blockquote: BlockquoteAst = {
+    case "blockquote":
+      return {
         type: "blockquote",
         children: node.children.map(normalizeBlock),
       };
-      return blockquote;
-    }
-    case "code-block": {
-      const codeBlock: CodeBlockAst = {
+    case "code-block":
+      return {
         type: "code-block",
         language: node.language,
         value: node.value,
       };
-      return codeBlock;
-    }
-    case "table": {
-      const table: TableAst = { type: "table", value: node.value };
-      return table;
-    }
-    case "html": {
-      const html: HtmlAst = { type: "html", value: node.value };
-      return html;
-    }
-    case "thematic-break": {
-      const thematicBreak: ThematicBreakAst = { type: "thematic-break" };
-      return thematicBreak;
-    }
-    case "unsupported": {
-      const unsupported: UnsupportedAst = {
+    case "table":
+      return { type: "table", value: node.value };
+    case "html":
+      return { type: "html", value: node.value };
+    case "thematic-break":
+      return { type: "thematic-break" };
+    case "unsupported":
+      return {
         type: "unsupported",
         value: node.value,
       };
-      return unsupported;
-    }
   }
 }
 

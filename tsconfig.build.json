@@ -6,7 +6,7 @@
     "declarationMap": true,
     "noEmit": false,
     "noEmitOnError": true,
-    "outDir": "dist",
+    "outDir": "packages/core/dist",
     "rootDir": "src",
     "rewriteRelativeImportExtensions": true,
     "sourceMap": true

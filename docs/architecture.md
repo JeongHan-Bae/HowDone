@@ -1,5 +1,10 @@
 # HowDone architecture
 
+HowDone is published in two parts. The `howdone` npm package is the
+framework-independent hexagonal core, while `howdone-cli` is the primary
+product and command executor. The CLI's command-line names are `howdone` and
+`howdone-cli`; it composes the default adapters around the reusable core.
+
 ## Repository layout
 
 ```text
@@ -16,13 +21,28 @@
 │   ├── architecture.md
 │   ├── development.md
 │   └── syntax.md
+├── packages/
+│   ├── cli/
+│   │   ├── package.json
+│   │   └── README.md
+│   └── core/
+│       ├── source/
+│       │   ├── application/
+│       │   │   └── index.ts
+│       │   └── core/
+│       │       └── index.ts
+│       ├── package.json
+│       └── README.md
 ├── scripts/
 │   ├── build-test-artifacts.mjs
 │   ├── check-package-contents.ts
 │   ├── check-platform-neutral.ts
+│   ├── install-local.mjs
 │   ├── run-compiled-tests.mjs
 │   ├── run-cucumber.mjs
-│   └── update-version-badge.mjs
+│   ├── sync-package-artifacts.mjs
+│   ├── update-version-badge.mjs
+│   └── validate-release.mjs
 ├── src/
 │   ├── adapters/
 │   │   ├── filesystem/
@@ -46,8 +66,11 @@
 │   │   │   ├── args.ts
 │   │   │   └── help.ts
 │   │   ├── analyze.ts
+│   │   ├── index.ts
 │   │   └── types.ts
 │   ├── boot/
+│   │   ├── cli-main.ts
+│   │   ├── entrypoint.ts
 │   │   ├── main.ts
 │   │   └── pipeline.ts
 │   └── core/
@@ -73,7 +96,7 @@
 │       ├── index.ts
 │       ├── ports.ts
 │       └── types.ts
-├── test/                    BDD, TDD, and regression tests
+├── test/                    BDD, TDD, published-package, and regression tests; see test/README.md
 ├── .gitattributes
 ├── .gitignore
 ├── AGENTS.md
@@ -83,9 +106,11 @@
 ├── package.json
 ├── README.md
 ├── tsconfig.build.json
+├── tsconfig.cli-build.json
 ├── tsconfig.json
 ├── tsconfig.test-build.json
-└── version_badge.json
+├── version_badge.json
+└── version_badge_cli.json
 ```
 
 ## Pipeline
@@ -108,25 +133,41 @@ Markdown source
 ```
 
 TypeScript source is compiled by `tsconfig.build.json` into the ignored
-`dist/` directory. The compiler rewrites relative `.ts` imports to `.js` and
-emits declarations for the public core entry. The package `howdone` bin points
-directly to the compiled `dist/boot/main.js` entry. Repository source checks
-continue to use `bin/howdone.cjs`: Node.js 23+ uses native TypeScript
-execution and Node.js 18.18–22 uses `tsx`. The source and compiled test modes
-select their entry explicitly; each mode owns its runtime contract. Compiled
-parity builds with repository development tools, then packs the package and
-runs the compiled TDD suite and CLI from a temporary npm installation created
-with `--omit=dev`. The test runner may use development dependencies to
-orchestrate BDD, but the application process can resolve only the package's
-published runtime dependencies.
+`packages/core/dist/` directory, and `tsconfig.cli-build.json` emits the CLI
+adapters into `packages/cli/dist/`. The compiler rewrites relative `.ts`
+imports to `.js` and emits declarations for the public core entry.
+The `howdone` package is the framework-independent hexagonal core and has no
+bin; the `howdone-cli` package is the primary product and its `howdone` and
+`howdone-cli` bins point directly to `dist/boot/cli-main.js`. Repository source checks continue to use
+`bin/howdone.cjs`: Node.js 23+ uses native TypeScript execution and Node.js
+18.18–22 uses `tsx`. The source and compiled test modes select their entry
+explicitly; each mode owns its runtime contract. Compiled parity stages the
+two compiled packages and the CLI's resolved production dependency closure in
+a temporary sandbox. The test runner may use development dependencies to
+orchestrate BDD, but the package consumer and CLI application processes can
+resolve only the package's published runtime dependencies. The separate
+local-install parity mode installs the compiled Core and CLI from local package
+paths into another temporary sandbox, then runs the installed package entries
+and both CLI bin aliases.
+
+The repository root is the only source of the shared `LICENSE`, `docs/api.md`,
+and `docs/syntax.md` content. `scripts/sync-package-artifacts.mjs` materializes
+the core API and CLI syntax documents plus the shared license in the ignored
+workspace package directories before builds, package checks, and releases, so
+the npm tarballs contain the required files without maintaining duplicate
+tracked documents.
 
 The first arrow is the only Markdown syntax-engine boundary. Unified/Remark recognizes CommonMark, GFM task lists, YAML/TOML frontmatter, code blocks, tables, HTML, links, and inline content. The adapter maps the external mdast into local source tokens and source spans. No core module imports mdast. YAML/TOML syntax is decoded by the format adapter; the core classifier then applies the semantic shape rules, never Markdown checkbox text.
 
 The source contract allows an empty body, a body without frontmatter, one
 frontmatter section without a body, or multiple frontmatter sections with an
 optional body. Frontmatter sections are collected in source order only while
-they form the document prefix. A frontmatter node after a Markdown body node is
-rejected by the lexer. Each section retains its own format, so YAML/YAML,
+they form the document prefix. A delimiter-shaped YAML/TOML block after a
+Markdown body is parsed as ordinary Markdown, even when its contents are valid
+frontmatter data. This is a defined ambiguity rule: the delimiter has ordinary
+Markdown meaning, especially as a thematic break, so the grammar resolves the
+middle-of-document ambiguity in favor of Markdown. Each section retains its
+own format, so YAML/YAML,
 YAML/TOML, TOML/YAML, TOML/TOML, and longer alternating sequences do not get
 collapsed into one parser input. Recognized roots from all sections are
 aggregated for the report-level separate result. `--merge-frontmatter` requires
@@ -197,7 +238,7 @@ the TOML adapter enforces its homogeneous-array grammar before classification.
 
 ## Adapters and ports
 
-- `MarkdownLexer` is implemented by `RemarkLexer`. It delegates source recognition to Unified/Remark and emits local `LexerToken` objects.
+- `MarkdownLexer` is implemented by `RemarkLexer`. It delegates source recognition to Unified/Remark and emits local `LexerToken` objects. The lexer uses Remark's frontmatter extension for prefix candidates and a Remark Markdown parse for the body, so late delimiter-shaped blocks remain Markdown without a hand-written Markdown parser.
 - `FrontmatterValueParser` is implemented separately by `YamlValueParser` and `TomlValueParser`. Each delegates one syntax to its native library (`yaml` or `smol-toml`) and emits format-independent values. `classifyFrontmatter` in `core/frontmatter/classifier.ts` applies the semantic checklist contract.
 - `MarkdownFileReader` is implemented by `NodeMarkdownFileReader`, which delegates path resolution to `node:path` and file access to `node:fs/promises`.
 - `GraphemeSegmenter` is implemented by `IntlGraphemeSegmenter`, which delegates Unicode grapheme boundaries to `Intl.Segmenter`.
@@ -205,4 +246,14 @@ the TOML adapter enforces its homogeneous-array grammar before classification.
 
 ## Composition root
 
-`src/boot/main.ts` constructs every default adapter and passes them to the application, including the package-version reader and process-warning sink. The package-version adapter reads the current npm package's own `package.json` metadata; the repository badge script is not a runtime dependency and is not published. `src/application/analyze.ts` does not instantiate Remark, filesystem, runtime, or output implementations. The repository launcher starts `src/boot/main.ts`, while the published `howdone` bin starts the compiled `dist/boot/main.js`; both entries use the same composition root and application.
+`src/boot/main.ts` constructs every default adapter for source-checkout CLI
+execution. `src/boot/cli-main.ts` is the compiled `howdone-cli` composition
+root; it imports the public core/application package and supplies the same
+adapters, including the package metadata reader and process-warning sink. The
+package metadata adapter reads the CLI package's own version and runtime
+dependency metadata from `packages/cli/package.json`; the repository badge
+script reads the Core and CLI package versions and is not a runtime dependency.
+The published
+`howdone/application` entry exposes the port boundary for consumers that
+provide their own implementations. The `howdone` package contains no adapter
+or CLI bin, while both CLI bin aliases start the compiled `dist/boot/cli-main.js`.

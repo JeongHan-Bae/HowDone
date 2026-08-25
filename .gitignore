@@ -57,3 +57,9 @@ temp/
 .tools/
 *.tmp
 *.tgz
+
+# Generated npm package documentation and license copies
+/packages/core/LICENSE
+/packages/core/docs/api.md
+/packages/cli/LICENSE
+/packages/cli/docs/syntax.md

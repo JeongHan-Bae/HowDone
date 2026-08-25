@@ -1,4 +1,4 @@
-import type { WarningPort } from "../../core/index.ts";
+import type { WarningPort } from "howdone";
 
 export const defaultWarningPort: WarningPort = {
   warn(message: string): void {

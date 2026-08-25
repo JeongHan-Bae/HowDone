@@ -15,11 +15,14 @@ import { defaultYamlValueParser } from "../../src/adapters/frontmatter/yaml-valu
 import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
 import { JsonRenderer } from "../../src/adapters/output/json-renderer.ts";
 import { TerminalRenderer } from "../../src/adapters/output/terminal-renderer.ts";
-import { packageVersion } from "../../src/adapters/runtime/node-package-version.ts";
-import { run } from "../../src/application/analyze.ts";
+import {
+  packageRuntimeDependencies,
+  packageVersion,
+} from "../../src/adapters/runtime/node-package-version.ts";
+import { run } from "howdone/application";
 import type { ParsedArguments } from "../../src/application/cli/args.ts";
 import { parseArguments } from "../../src/application/cli/args.ts";
-import { TypedAstParser } from "../../src/core/index.ts";
+import { TypedAstParser } from "howdone";
 
 interface PathVariant {
   kind: "relative" | "relative-space" | "absolute" | "absolute-space";
@@ -30,6 +33,7 @@ interface PathVariant {
 interface ArgumentExpectation {
   help: boolean;
   version: boolean;
+  dependencies?: boolean;
   path: string;
   mode: ParsedArguments["mode"];
   format: ParsedArguments["format"];
@@ -103,6 +107,20 @@ function nativeRelativeWithDot(nativeRelativePath: string): string {
   return path.format({ dir: ".", base: nativeRelativePath });
 }
 
+async function writeRelativeSpaceFixture(
+  temporaryRoot: string,
+  markdown: string,
+): Promise<string> {
+  const variant = fixture.pathVariants.find(
+    (candidate) => candidate.kind === "relative-space",
+  );
+  assert.ok(variant);
+  const nativeAbsolutePath = nativePathForVariant(variant, temporaryRoot).absolute;
+  await mkdir(path.dirname(nativeAbsolutePath), { recursive: true });
+  await writeFile(nativeAbsolutePath, markdown, "utf8");
+  return nativeAbsolutePath;
+}
+
 function dependencies(baseDirectory: string) {
   return {
     lexer: defaultRemarkLexer,
@@ -114,6 +132,7 @@ function dependencies(baseDirectory: string) {
     tomlValueParser: defaultTomlValueParser,
     warning: { warn: () => {} },
     version: packageVersion,
+    runtimeDependencies: packageRuntimeDependencies,
   };
 }
 
@@ -121,6 +140,7 @@ function expectedArguments(value: ArgumentExpectation): ParsedArguments {
   return {
     help: value.help,
     version: value.version,
+    dependencies: value.dependencies ?? false,
     path: value.path,
     mode: value.mode,
     format: value.format,
@@ -182,14 +202,10 @@ test("TDD uses node:path formatting for a dot-relative path argument", async () 
     path.join(tmpdir(), "howdone-dot-path-"),
   );
   try {
-    const variant = fixture.pathVariants.find(
-      (candidate) => candidate.kind === "relative-space",
+    const nativeAbsolutePath = await writeRelativeSpaceFixture(
+      temporaryRoot,
+      fixture.markdown,
     );
-    assert.ok(variant);
-    const nativePaths = nativePathForVariant(variant, temporaryRoot);
-    const nativeAbsolutePath = nativePaths.absolute;
-    await mkdir(path.dirname(nativeAbsolutePath), { recursive: true });
-    await writeFile(nativeAbsolutePath, fixture.markdown, "utf8");
 
     const nativeRelativePath = path.relative(
       temporaryRoot,
@@ -264,14 +280,10 @@ test("TDD composes a native path with every display option through the app port"
     path.join(tmpdir(), "howdone-app-path-"),
   );
   try {
-    const variant = fixture.pathVariants.find(
-      (candidate) => candidate.kind === "relative-space",
+    const nativeAbsolutePath = await writeRelativeSpaceFixture(
+      temporaryRoot,
+      fixture.markdown,
     );
-    assert.ok(variant);
-    const nativePaths = nativePathForVariant(variant, temporaryRoot);
-    const nativeAbsolutePath = nativePaths.absolute;
-    await mkdir(path.dirname(nativeAbsolutePath), { recursive: true });
-    await writeFile(nativeAbsolutePath, fixture.markdown, "utf8");
     const nativeRelativePath = path.relative(temporaryRoot, nativeAbsolutePath);
     const dotRelativePath = nativeRelativeWithDot(nativeRelativePath);
     const output = capture();

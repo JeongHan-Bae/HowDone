@@ -1,0 +1,13 @@
+{
+  "cases": [
+    { "inputCode": "body-only-complete", "code": "lexer-body-only-complete" },
+    { "inputCode": "body-two-items", "code": "lexer-body-two-items" },
+    { "inputCode": "yaml-only", "code": "lexer-yaml-only" },
+    { "inputCode": "yaml-plus-body", "code": "lexer-yaml-plus-body" },
+    { "inputCode": "yaml-yaml-plus-body", "code": "lexer-yaml-yaml-plus-body" },
+    { "inputCode": "yaml-toml-plus-body", "code": "lexer-yaml-toml-plus-body" },
+    { "inputCode": "toml-only", "code": "lexer-toml-only" },
+    { "inputCode": "toml-yaml-plus-body", "code": "lexer-toml-yaml-plus-body" },
+    { "inputCode": "toml-toml-plus-body", "code": "lexer-toml-toml-plus-body" }
+  ]
+}

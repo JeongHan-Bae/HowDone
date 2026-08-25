@@ -1,4 +1,4 @@
-# HowDone syntax contract
+# HowDone CLI syntax contract
 
 This document defines the HowDone source syntax according to the general
 conventions of Markdown, the GFM Task List extension, YAML, and TOML. Its
@@ -52,6 +52,23 @@ TOML value is not necessarily a checklist container or a checkbox. A boolean
 becomes a checkbox only when it occurs in a recognized container; a root
 boolean field is intentionally ignored.
 
+## CLI command forms
+
+The CLI exposes four independent command forms:
+
+```text
+howdone <markdown-path> [options]
+howdone --help
+howdone --version
+howdone --dependencies
+```
+
+Only the Markdown-path form enters the source pipeline. The help, version, and
+dependency forms cannot be combined with a Markdown path or analysis options.
+`--dependencies` prints the CLI's direct runtime dependencies as one
+`name@version` entry per line. `-h` aliases `--help`, and `-v` aliases
+`--version`.
+
 ## 1. Source composition
 
 ### 1.1 Two optional channels
@@ -80,8 +97,29 @@ frontmatter section N   (optional)
 Markdown body            (optional)
 ````
 
-Frontmatter is a prefix. It cannot be inserted between Markdown body blocks,
-and it cannot appear after body content.
+Formally, the source layout is:
+
+````text
+Document ::= FrontmatterSection^N MarkdownBody?
+N >= 0
+````
+
+`FrontmatterSection` is one complete YAML or TOML section, and all `N` sections
+are a contiguous prefix. `MarkdownBody` is one optional Markdown channel that
+may contain any number of Markdown blocks. Therefore a document has zero or
+more frontmatter sections followed by at most one body position; it does not
+have a second frontmatter position after that body.
+
+Frontmatter is a prefix: it belongs at the top of the document, before the
+Markdown body. Only a top-level block in that prefix is a frontmatter section.
+After Markdown body content has started, a matching `---` or `+++` block is
+ordinary Markdown, even when the lines inside it are valid YAML or TOML. This
+is a defined ambiguity rule, not undefined behavior. The delimiter has a
+Markdown meaning of its own, especially as a thematic break, so the grammar
+resolves an ambiguous middle-of-document block in favor of the ordinary
+Markdown meaning. It is not a frontmatter section and does not create a
+separate progress channel. Move the block to the document prefix when it is
+intended to be metadata.
 
 ### 1.2 Frontmatter section delimiters
 
@@ -141,19 +179,25 @@ combines the recognized roots from all sections; tree, details, and JSON keep
 each section separate unless `--merge-frontmatter` is explicitly requested to
 merge the aggregated frontmatter result with the Markdown result.
 
-The following source is invalid because the frontmatter-looking block is late:
+The following source is valid Markdown. The YAML-shaped block is late, so the
+two `---` lines and its contents remain in the Markdown body rather than
+becoming frontmatter. The same rule applies even though the contents are valid
+YAML: the Markdown thematic-break meaning wins the ambiguity:
 
 ````markdown
 - [x] Body task
 
 ---
-title: Too late
+checks:
+  build: true
+  test: false
 ---
 ````
 
-An unmatched delimiter, a delimiter closed with the other format, invalid YAML,
-invalid TOML, or a frontmatter section after body content produces an error.
-Semantic recognition does not turn invalid source syntax into valid data.
+Invalid YAML or invalid TOML in a recognized prefix section produces a parser
+error. Semantic recognition does not turn invalid source syntax into valid
+data. A delimiter-shaped block after body content remains in the Markdown
+channel and is not sent to the YAML or TOML value adapter.
 
 ### 1.3 Markdown body syntax
 

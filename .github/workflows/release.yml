@@ -21,7 +21,7 @@ jobs:
     needs: ci
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
     steps:
       - name: Check out tagged source
@@ -36,51 +36,64 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate release tag and package versions
+      - name: Typecheck release validator
+        run: npm run typecheck:release
+
+      - name: Reject an already completed GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            echo "::error::GitHub release ${RELEASE_TAG} already exists; refusing to publish it again."
+            exit 1
+          fi
+
+      - name: Validate release tag, versions, and registry state
+        id: validate
         env:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-
-          if [[ "${GITHUB_REF_TYPE:-}" != "tag" || "${RELEASE_TAG}" != v* ]]; then
-            echo "::error::Release must run from a Git tag beginning with v (received: ${RELEASE_TAG})."
-            exit 1
-          fi
-
-          VERSION="${RELEASE_TAG#v}"
-          VERSION="${VERSION}" node --input-type=module <<'NODE'
-          const version = process.env.VERSION;
-          const numericIdentifier = "(0|[1-9][0-9]*)";
-          const nonNumericIdentifier = "[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*";
-          const prereleaseIdentifier = `(?:${numericIdentifier}|${nonNumericIdentifier})`;
-          const buildIdentifier = "[0-9A-Za-z-]+";
-          const semver = new RegExp(
-            `^${numericIdentifier}\\.${numericIdentifier}\\.${numericIdentifier}` +
-              `(?:-${prereleaseIdentifier}(?:\\.${prereleaseIdentifier})*)?` +
-              `(?:\\+${buildIdentifier}(?:\\.${buildIdentifier})*)?$`,
-          );
-
-          if (typeof version !== "string" || !semver.test(version)) {
-            console.error(`::error::Invalid release tag version: ${version}`);
-            console.error("Expected vX.Y.Z or vX.Y.Z-prerelease, using npm SemVer.");
-            process.exit(1);
-          }
-          NODE
-
-          PACKAGE_VERSION="$(node --input-type=module -e 'import { readFileSync } from "node:fs"; console.log(JSON.parse(readFileSync("package.json", "utf8")).version)')"
-          if [[ "${PACKAGE_VERSION}" != "${VERSION}" ]]; then
-            echo "::error::package.json version ${PACKAGE_VERSION} does not match release tag version ${VERSION}."
-            exit 1
-          fi
-
-          LOCK_VERSION="$(node --input-type=module -e 'import { readFileSync } from "node:fs"; console.log(JSON.parse(readFileSync("package-lock.json", "utf8")).packages[""].version)')"
-          if [[ "${LOCK_VERSION}" != "${VERSION}" ]]; then
-            echo "::error::package-lock.json version ${LOCK_VERSION} does not match release tag version ${VERSION}."
-            exit 1
-          fi
+          node scripts/validate-release.mjs "${RELEASE_TAG}"
 
       - name: Build release package
-        run: npm run build
+        run: npm run build:cli
 
-      - name: Publish the tagged package
-        run: npm publish --tag latest
+      - name: Publish the core package
+        if: steps.validate.outputs.publish_core == 'true'
+        run: npm publish --workspace packages/core --tag latest --access public
+
+      - name: Check exact core dependency before CLI publish
+        if: steps.validate.outputs.publish_cli == 'true'
+        env:
+          CORE_VERSION: ${{ steps.validate.outputs.core_version }}
+        run: |
+          set -euo pipefail
+          for attempt in {1..30}; do
+            published_version="$(npm view "howdone@${CORE_VERSION}" version --json 2>/dev/null || true)"
+            if [[ "${published_version}" == "\"${CORE_VERSION}\"" ]]; then
+              echo "howdone@${CORE_VERSION} is available from npm; continuing to CLI publish."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::required howdone@${CORE_VERSION} is not available for the CLI publish."
+          exit 1
+
+      - name: Publish the CLI package
+        if: steps.validate.outputs.publish_cli == 'true'
+        run: npm publish --workspace packages/cli --tag latest --access public
+
+      - name: Create GitHub release marker
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          gh release create "${RELEASE_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --verify-tag \
+            --title "${RELEASE_TAG}" \
+            --generate-notes

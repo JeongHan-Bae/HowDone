@@ -57,7 +57,8 @@ TDD tests verify intermediate contracts with direct, deterministic calls:
   expected metrics, and root-count versus explicit merge weighting.
 - `test/tdd/frontmatter-layouts.test.ts` verifies empty, body-only,
   frontmatter-only, body-plus-frontmatter, repeated-format, alternating-format,
-  source-order, and frontmatter-after-body lexer/AST boundaries from
+  source-order, and late YAML/TOML-shaped delimiter blocks remaining in the
+  Markdown channel from
   `test/tdd/fixtures/frontmatter-layouts.json`.
 - `test/tdd/help.test.ts` verifies that help usage, option arguments, and
   explanatory sections are structured data rendered by the help formatter.
@@ -80,7 +81,7 @@ user-visible command through the real executable path:
 
 ```text
 source BDD    -> bin/howdone.cjs -> src/boot/main.ts -> src/application/analyze.ts
-compiled BDD  -> package bin    -> dist/boot/main.js -> dist/application/analyze.js
+compiled BDD  -> howdone-cli bin -> dist/boot/cli-main.js -> howdone/application
 ```
 
 BDD must start a real Node child process. It must not inject a fake lexer,
@@ -103,9 +104,10 @@ The BDD suite is intentionally divided by behavior. Do not put every scenario
 in one feature file or every definition in one step module. The current
 feature ownership is:
 
-- `test/bdd/features/cli-basics.feature` covers entrypoint basics and the
-  ordinary Markdown task-tree contract, including the exact `--version`
-  value sourced from the package's `package.json`.
+- `test/bdd/features/cli-basics.feature` covers entrypoint basics, the four
+  independent CLI commands, standalone-command validation, and the ordinary
+  Markdown task-tree contract, including the exact `--version` value sourced
+  from the package's `package.json`.
 - `test/bdd/features/markdown-display.feature` covers default, decimal,
   percentage, tree, and details display composition.
 - `test/bdd/features/markdown-output.feature` covers output shape, JSON label
@@ -146,6 +148,22 @@ that the lexer emitted the right tokens or that the tree contained the right
 implicit nodes. Conversely, a TDD test does not prove that the executable,
 argument parsing, filesystem adapter, and output stream work together.
 
+### Published package consumer tests
+
+Published-package consumer tests live in `test/package/`. They run against the
+staged compiled `howdone` core entry and verify the public hexagonal API as a
+consumer would use it. The staged files represent the compiled package that
+would be published; this suite does not download a package from the npm
+registry. The test supplies its own `MarkdownLexer` port and other required
+collaborators; it must not import repository adapters or rely on development-
+only modules. The `implementations/` directory contains the consumer's simple
+port implementations and paired JSON input-to-code and code-to-output
+fixtures. The `tdd/` directory verifies every pipeline boundary and package
+metadata, while `bdd/` composes all fixtures through the published application.
+This is a separate evidence layer from TDD stage tests and BDD CLI behavior
+tests. Run it with `npm run test:package`; `npm run test:compiled` includes the
+same consumer test in its isolated compiled staging.
+
 ## Fixture construction
 
 ### General rule
@@ -176,8 +194,8 @@ The TDD fixture set is:
   and independent semantic checklist, separate-progress, and merge arithmetic
   expectations.
 - `test/tdd/fixtures/frontmatter-layouts.json` contains source-layout cases
-  and lexer/AST expectations for optional, repeated, alternating, ordered, and
-  invalid frontmatter sections.
+  and lexer/AST expectations for optional, repeated, alternating, ordered,
+  prefix, and late delimiter boundaries.
 - `test/tdd/fixtures/markdown-tree-contracts.json` contains ordered and
   unordered Markdown trees, explicit parent-state behavior, and discarded
   plain subtrees.
@@ -446,17 +464,28 @@ unchanged. `npm test` and `npm run test:bdd`
 explicitly select the source runtime, preserving native Node.js TypeScript on
 Node.js 23+ and bundled `tsx` on Node.js 18.18–22. The command
 `npm run test:tdd:compiled` compiles the same `src/` and `test/` modules into the
-ignored `.test-build/` directory, packs the release artifact, installs it into
-a temporary project with `npm install --omit=dev`, and runs the same TDD entry
-files with Node from that production-only installation. `npm run test:compiled`
-explicitly selects the compiled runtime after the same package installation,
-runs that compiled TDD suite, and runs the unchanged BDD feature suite through
-the installed compiled package entry. The Cucumber process is development-only
-test orchestration; it must not provide a module to the application child
-process. Do not create
+ignored `.test-build/` directory, stages both compiled packages and the CLI's
+resolved production dependency closure into a temporary project, and runs the
+same TDD entry files with Node from that production-only staging. The package
+consumer test is compiled alongside those tests and imports the public
+`howdone` entry while supplying test-owned ports. `npm run test:compiled`
+explicitly selects the compiled runtime after the same staging, runs the
+compiled TDD and package consumer suites, and runs the unchanged BDD feature
+suite through the compiled CLI entry. The Cucumber process is development-only
+test orchestration; it must not provide a module to the application or package
+consumer process. Do not create
 a second fixture set or change expected values for compiled verification;
 parity means the same test files, feature files, fixtures, and assertions
 exercise both paths. Each test command selects its runtime explicitly.
+
+### Local package installation
+
+`npm run test:local-install` creates a separate temporary project, installs the
+compiled `howdone` and `howdone-cli` packages from local paths with npm, and
+resolves only the CLI's production dependencies. It then runs the published-
+package consumer, compiled BDD features, and both installed bin aliases. This
+proves local npm installation behavior; it is not a download of an already
+published npm registry version.
 
 The test layout tree in `test/README.md` follows the repository tree order.
 When adding a test directory or file to a documented tree, insert it in the
@@ -476,11 +505,13 @@ Use this sequence:
 3. Add the incoming and outgoing TDD boundary assertions.
 4. Add the required coverage label for a new source boundary.
 5. Add or update a real-executable BDD scenario when the CLI behavior changes.
-6. Update `docs/syntax.md` when a user-facing source syntax contract changes.
-7. Update `test/README.md` or this file when fixture or test construction rules
+6. Add or update a `test/package` consumer test when the published package
+   contract changes.
+7. Update `docs/syntax.md` when a user-facing source syntax contract changes.
+8. Update `test/README.md` or this file when fixture or test construction rules
    change.
-8. Run the complete verification gate.
-9. Run a repository-wide scan for forbidden literal CJK characters before
+9. Run the complete verification gate.
+10. Run a repository-wide scan for forbidden literal CJK characters before
    handoff.
 
 Do not treat a passing BDD scenario as proof that the implementation is right
@@ -496,7 +527,9 @@ Use these focused commands while iterating on the test suite:
 npm run typecheck
 npm test
 npm run test:bdd
+npm run test:package
 npm run test:compiled
+npm run test:local-install
 npm run typecheck:maintenance
 npm run check:platform
 npm run pack:check
@@ -504,8 +537,11 @@ npm run pack:check
 
 `npm test` runs the broad regression suite and all files imported by
 `test/tdd/index.test.ts`. `npm run test:bdd` runs the source Cucumber feature
-suite, and `npm run test:compiled` runs the same TDD and BDD contracts through
-the compiled entry. For the final repository boundary, run
+suite, `npm run test:package` runs the published-package consumer, and
+`npm run test:compiled` runs the same TDD, package-consumer, and BDD contracts
+through the compiled entry. `npm run test:local-install` verifies the same
+consumer and BDD contracts after local npm installation. None of these suites
+downloads a package from the npm registry. For the final repository boundary, run
 `npm run verify:precommit` as required by
 [`CONTRIBUTING.md`](../CONTRIBUTING.md). That command also runs both dependency
 audits and staged/unstaged Git checks; the focused commands above are not a

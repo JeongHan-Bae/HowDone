@@ -12,8 +12,8 @@ import {
   summarizeProgress,
   TokenKind,
   TypedAstParser,
-} from "../../src/core/index.ts";
-import type { CheckboxNode } from "../../src/core/index.ts";
+} from "howdone";
+import type { CheckboxNode } from "howdone";
 
 const source = (JSON.parse(
   readFileSync(new URL("./fixtures/markdown-samples.json", import.meta.url), "utf8"),

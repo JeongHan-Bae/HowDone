@@ -1,15 +1,41 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import {
   HELP_SECTIONS,
-  HELP_TEXT,
+  renderDependenciesText,
   renderHelpText,
 } from "../../src/application/cli/help.ts";
+import { packageRuntimeDependencies } from "../../src/adapters/runtime/node-package-version.ts";
+
+interface PackageMetadata {
+  dependencies: Record<string, string>;
+}
+
+const packageMetadata = JSON.parse(
+  readFileSync(new URL("../../packages/cli/package.json", import.meta.url), "utf8"),
+) as PackageMetadata;
+
+const expectedRuntimeDependencies = Object.entries(
+  packageMetadata.dependencies,
+).map(([name, version]) => ({ name, version }));
 
 test("TDD help content keeps usage, options, and sections structured", () => {
   assert.equal(typeof HELP_SECTIONS.usage, "string");
+  assert.deepEqual(HELP_SECTIONS.usage.split("\n"), [
+    "howdone <markdown-path> [options]",
+    "howdone --help",
+    "howdone --version",
+    "howdone --dependencies",
+  ]);
   assert.equal(Array.isArray(HELP_SECTIONS.options), true);
   assert.ok(HELP_SECTIONS.options.length > 0);
+  assert.equal(
+    HELP_SECTIONS.options.some((option) =>
+      option.command === "-h, --help" || option.command === "-v, --version"
+    ),
+    false,
+  );
 
   const format = HELP_SECTIONS.options.find(
     (option) => option.command === "--format",
@@ -20,10 +46,30 @@ test("TDD help content keeps usage, options, and sections structured", () => {
   assert.deepEqual(format?.argument, "decimal|percentage");
   assert.deepEqual(percentage?.argument, "");
   assert.ok(HELP_SECTIONS.options.every((option) =>
-    option.description.every((line) => typeof line === "string")
+    option.description.every((line: unknown) => typeof line === "string")
   ));
 
-  assert.match(HELP_TEXT, /^Usage:\n/u);
-  assert.match(HELP_TEXT, /Syntax reference:/u);
-  assert.equal(HELP_TEXT, renderHelpText(HELP_SECTIONS));
+  const helpText = renderHelpText(HELP_SECTIONS, packageRuntimeDependencies);
+  assert.match(helpText, /^Usage:\n/u);
+  assert.match(helpText, /Syntax reference:/u);
+  assert.match(helpText, /Node\.js 18\.18 or newer is required\./u);
+  assert.match(helpText, /Runtime dependencies:/u);
+  assert.match(
+    helpText,
+    /These dependencies are installed with the published package\./u,
+  );
+  assert.doesNotMatch(helpText, /tsx/iu);
+  assert.deepEqual(packageRuntimeDependencies, expectedRuntimeDependencies);
+  for (const dependency of expectedRuntimeDependencies) {
+    assert.ok(helpText.includes(`${dependency.name}@${dependency.version}`));
+  }
+  assert.equal(
+    helpText,
+    renderHelpText(HELP_SECTIONS, packageRuntimeDependencies),
+  );
+
+  assert.equal(
+    renderDependenciesText(packageRuntimeDependencies),
+    `${expectedRuntimeDependencies.map(({ name, version }) => `${name}@${version}`).join("\n")}\n`,
+  );
 });

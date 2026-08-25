@@ -7,9 +7,12 @@ sections of [`README.md`](README.md), [`docs/architecture.md`](docs/architecture
 [`docs/syntax.md`](docs/syntax.md), and
 [`test/AGENTS.md`](test/AGENTS.md) when tests are in scope.
 
-The project is a local Node.js/TypeScript CLI. It reads Markdown task lists,
-calculates progress, and writes a result to the terminal or stdout. It must not
-modify or upload the source file, require a browser, or require network access.
+HowDone is a local Node.js/TypeScript project published in two parts. The
+`howdone` npm package is its framework-independent hexagonal core, while
+`howdone-cli` is the primary product and command executor installed as the
+`howdone` and `howdone-cli` commands. It reads Markdown task lists, calculates
+progress, and writes a result to the terminal or stdout. It must not modify or
+upload the source file, require a browser, or require network access.
 
 ## Pre-commit harness: mandatory hard boundary
 
@@ -20,17 +23,25 @@ of its checks is useful while iterating, but it is not a substitute for the
 final harness run.
 
 The harness is the repository's hard contribution boundary. It runs the
-application typecheck, source TDD and source BDD suites, compiled TDD and
-compiled BDD parity suites, typed maintenance-file checks, the
-platform-neutral source check, the runtime and full dependency audits,
-`scripts/check-package-contents.ts` through `npm run pack:check`, and both
-staged and unstaged Git whitespace checks. The compiled parity suites build
-with development tools but execute the packed JavaScript package from a
-temporary `npm install --omit=dev` environment, so the application under test
-can resolve only its published `dependencies`. The test runner's Cucumber and
-TypeScript tooling remains outside that application process. It does not run
-`npm run badge:version`; version-badge generation is a separate maintenance
-operation and is never a pre-commit requirement. Do not bypass the harness with
+application typecheck, source TDD and source BDD suites, the published-package
+consumer suite, compiled TDD and compiled BDD parity suites, typed
+maintenance-file checks, the platform-neutral source check, the runtime and
+full dependency audits, `scripts/check-package-contents.ts` through
+`npm run pack:check`, and both staged and unstaged Git whitespace checks. The
+compiled CLI parity suites build with development tools but execute staged
+compiled JavaScript packages from a temporary production-dependency sandbox, so
+the CLI under test can resolve only its published `dependencies`. The separate
+package consumer suite stages the compiled core as `node_modules/howdone` in an
+isolated sandbox and uses the repository's resolved dependencies without an
+installation step. The local-install suite creates another isolated sandbox,
+installs the compiled Core and CLI from local package paths with npm, and runs
+the installed package consumer, BDD, and both CLI bin aliases. Its runtime
+installation contains production dependencies only; repository development
+dependencies remain outside the application process. The test runner's
+Cucumber and TypeScript tooling remains outside the application process. It
+does not run `npm run badge:version`;
+version-badge generation is a separate maintenance operation and is never a
+pre-commit requirement. Do not bypass the harness with
 `git commit --no-verify`, skip a failed command, weaken a failing assertion, or
 replace the command with an unrecorded local alternative. If a check cannot run
 in the current environment, the commit must wait until it can run or the exact
@@ -82,8 +93,9 @@ these ownership boundaries:
   calls the application.
 - `bin/howdone.cjs` is the repository source execution shim only. It keeps the
   original native TypeScript path on Node.js 23+ and the bundled `tsx` path on
-  Node.js 18.18–22. The package `howdone` bin points directly to the compiled
-  `dist/boot/main.js` entry.
+  Node.js 18.18–22. The `howdone-cli` bin points directly to the compiled
+  `packages/cli/dist/boot/cli-main.js` entry and depends on the matching
+  `howdone` core package.
 
 Do not add loose business modules to the `src` root. Core modules must not
 import adapters, CLI code, Node filesystem APIs, or terminal libraries; adapters
@@ -117,13 +129,21 @@ platform test, written rationale, and explicit review. The
 
 ## Test requirements
 
-The project has three complementary evidence layers:
+The project separates these evidence layers:
 
-- `test/tdd/` proves each pipeline boundary and intermediate contract.
-- `test/bdd/features/` and `test/bdd/steps/` exercise the real source launcher
-  and the compiled package entry with Cucumber. The runtime is selected by the
-  test command, never by using an implicit runtime fallback.
-- `test/index.test.ts` holds the broad regression and edge-case matrix.
+- Source TDD and regression: `test/tdd/` proves each pipeline boundary and
+  `test/index.test.ts` holds the broad acceptance and edge-case matrix.
+- Source BDD: `test/bdd/features/` and `test/bdd/steps/` exercise the real
+  source launcher. The runtime is selected explicitly by the test command.
+- Published-package consumer: `test/package/` uses staged compiled package
+  files and test-owned ports. It proves the public Core/application contract
+  without downloading a package from npm.
+- Compiled parity: `npm run test:compiled` stages compiled Core and CLI
+  packages with only production dependencies, then runs compiled TDD, package
+  consumer, and BDD checks.
+- Local installation: `npm run test:local-install` installs the compiled Core
+  and CLI from local package paths in a temporary sandbox, then runs the
+  package consumer, BDD, and both installed bin aliases.
 
 Use TDD for stage behavior and BDD for user-visible behavior. In particular,
 mixed CLI options belong in BDD scenarios, not only in `parseArguments` unit
@@ -156,15 +176,20 @@ input returns a non-zero status.
 
 The source checkout keeps its original runtime choice: Node.js 23+ uses native
 TypeScript and Node.js 18.18–22 uses the bundled `tsx` loader. The published
-package and published CLI run compiled JavaScript from `dist/` and do not
+package and published CLI run compiled JavaScript from their package `dist/`
+directories and do not
 depend on Node's native TypeScript stripping. Earlier Node.js versions than
 18.18 are unsupported.
+
+`package-lock.json` is generated by npm from the root and workspace
+`package.json` files. Do not edit it by hand. After a manifest or dependency
+change, run `npm install --package-lock-only` and review the generated diff.
 
 Install dependencies with:
 
 ```bash
 npm install
-npm run build
+npm run build:cli
 ```
 
 The mandatory final pre-commit gate is the same harness described above:
@@ -181,7 +206,9 @@ For local behavior checks, use the maintained TDD and BDD fixtures:
 ```bash
 npm test
 npm run test:bdd
+npm run test:package
 npm run test:compiled
+npm run test:local-install
 npm run check:platform
 ```
 
@@ -194,6 +221,34 @@ Do not weaken an assertion, skip a failing scenario, or hide a known failure
 to make the gate green. If an environment-specific check cannot run, record
 the exact command, reason, and remaining risk in the change description.
 
+## Release procedure
+
+Final package releases are created by pushing a stable Git tag and allowing
+the Release workflow to publish the selected package. The accepted forms are
+`vX.Y.Z` for both packages, `vX.Y.Z-cli` for only `howdone-cli`, and
+`vX.Y.Z-core` for only `howdone`. The selected package version must match the
+numeric tag, the core and CLI manifests must always share their major and
+minor versions, and `howdone-cli` must declare an exact dependency on the
+current `howdone` version. The lockfile must agree with both manifests.
+
+The workflow checks the reusable CI gate, rejects an existing GitHub Release,
+and checks npm for every selected package version before it publishes anything.
+If a selected version is already published, the workflow exits without
+publishing either selected target. A successful run creates the GitHub Release
+marker after npm publication. When the CLI is selected, immediately before the
+CLI step the workflow confirms that the exact required Core version is visible
+from npm. This catches a forgotten or unpublished Core version, including for
+`-cli` tags where the Core step is intentionally skipped. npm versions are
+immutable, so a later retry after a partial external publish is deliberately
+rejected and must be handled as a release repair rather than by reusing the
+tag.
+The release-only validator is statically typechecked in that workflow; its
+version and registry checks are not run by the ordinary pre-commit harness.
+
+The stable workflow does not publish prerelease tags. Any bootstrap alpha
+publication is a separate manual operation and must not be confused with a
+final tag release.
+
 ## Staging changes
 
 Stage the complete change set before the final harness; do not select files
@@ -201,12 +256,13 @@ one by one:
 
 ```bash
 git add -A
-git restore --staged -- version_badge.json
+git restore --staged -- version_badge.json version_badge_cli.json
 ```
 
-The second command removes only the generated badge from the index while
-leaving its working-tree copy intact. `version_badge.json` is updated by the
-independent badge workflow and must not be included in an ordinary change.
+The second command removes only the two generated badges from the index while
+leaving their working-tree copies intact. `version_badge.json` and
+`version_badge_cli.json` are updated by the independent badge workflow and must
+not be included in an ordinary code change.
 After staging, inspect `git status --short`: every other staged path must be
 intentional. If an unexpected untracked artifact is not part of the project,
 add a narrow rule for that artifact to `.gitignore`, then repeat the staging
@@ -221,9 +277,10 @@ changes:
 - `README.md`: installation, usage, and user-visible behavior;
 - `docs/syntax.md`: standalone user-facing Markdown and YAML/TOML syntax;
 - `LICENSE`: the repository's Apache License 2.0 terms and copyright notice;
-- `scripts/update-version-badge.mjs`: generates the package version shown by
-  the README badge in `version_badge.json`; it is not a runtime dependency
-  and is not included in the published package;
+- `scripts/update-version-badge.mjs`: generates the Core and CLI package
+  versions shown by the README badges in `version_badge.json` and
+  `version_badge_cli.json`; it is not a runtime dependency and is not included
+  in the published package;
 - `scripts/check-package-contents.ts`: verifies the published file allowlist;
   it is a typed repository maintenance script and is not included in the
   published package;
@@ -234,6 +291,7 @@ changes:
 - `docs/architecture.md`: stage ownership and dependency direction;
 - `docs/development.md`: test-first workflow and development commands;
 - `AGENTS.md`: implementation constraints and test taxonomy;
+- `test/README.md`: test directory tree and layer summary;
 - `test/AGENTS.md`: detailed test construction and verification rules;
 - `CONTRIBUTING.md`: the mandatory development workflow, pre-commit harness,
   commit-message format, review, and handoff rules.
@@ -287,7 +345,8 @@ A pull request description must state:
 - what changed and which architecture boundary owns it;
 - why the change is necessary;
 - whether public CLI, JSON, or TypeScript API behavior changed;
-- which TDD, BDD, typecheck, and packaging commands passed;
+- which source, compiled, published-package consumer, local-install,
+  typecheck, and packaging commands passed;
 - whether the README, API, architecture, development, and contribution
   documents agree with the implementation;
 - any environment-specific check that could not run and its remaining risk.

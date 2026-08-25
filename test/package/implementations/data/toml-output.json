@@ -1,0 +1,4 @@
+{
+  "toml-setup": { "checks": { "setup": true } },
+  "toml-release": { "checks": { "release": true } }
+}

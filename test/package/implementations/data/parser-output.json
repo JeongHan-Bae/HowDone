@@ -1,0 +1,38 @@
+{
+  "ast-body-only-complete": {
+    "frontmatter": [],
+    "body": { "type": "root", "children": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }] }
+  },
+  "ast-body-two-items": {
+    "frontmatter": [],
+    "body": { "type": "root", "children": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "first" }] }, { "type": "list-item", "checked": false, "children": [{ "type": "paragraph", "text": "second" }] }] }] }
+  },
+  "ast-yaml-only": {
+    "frontmatter": [{ "type": "frontmatter", "format": "yaml", "value": "checks:\n  setup: true" }],
+    "body": { "type": "root", "children": [] }
+  },
+  "ast-yaml-plus-body": {
+    "frontmatter": [{ "type": "frontmatter", "format": "yaml", "value": "checks:\n  setup: true" }],
+    "body": { "type": "root", "children": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }] }
+  },
+  "ast-yaml-yaml-plus-body": {
+    "frontmatter": [{ "type": "frontmatter", "format": "yaml", "value": "checks:\n  setup: true" }, { "type": "frontmatter", "format": "yaml", "value": "checks:\n  release: true" }],
+    "body": { "type": "root", "children": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }] }
+  },
+  "ast-yaml-toml-plus-body": {
+    "frontmatter": [{ "type": "frontmatter", "format": "yaml", "value": "checks:\n  setup: true" }, { "type": "frontmatter", "format": "toml", "value": "[checks]\nrelease = true" }],
+    "body": { "type": "root", "children": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }] }
+  },
+  "ast-toml-only": {
+    "frontmatter": [{ "type": "frontmatter", "format": "toml", "value": "[checks]\nsetup = true" }],
+    "body": { "type": "root", "children": [] }
+  },
+  "ast-toml-yaml-plus-body": {
+    "frontmatter": [{ "type": "frontmatter", "format": "toml", "value": "[checks]\nsetup = true" }, { "type": "frontmatter", "format": "yaml", "value": "checks:\n  release: true" }],
+    "body": { "type": "root", "children": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }] }
+  },
+  "ast-toml-toml-plus-body": {
+    "frontmatter": [{ "type": "frontmatter", "format": "toml", "value": "[checks]\nsetup = true" }, { "type": "frontmatter", "format": "toml", "value": "[checks]\nrelease = true" }],
+    "body": { "type": "root", "children": [{ "type": "list", "ordered": false, "start": null, "items": [{ "type": "list-item", "checked": true, "children": [{ "type": "paragraph", "text": "body" }] }] }] }
+  }
+}

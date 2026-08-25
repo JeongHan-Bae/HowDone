@@ -37,12 +37,14 @@ if (
   const useNativeTypeScript = nodeVersion.major >= 23;
   const childArguments = useNativeTypeScript
     ? [
+        "--conditions=source",
         "--eval",
         `import(${JSON.stringify(entryPointUrl)})`,
         entryPoint,
         ...process.argv.slice(2),
       ]
     : [
+        "--conditions=source",
         "--import",
         getTsxEntryPoint(),
         "--eval",

@@ -6,7 +6,15 @@ Feature: CLI basics and Markdown task trees
     When I run howdone with arguments "--help"
     Then the command succeeds
     And stdout contains "Usage:"
+    And stdout contains "howdone --help"
+    And stdout contains "howdone --version"
+    And stdout contains "howdone --dependencies"
     And stdout contains "docs/syntax.md"
+    And stdout contains "Node.js 18.18 or newer is required."
+    And stdout contains every package.json runtime dependency
+    And stdout does not contain "tsx"
+    And stdout does not contain "-h, --help"
+    And stdout does not contain "-v, --version"
     And stderr is empty
 
   Scenario: Version is available through the real CLI entrypoint
@@ -15,6 +23,23 @@ Feature: CLI basics and Markdown task trees
     Then the command succeeds
     And stdout equals the package.json version
     And stderr is empty
+
+  Scenario: Runtime dependencies are available as an independent command
+    Given an empty howdone workspace
+    When I run howdone with arguments "--dependencies"
+    Then the command succeeds
+    And stdout contains every package.json runtime dependency
+    And stdout does not contain "Usage:"
+    And stderr is empty
+
+  Scenario: Standalone commands cannot be appended to Markdown analysis
+    Given a Markdown file containing:
+      """
+      - [x] Complete
+      """
+    When I run howdone with arguments "tasks.md --help"
+    Then the command fails
+    And stderr contains "standalone command"
 
   Scenario: A missing path is rejected through the real CLI entrypoint
     Given an empty howdone workspace

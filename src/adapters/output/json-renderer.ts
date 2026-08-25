@@ -6,7 +6,7 @@ import type {
   ProgressReport,
   ProgressResult,
   ResolvedDisplayOptions,
-} from "../../core/index.ts";
+} from "howdone";
 import { defaultGraphemeSegmenter } from "../unicode/intl-grapheme-segmenter.ts";
 import { formatLabel } from "./label-formatter.ts";
 

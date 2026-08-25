@@ -1,10 +1,11 @@
-import type { ProgressFormat } from "../../core/index.ts";
+import type { ProgressFormat } from "howdone";
 
 export type OutputMode = "default" | "tree" | "details" | "json";
 
 export interface ParsedArguments {
   help: boolean;
   version: boolean;
+  dependencies: boolean;
   path?: string;
   mode: OutputMode;
   format: ProgressFormat;
@@ -98,17 +99,28 @@ function chooseProgressFormat(
   return next;
 }
 
+function requireStandaloneCommand(
+  argv: readonly string[],
+  command: string,
+): void {
+  if (argv.length !== 1) {
+    throw new ArgumentError(
+      `${command} is a standalone command and cannot be combined with a Markdown path or options.`,
+    );
+  }
+}
+
 export function parseArguments(argv: readonly string[]): ParsedArguments {
   let path: string | undefined;
   let mode: OutputMode = "default";
-  let format: ProgressFormat = "percentage";
-  let requestedFormat: ProgressFormat | undefined;
+  let requestedFormat: ProgressFormat | undefined = undefined;
   let formatExplicit = false;
   let precision: number | undefined;
-  let showTrailingZeros: boolean | undefined;
+  let showTrailingZeros: boolean | undefined = undefined;
   let maxLabelClusters: number | undefined;
   let help = false;
   let version = false;
+  let dependencies = false;
   let noTruncate = false;
   let mergeFrontmatter = false;
   let frontmatterWeight: number | undefined;
@@ -133,11 +145,18 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
       continue;
     }
     if (argument === "--help" || argument === "-h") {
+      requireStandaloneCommand(argv, "--help");
       help = true;
       continue;
     }
     if (argument === "--version" || argument === "-v") {
+      requireStandaloneCommand(argv, "--version");
       version = true;
+      continue;
+    }
+    if (argument === "--dependencies") {
+      requireStandaloneCommand(argv, "--dependencies");
+      dependencies = true;
       continue;
     }
     if (
@@ -156,8 +175,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
     }
     if (argument === "--decimal" || argument === "--percentage") {
       const nextFormat = argument.slice(2) as ProgressFormat;
-      format = chooseProgressFormat(requestedFormat, nextFormat);
-      requestedFormat = format;
+      requestedFormat = chooseProgressFormat(requestedFormat, nextFormat);
       formatExplicit = true;
       continue;
     }
@@ -167,8 +185,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
         throw new ArgumentError("--format requires decimal or percentage.");
       }
       const nextFormat = parseProgressFormat(value);
-      format = chooseProgressFormat(requestedFormat, nextFormat);
-      requestedFormat = format;
+      requestedFormat = chooseProgressFormat(requestedFormat, nextFormat);
       formatExplicit = true;
       index += 1;
       continue;
@@ -179,8 +196,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
         throw new ArgumentError("--format requires decimal or percentage.");
       }
       const nextFormat = parseProgressFormat(value);
-      format = chooseProgressFormat(requestedFormat, nextFormat);
-      requestedFormat = format;
+      requestedFormat = chooseProgressFormat(requestedFormat, nextFormat);
       formatExplicit = true;
       continue;
     }
@@ -286,6 +302,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
     );
   }
 
+  const format = requestedFormat ?? "percentage";
   if (precision !== undefined) {
     validatePrecisionForFormat(precision, format);
   }
@@ -293,6 +310,7 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
   return {
     help,
     version,
+    dependencies,
     path,
     mode,
     format,

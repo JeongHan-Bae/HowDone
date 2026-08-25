@@ -1,0 +1,11 @@
+{
+  "body-only-complete": { "source": "- [x] body\n" },
+  "body-two-items": { "source": "- [x] first\n- [ ] second\n" },
+  "yaml-only": { "source": "---\nchecks:\n  setup: true\n---\n" },
+  "yaml-plus-body": { "source": "---\nchecks:\n  setup: true\n---\n- [x] body\n" },
+  "yaml-yaml-plus-body": { "source": "---\nchecks:\n  setup: true\n---\n---\nchecks:\n  release: true\n---\n- [x] body\n" },
+  "yaml-toml-plus-body": { "source": "---\nchecks:\n  setup: true\n---\n+++\n[checks]\nrelease = true\n+++\n- [x] body\n" },
+  "toml-only": { "source": "+++\n[checks]\nsetup = true\n+++\n" },
+  "toml-yaml-plus-body": { "source": "+++\n[checks]\nsetup = true\n+++\n---\nchecks:\n  release: true\n---\n- [x] body\n" },
+  "toml-toml-plus-body": { "source": "+++\n[checks]\nsetup = true\n+++\n+++\n[checks]\nrelease = true\n+++\n- [x] body\n" }
+}

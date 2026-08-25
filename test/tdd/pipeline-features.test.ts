@@ -7,7 +7,7 @@ import {
   calculateProgress,
   TokenKind,
   TypedAstParser,
-} from "../../src/core/index.ts";
+} from "howdone";
 
 interface PositiveFeature {
   id: string;

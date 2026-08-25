@@ -5,13 +5,17 @@ import {
   classifyFrontmatter,
   resolveDisplayOptions,
   runMarkdownPipeline,
-} from "../core/index.ts";
+} from "howdone";
 import {
   parseArguments,
   ArgumentError,
 } from "./cli/args.ts";
 import type { ParsedArguments } from "./cli/args.ts";
-import { HELP_TEXT } from "./cli/help.ts";
+import {
+  HELP_SECTIONS,
+  renderDependenciesText,
+  renderHelpText,
+} from "./cli/help.ts";
 import type { CliDependencies, CliIO } from "./types.ts";
 
 function errorMessage(error: unknown): string {
@@ -83,11 +87,17 @@ export async function run(
   }
 
   if (argumentsValue.help) {
-    io.stdout.write(HELP_TEXT);
+    io.stdout.write(
+      renderHelpText(HELP_SECTIONS, dependencies.runtimeDependencies),
+    );
     return 0;
   }
   if (argumentsValue.version) {
     io.stdout.write(`${dependencies.version}\n`);
+    return 0;
+  }
+  if (argumentsValue.dependencies) {
+    io.stdout.write(renderDependenciesText(dependencies.runtimeDependencies));
     return 0;
   }
   if (argumentsValue.path === undefined) {

@@ -1,23 +1,24 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
 import { defaultTomlValueParser } from "../../src/adapters/frontmatter/toml-value-parser.ts";
 import { defaultYamlValueParser } from "../../src/adapters/frontmatter/yaml-value-parser.ts";
 import {
+  assertExpectedLexerError,
+  parseAndAssertFrontmatterSyntax,
+} from "./frontmatter-assertions.ts";
+import {
   calculateCombinedProgress,
   calculateFrontmatterProgress,
-  calculateProgress,
   classifyFrontmatter,
-  TokenKind,
-  TypedAstParser,
-} from "../../src/core/index.ts";
+} from "howdone";
 import type {
   FrontmatterAst,
   FrontmatterChecklist,
   FrontmatterValueParser,
   ProgressResult,
-} from "../../src/core/index.ts";
+  TokenKind,
+} from "howdone";
 
 function valueParserFor(section: FrontmatterAst): FrontmatterValueParser {
   return section.format === "yaml"
@@ -82,26 +83,14 @@ const fixtures = JSON.parse(
 
 for (const fixture of fixtures.cases) {
   test(`TDD frontmatter contract ${fixture.id} keeps syntax channels independent`, () => {
-    if (fixture.expectedLexerError !== undefined) {
-      assert.throws(
-        () => defaultRemarkLexer.lex(fixture.source),
-        (error: unknown) =>
-          error instanceof Error && error.message.includes(fixture.expectedLexerError!),
-      );
+    if (assertExpectedLexerError(fixture.source, fixture.expectedLexerError)) {
       return;
     }
 
-    const tokens = defaultRemarkLexer.lex(fixture.source);
-    const document = new TypedAstParser().parse(tokens);
-    const result = calculateProgress(document.body);
-
-    assert.deepEqual(tokens.map((token) => token.kind), fixture.expectedTokenKinds);
-    assert.deepEqual(
-      document.body.children.map((node) => node.type),
+    const { document, result } = parseAndAssertFrontmatterSyntax(
+      fixture.source,
+      fixture.expectedTokenKinds,
       fixture.expectedAstTypes,
-    );
-    assert.deepEqual(
-      document.frontmatter.map((section) => section.format),
       fixture.expectedFormats,
     );
 
