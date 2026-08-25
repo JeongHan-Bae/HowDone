@@ -22,7 +22,10 @@ has completed successfully after the final file change. Running only a subset
 of its checks is useful while iterating, but it is not a substitute for the
 final harness run.
 
-The harness is the repository's hard contribution boundary. It runs the
+The harness is the repository's hard contribution boundary. It first runs
+`npm run clean` to remove ignored generated build, test, coverage, and
+TypeScript cache artifacts; this prevents stale compiled packages from
+masking a clean-checkout failure. It then runs the
 application typecheck, source TDD and source BDD suites, the published-package
 consumer suite, compiled TDD and compiled BDD parity suites, typed
 maintenance-file checks, the platform-neutral source check, the runtime and
@@ -55,6 +58,7 @@ the remote backstop; it must keep the equivalent checks enabled.
 The final harness sequence is:
 
 ```bash
+npm run clean
 npm run test:all
 npm run typecheck:maintenance
 npm run check:help
@@ -191,8 +195,15 @@ Install dependencies with:
 
 ```bash
 npm install
+npm run clean
 npm run build:cli
 ```
+
+`npm run clean` removes the repository's ignored generated package builds,
+compiled test directory, coverage/output directories, and TypeScript build-info
+files. It does not remove `node_modules`, the npm download cache, or source
+files. Run it before isolated checks when stale generated output could affect
+the result; the mandatory pre-commit harness runs it automatically.
 
 The mandatory final pre-commit gate is the same harness described above:
 

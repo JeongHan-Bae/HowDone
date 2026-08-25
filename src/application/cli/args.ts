@@ -1,5 +1,52 @@
 import type { ProgressFormat } from "howdone";
 
+export type CliCommandHeader = string | readonly [string, string];
+
+export interface CliOptionHeader {
+  command: CliCommandHeader;
+  argument: string;
+}
+
+export const CLI_USAGE = [
+  "howdone <markdown-path> [options]",
+  "howdone --help",
+  "howdone --version",
+  "howdone --dependencies",
+] as const;
+
+export const CLI_SYNTAX_REFERENCE = "docs/syntax.md";
+
+export const CLI_COMMANDS = [
+  ["--help", "-h"],
+  ["--version", "-v"],
+  "--dependencies",
+] as const satisfies readonly CliCommandHeader[];
+
+export const CLI_OPTIONS = [
+  { command: "--format", argument: "decimal|percentage" },
+  { command: ["--format decimal", "--decimal"], argument: "" },
+  { command: ["--format percentage", "--percentage"], argument: "" },
+  { command: "--precision", argument: "N" },
+  {
+    command: ["--show-trailing-zeros", "--keep-trailing-zeros"],
+    argument: "",
+  },
+  {
+    command: ["--no-trailing-zeros", "--trim-trailing-zeros"],
+    argument: "",
+  },
+  { command: "--tree", argument: "" },
+  { command: "--details", argument: "" },
+  { command: "--json", argument: "" },
+  { command: "--max-label-clusters", argument: "N" },
+  { command: "--no-truncate", argument: "" },
+  { command: ["--silent", "-s"], argument: "" },
+  { command: "--merge-frontmatter", argument: "" },
+  { command: "--frontmatter-weight", argument: "N" },
+  { command: "--strict", argument: "" },
+  { command: "--", argument: "" },
+] as const satisfies readonly CliOptionHeader[];
+
 export type OutputMode = "default" | "tree" | "details" | "json";
 
 export interface ParsedArguments {
@@ -110,6 +157,15 @@ function requireStandaloneCommand(
   }
 }
 
+function matchesCommandHeader(
+  argument: string,
+  command: CliCommandHeader,
+): boolean {
+  return Array.isArray(command)
+    ? command.includes(argument)
+    : command === argument;
+}
+
 export function parseArguments(argv: readonly string[]): ParsedArguments {
   let path: string | undefined;
   let mode: OutputMode = "default";
@@ -144,17 +200,17 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
       positionalOnly = true;
       continue;
     }
-    if (argument === "--help" || argument === "-h") {
+    if (matchesCommandHeader(argument, CLI_COMMANDS[0])) {
       requireStandaloneCommand(argv, "--help");
       help = true;
       continue;
     }
-    if (argument === "--version" || argument === "-v") {
+    if (matchesCommandHeader(argument, CLI_COMMANDS[1])) {
       requireStandaloneCommand(argv, "--version");
       version = true;
       continue;
     }
-    if (argument === "--dependencies") {
+    if (matchesCommandHeader(argument, CLI_COMMANDS[2])) {
       requireStandaloneCommand(argv, "--dependencies");
       dependencies = true;
       continue;

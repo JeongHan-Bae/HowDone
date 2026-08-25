@@ -1,10 +1,17 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  CLI_COMMANDS,
+  CLI_OPTIONS,
+  CLI_SYNTAX_REFERENCE,
+  CLI_USAGE,
+  type CliCommandHeader,
+  type CliOptionHeader,
+} from "../src/application/cli/args.js";
+import {
   HELP_SECTIONS,
-  type HelpCommand,
   type HelpOption,
 } from "../src/application/cli/help.js";
 
@@ -12,54 +19,21 @@ interface CliMetadata {
   bin?: Record<string, string>;
 }
 
-interface ExpectedOption {
-  command: HelpCommand;
-  argument?: string;
-}
-
-const expectedUsage = [
-  "howdone <markdown-path> [options]",
-  "howdone --help",
-  "howdone --version",
-  "howdone --dependencies",
-] as const;
-
-const expectedCommands: readonly HelpCommand[] = [
-  ["--help", "-h"],
-  ["--version", "-v"],
-  "--dependencies",
-];
-
-const expectedOptions: readonly ExpectedOption[] = [
-  { command: "--format", argument: "decimal|percentage" },
-  { command: ["--format decimal", "--decimal"] },
-  { command: ["--format percentage", "--percentage"] },
-  { command: "--precision", argument: "N" },
-  { command: ["--show-trailing-zeros", "--keep-trailing-zeros"] },
-  { command: ["--no-trailing-zeros", "--trim-trailing-zeros"] },
-  { command: "--tree" },
-  { command: "--details" },
-  { command: "--json" },
-  { command: "--max-label-clusters", argument: "N" },
-  { command: "--no-truncate" },
-  { command: ["--silent", "-s"] },
-  { command: "--merge-frontmatter" },
-  { command: "--frontmatter-weight", argument: "N" },
-  { command: "--strict" },
-  { command: "--" },
-];
-
-function isAlias(command: HelpCommand): command is readonly [string, string] {
+function isAlias(
+  command: CliCommandHeader,
+): command is readonly [string, string] {
   return Array.isArray(command);
 }
 
-function renderCommand(command: HelpCommand): string {
+function renderCommand(command: CliCommandHeader): string {
   return isAlias(command) ? command.join(", ") : command;
 }
 
-function renderOption(option: HelpOption | ExpectedOption): string {
+function renderOption(
+  option: CliOptionHeader | Pick<HelpOption, "command" | "argument">,
+): string {
   const command = renderCommand(option.command);
-  const argument = option.argument ?? "";
+  const argument = option.argument;
   return [command, argument].filter((part) => part.length > 0).join(" ");
 }
 
@@ -97,6 +71,38 @@ function assertRenderedLabel(text: string, label: string, sectionName: string): 
   }
 }
 
+function assertRenderedDescriptions(
+  text: string,
+  options: readonly HelpOption[],
+  sectionName: string,
+): void {
+  for (const option of options) {
+    if (option.description.length === 0) {
+      throw new Error(`CLI help ${sectionName} has an empty description`);
+    }
+    for (const line of option.description) {
+      if (!text.includes(line)) {
+        throw new Error(
+          `CLI help ${sectionName} is missing description text: ${line}`,
+        );
+      }
+    }
+  }
+}
+
+function assertRenderedSection(
+  text: string,
+  title: string,
+  nextTitle: string,
+  expected: string,
+): void {
+  const actual = section(text, title, nextTitle)
+    .split("\n")
+    .slice(1)
+    .map((line) => line.trim());
+  assertSameLabels(actual, expected.split("\n"), `Help ${title}`);
+}
+
 function main(): void {
   const projectRoot = fileURLToPath(new URL("..", import.meta.url));
   const cliMetadata = JSON.parse(
@@ -116,36 +122,93 @@ function main(): void {
     .slice(1)
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
-  assertSameLabels(usageLines, expectedUsage, "CLI usage");
+  assertSameLabels(usageLines, CLI_USAGE, "CLI usage");
 
+  assertSameLabels(
+    HELP_SECTIONS.usage.split("\n"),
+    CLI_USAGE,
+    "Help usage contract",
+  );
   const actualCommands = HELP_SECTIONS.commands.map(renderOption);
-  const expectedCommandLabels = expectedCommands.map(renderCommand);
-  assertSameLabels(actualCommands, expectedCommandLabels, "CLI commands");
+  const expectedCommandLabels = CLI_COMMANDS.map(renderCommand);
+  assertSameLabels(actualCommands, expectedCommandLabels, "Help commands");
   const commandSection = section(helpText, "Commands", "Options");
   for (const command of expectedCommandLabels) {
     assertRenderedLabel(commandSection, command, "Commands");
   }
+  assertRenderedDescriptions(commandSection, HELP_SECTIONS.commands, "Commands");
 
   const actualOptions = HELP_SECTIONS.options.map(renderOption);
-  const expectedOptionLabels = expectedOptions.map(renderOption);
-  assertSameLabels(actualOptions, expectedOptionLabels, "CLI options");
+  const expectedOptionLabels = CLI_OPTIONS.map(renderOption);
+  assertSameLabels(actualOptions, expectedOptionLabels, "Help options");
   const optionSection = section(helpText, "Options", "Supported paths");
   for (const option of expectedOptionLabels) {
     assertRenderedLabel(optionSection, option, "Options");
   }
+  assertRenderedDescriptions(optionSection, HELP_SECTIONS.options, "Options");
 
-  if (!helpText.includes("Value options accept either --option N or --option=N.")) {
-    throw new Error("CLI help is missing the value-option spelling rule");
+  assertRenderedSection(
+    helpText,
+    "Supported paths",
+    "Calculation rules",
+    HELP_SECTIONS.supportedPaths,
+  );
+  assertRenderedSection(
+    helpText,
+    "Calculation rules",
+    "Frontmatter display",
+    HELP_SECTIONS.calculationRules,
+  );
+  assertRenderedSection(
+    helpText,
+    "Frontmatter display",
+    "Default output",
+    HELP_SECTIONS.frontmatterDisplay,
+  );
+  assertRenderedSection(
+    helpText,
+    "Default output",
+    "Display defaults",
+    HELP_SECTIONS.defaultOutput,
+  );
+  assertRenderedSection(
+    helpText,
+    "Display defaults",
+    "Option policy",
+    HELP_SECTIONS.displayDefaults,
+  );
+  assertRenderedSection(
+    helpText,
+    "Option policy",
+    "Syntax reference",
+    HELP_SECTIONS.optionPolicy,
+  );
+
+  const syntaxReferenceSection = section(
+    helpText,
+    "Syntax reference",
+    "Requirements",
+  );
+  const renderedSyntaxReference = syntaxReferenceSection
+    .split("\n")
+    .slice(1)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+  if (!HELP_SECTIONS.syntaxReference.includes(CLI_SYNTAX_REFERENCE)) {
+    throw new Error("Help syntax reference does not describe the CLI syntax file");
   }
-  const syntaxReferencePath = resolve(projectRoot, "docs", "syntax.md");
-  if (!helpText.includes(syntaxReferencePath)) {
-    throw new Error(
-      `CLI help is missing the clickable syntax reference path: ${syntaxReferencePath}`,
-    );
+  const syntaxReferencePath = resolve(projectRoot, CLI_SYNTAX_REFERENCE);
+  assertSameLabels(
+    renderedSyntaxReference,
+    [syntaxReferencePath],
+    "CLI syntax reference",
+  );
+  if (!existsSync(syntaxReferencePath)) {
+    throw new Error(`CLI syntax reference does not exist: ${syntaxReferencePath}`);
   }
 
   console.log(
-    `CLI help contract OK: 4 command forms (3 standalone), ${expectedOptionLabels.length} options`,
+    `CLI help contract OK: ${CLI_USAGE.length} command forms (${CLI_COMMANDS.length} standalone), ${CLI_OPTIONS.length} options`,
   );
 }
 

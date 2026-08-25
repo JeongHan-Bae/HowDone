@@ -25,6 +25,7 @@ TDD tests must assert the intermediate result, not only the final percentage. Th
 
 ```bash
 npm install
+npm run clean
 npm run build:cli
 npm run install:local
 npm run typecheck
@@ -54,8 +55,13 @@ verification step.
 four CLI command forms, both installed CLI bin names, every primary-command
 option, and every declared option alias in the rendered Help output.
 
+`npm run clean` removes ignored generated package builds, compiled test output,
+coverage/output directories, and TypeScript build-info files. It leaves
+`node_modules`, the npm download cache, and source files untouched.
+
 `npm run verify:precommit` is the mandatory final harness before a commit. It
-re-runs the source and compiled application gates, checks the typed CommonJS/ES
+starts with `npm run clean`, then re-runs the source and compiled application
+gates, checks the typed CommonJS/ES
 module maintenance boundaries, checks the rendered CLI Help contract, rejects
 unreviewed runtime platform API access, audits both dependency scopes, verifies
 the compiled npm package contents, checks both staged and unstaged Git diffs

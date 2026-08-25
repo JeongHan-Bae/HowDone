@@ -165,7 +165,10 @@ The mandatory pre-commit boundary is `npm run verify:precommit`, as defined in
 [`CONTRIBUTING.md`](CONTRIBUTING.md). It covers the application and maintenance
 typechecks, TDD, BDD, and published-package consumer suites, runtime and full
 dependency audits, package contents, platform-neutral source checks, and
-staged/unstaged Git checks. Do not reproduce the command sequence here;
+staged/unstaged Git checks. It begins with `npm run clean`, which removes
+ignored generated build, test, coverage, and TypeScript cache artifacts so
+stale package output cannot satisfy a check. Do not reproduce the command
+sequence here;
 CONTRIBUTING owns that detail.
 
 `npm test` is the unchanged source TDD gate. `npm run test:bdd` is the
@@ -257,8 +260,10 @@ the ordinary pre-commit harness.
   `scripts/check-cli-help.ts`, `scripts/check-package-contents.ts`,
   `scripts/check-platform-neutral.ts`, `scripts/validate-release.mjs`, and
   `scripts/run-compiled-tests.mjs` are maintenance scripts; none is published
-  as application runtime code. The Help checker verifies the four CLI command
-  forms, both CLI bin names, and every primary-command option and alias.
+  as application runtime code. `scripts/clean.mjs` removes ignored generated
+  build, test, coverage, and TypeScript cache artifacts before the pre-commit
+  harness. The Help checker verifies the four CLI command forms, both CLI bin
+  names, and every primary-command option and alias.
 - `tsconfig.build.json` and `tsconfig.test-build.json` define ignored build
   outputs. Build output is never committed.
 - Document ownership:

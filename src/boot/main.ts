@@ -12,6 +12,7 @@ import {
   packageVersion,
 } from "../adapters/runtime/node-package-version.ts";
 import { defaultWarningPort } from "../adapters/runtime/node-warning-sink.ts";
+import { CLI_SYNTAX_REFERENCE } from "../application/cli/args.ts";
 import { run } from "howdone/application";
 import { runIfEntrypoint } from "./entrypoint.ts";
 import type { CliDependencies, CliIO } from "howdone/application";
@@ -34,7 +35,7 @@ const dependencies: CliDependencies = {
   version: packageVersion,
   runtimeDependencies: packageRuntimeDependencies,
   syntaxReferencePath: fileURLToPath(
-    new URL("../../docs/syntax.md", import.meta.url),
+    new URL(`../../${CLI_SYNTAX_REFERENCE}`, import.meta.url),
   ),
 };
 

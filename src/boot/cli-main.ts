@@ -10,6 +10,7 @@ import { defaultJsonRenderer } from "../adapters/output/json-renderer.ts";
 import { defaultTerminalRenderer } from "../adapters/output/terminal-renderer.ts";
 import { runtimeMetadataFor } from "../adapters/runtime/node-package-version.ts";
 import { defaultWarningPort } from "../adapters/runtime/node-warning-sink.ts";
+import { CLI_SYNTAX_REFERENCE } from "../application/cli/args.ts";
 import { runIfEntrypoint } from "./entrypoint.ts";
 import type { CliDependencies, CliIO } from "howdone/application";
 import { fileURLToPath } from "node:url";
@@ -35,7 +36,7 @@ const dependencies: CliDependencies = {
   version: metadata.version,
   runtimeDependencies: metadata.runtimeDependencies,
   syntaxReferencePath: fileURLToPath(
-    new URL("../../docs/syntax.md", import.meta.url),
+    new URL(`../../${CLI_SYNTAX_REFERENCE}`, import.meta.url),
   ),
 };
 

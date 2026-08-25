@@ -2,6 +2,11 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import {
+  CLI_COMMANDS,
+  CLI_OPTIONS,
+  CLI_USAGE,
+} from "../../src/application/cli/args.ts";
+import {
   HELP_SECTIONS,
   renderDependenciesText,
   renderHelpText,
@@ -22,15 +27,14 @@ const expectedRuntimeDependencies = Object.entries(
 
 test("TDD help content keeps usage, options, and sections structured", () => {
   assert.equal(typeof HELP_SECTIONS.usage, "string");
-  assert.deepEqual(HELP_SECTIONS.usage.split("\n"), [
-    "howdone <markdown-path> [options]",
-    "howdone --help",
-    "howdone --version",
-    "howdone --dependencies",
-  ]);
+  assert.deepEqual(HELP_SECTIONS.usage.split("\n"), CLI_USAGE);
   assert.deepEqual(
     HELP_SECTIONS.commands.map(({ command }) => command),
-    [["--help", "-h"], ["--version", "-v"], "--dependencies"],
+    CLI_COMMANDS,
+  );
+  assert.deepEqual(
+    HELP_SECTIONS.options.map(({ command, argument }) => ({ command, argument })),
+    CLI_OPTIONS,
   );
   assert.equal(Array.isArray(HELP_SECTIONS.options), true);
   assert.ok(HELP_SECTIONS.options.length > 0);

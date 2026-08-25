@@ -38,6 +38,7 @@ product and command executor. The CLI's command-line names are `howdone` and
 │   ├── check-cli-help.ts
 │   ├── check-package-contents.ts
 │   ├── check-platform-neutral.ts
+│   ├── clean.mjs
 │   ├── install-local.mjs
 │   ├── run-compiled-tests.mjs
 │   ├── run-cucumber.mjs

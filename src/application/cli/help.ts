@@ -1,6 +1,7 @@
 import type { RuntimeDependency } from "howdone";
+import type { CliCommandHeader } from "./args.ts";
 
-export type HelpCommand = string | readonly [string, string];
+export type HelpCommand = CliCommandHeader;
 
 export interface HelpOption {
   command: HelpCommand;
