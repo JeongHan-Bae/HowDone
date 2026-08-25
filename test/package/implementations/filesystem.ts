@@ -2,6 +2,7 @@ import type { MarkdownFileReader } from "howdone";
 import { readerCaseForPath, readerOutputForCode } from "./data.ts";
 
 export class ConsumerFileReader implements MarkdownFileReader {
+  private readonly code: string;
   readonly requests: string[] = [];
 
   read(filePath: string): Promise<string> {
@@ -13,5 +14,7 @@ export class ConsumerFileReader implements MarkdownFileReader {
     return Promise.resolve(readerOutputForCode(input.code).source);
   }
 
-  constructor(private readonly code: string) {}
+  constructor(code: string) {
+    this.code = code;
+  }
 }

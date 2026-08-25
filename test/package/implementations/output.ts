@@ -26,9 +26,12 @@ function replaceTemplate(
 }
 
 export class ConsumerTerminalRenderer implements TerminalOutputPort {
+  private readonly segmenter: GraphemeSegmenter;
   readonly calls: string[] = [];
 
-  constructor(private readonly segmenter: GraphemeSegmenter) {}
+  constructor(segmenter: GraphemeSegmenter) {
+    this.segmenter = segmenter;
+  }
 
   render(
     mode: "default" | "tree" | "details",
