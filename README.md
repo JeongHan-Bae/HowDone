@@ -51,6 +51,44 @@ with `howdone` as the primary command. It analyzes
 hierarchical Markdown task lists, calculates overall and per-level completion,
 and never modifies or uploads the source file.
 
+## HowDone in action
+
+![Illustrative task.md editor mockup](docs/assets/task-editor.svg)
+![Illustrative HowDone tree-output terminal mockup](docs/assets/howdone-terminal.svg)
+
+The editor and terminal images are illustrative, editable SVG mockups of the
+user-facing workflow. They are based on the current example and output format,
+so they reflect the current relationship between a Markdown checklist and its
+report. They are not captured screenshots, but they should be updated when the
+user-facing output changes.
+
+## What the number means
+
+HowDone measures the completion of the recognized checklist items in a
+Markdown document. It does not measure project progress. The result is a
+deterministic structural signal: it reflects checked and unchecked checklist
+items and the way their nested branches are aggregated. Task size, effort,
+scope, dependencies, quality, risk, and work that is not written in the
+checklist are outside its input. Treat the result as a rough view of checklist
+state, and combine it with human judgment and other project signals.
+
+## A deterministic companion for AI-generated checklists
+
+AI agents commonly write plans and status updates as Markdown checklists.
+Reading those files as plain text, or writing a one-off script for each new
+shape, can produce inconsistent results—especially with multiple levels of
+nesting and with a checkbox on an item that also has children. HowDone parses
+the Markdown structure and applies the same explicit calculation model every
+time.
+
+HowDone uses the standard GFM Task List extension supported by GitHub; it does
+not invent a new checklist language.
+The [syntax contract](docs/syntax.md) documents the recognized forms and their
+edge cases.
+A small agent skill or prompt can guide an agent to emit a stable subset when
+deterministic, machine-readable checklist completion matters, while human authors
+remain free to use their preferred supported Markdown style.
+
 ## Install and Run
 
 ### 1. Build and install the local Repo

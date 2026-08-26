@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="1460" height="735" viewBox="0 0 1460 735" role="img" aria-labelledby="title description">
+  <title id="title">The example task.md file in a code editor</title>
+  <desc id="description">A dark IDE-style editor displaying a Markdown task file with syntax highlighting.</desc>
+  <defs>
+    <style>
+      .code { font-family: "SFMono-Regular", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 450; }
+      .plain { fill: #d6d9df; }
+      .heading-mark { fill: #c792ea; }
+      .heading-text { fill: #82aaff; }
+      .bullet { fill: #f78c6c; }
+      .checked { fill: #c3e88d; }
+      .unchecked { fill: #ffcb6b; }
+      .line-number { fill: #59616d; font-family: "SFMono-Regular", "Cascadia Code", Menlo, monospace; font-size: 15px; }
+      .tab { fill: #d6d9df; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1460" height="735" rx="20" fill="#73777d" fill-opacity="0.2"/>
+  <rect x="8" y="8" width="1444" height="719" rx="12" fill="#111315"/>
+  <path d="M20 8H1440A12 12 0 0 1 1452 20V54H8V20A12 12 0 0 1 20 8Z" fill="#202328"/>
+  <path d="M8 54H1452" stroke="#30343b"/>
+  <circle cx="30" cy="29" r="6" fill="#ff5f57"/>
+  <circle cx="51" cy="29" r="6" fill="#febc2e"/>
+  <circle cx="72" cy="29" r="6" fill="#28c840"/>
+  <path d="M112 54V8" stroke="#30343b"/>
+  <text x="132" y="35" class="tab">task.md</text>
+  <text x="1428" y="35" text-anchor="end" class="tab" fill-opacity="0.6">Markdown</text>
+  <path d="M58 64V723" stroke="#202328"/>
+  <text x="43" y="92" text-anchor="end" class="line-number">1</text>
+  <text x="43" y="121" text-anchor="end" class="line-number">2</text>
+  <text x="43" y="150" text-anchor="end" class="line-number">3</text>
+  <text x="43" y="179" text-anchor="end" class="line-number">4</text>
+  <text x="43" y="208" text-anchor="end" class="line-number">5</text>
+  <text x="43" y="237" text-anchor="end" class="line-number">6</text>
+  <text x="43" y="266" text-anchor="end" class="line-number">7</text>
+  <text x="43" y="295" text-anchor="end" class="line-number">8</text>
+  <text x="43" y="324" text-anchor="end" class="line-number">9</text>
+  <text x="43" y="353" text-anchor="end" class="line-number">10</text>
+  <text x="43" y="382" text-anchor="end" class="line-number">11</text>
+  <text x="43" y="411" text-anchor="end" class="line-number">12</text>
+  <text x="43" y="440" text-anchor="end" class="line-number">13</text>
+  <text x="43" y="469" text-anchor="end" class="line-number">14</text>
+  <text x="43" y="498" text-anchor="end" class="line-number">15</text>
+  <text x="43" y="527" text-anchor="end" class="line-number">16</text>
+  <text x="43" y="556" text-anchor="end" class="line-number">17</text>
+  <text x="43" y="585" text-anchor="end" class="line-number">18</text>
+  <text x="43" y="614" text-anchor="end" class="line-number">19</text>
+  <text x="43" y="643" text-anchor="end" class="line-number">20</text>
+  <text x="43" y="672" text-anchor="end" class="line-number">21</text>
+  <text x="43" y="701" text-anchor="end" class="line-number">22</text>
+    <text x="76" y="92" class="code"><tspan class="heading-mark">#</tspan><tspan class="heading-text">&#160;Example&#160;Task&#160;File</tspan></text>
+    <text x="76" y="121" class="code"> </text>
+    <text x="76" y="150" class="code"><tspan class="heading-mark">##</tspan><tspan class="heading-text">&#160;Todos</tspan></text>
+    <text x="76" y="179" class="code"> </text>
+    <text x="76" y="208" class="code"><tspan class="bullet">*</tspan><tspan class="plain">&#160;</tspan><tspan class="checked">[x]</tspan><tspan class="plain">&#160;Create&#160;Project</tspan></text>
+    <text x="76" y="237" class="code"><tspan class="bullet">*</tspan><tspan class="plain">&#160;Project&#160;Planning</tspan></text>
+    <text x="76" y="266" class="code"><tspan class="bullet">&#160;&#160;*</tspan><tspan class="plain">&#160;</tspan><tspan class="checked">[x]</tspan><tspan class="plain">&#160;Read&#160;Requirement&#160;Specification</tspan></text>
+    <text x="76" y="295" class="code"><tspan class="bullet">&#160;&#160;*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Analyze&#160;Requirements</tspan></text>
+    <text x="76" y="324" class="code"><tspan class="bullet">&#160;&#160;&#160;&#160;*</tspan><tspan class="plain">&#160;</tspan><tspan class="checked">[x]</tspan><tspan class="plain">&#160;Identify&#160;Core&#160;Requirements</tspan></text>
+    <text x="76" y="353" class="code"><tspan class="bullet">&#160;&#160;&#160;&#160;*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Identify&#160;Technical&#160;Constraints</tspan></text>
+    <text x="76" y="382" class="code"><tspan class="bullet">&#160;&#160;*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Technical&#160;Selection</tspan></text>
+    <text x="76" y="411" class="code"><tspan class="bullet">&#160;&#160;*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Plan&#160;Architecture</tspan></text>
+    <text x="76" y="440" class="code"><tspan class="bullet">&#160;&#160;*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Initialize&#160;Development&#160;Environment</tspan></text>
+    <text x="76" y="469" class="code"><tspan class="bullet">&#160;&#160;*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Create&#160;AGENTS.md</tspan></text>
+    <text x="76" y="498" class="code"><tspan class="bullet">*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Plan&#160;Milestones</tspan></text>
+    <text x="76" y="527" class="code"><tspan class="bullet">*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Basic&#160;Functionality</tspan></text>
+    <text x="76" y="556" class="code"><tspan class="bullet">*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Developer&#160;Self-Test</tspan></text>
+    <text x="76" y="585" class="code"><tspan class="bullet">*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;System&#160;Test</tspan></text>
+    <text x="76" y="614" class="code"><tspan class="bullet">*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Production&#160;Release</tspan></text>
+    <text x="76" y="643" class="code"><tspan class="bullet">*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Trial&#160;Operation</tspan></text>
+    <text x="76" y="672" class="code"><tspan class="bullet">*</tspan><tspan class="plain">&#160;</tspan><tspan class="unchecked">[&#160;]</tspan><tspan class="plain">&#160;Acceptance</tspan></text>
+</svg>
