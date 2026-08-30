@@ -144,9 +144,11 @@ Prefer platform-neutral Node.js and npm interfaces whenever they express the
 required behavior. Do not branch on `process.platform`, `process.arch`, the
 Node `os` platform APIs, Windows command shims, or shell-specific environment
 variables when Node can delegate the behavior to the runtime. For example,
-invoke npm as `npm` through Node's shell option instead of selecting
-`npm.cmd`, `cmd.exe`, or another operating-system command name in application
-or maintenance code.
+invoke npm's JavaScript CLI through `process.execPath` with an argument array
+and no shell. Maintenance scripts use npm's `npm_execpath` when npm supplies it
+and otherwise locate the npm CLI from the current Node installation. Do not
+select `npm.cmd`, `cmd.exe`, or another operating-system command name in
+application or maintenance code.
 
 The default assumption is that the current runtime provides the correct
 platform behavior. A platform-specific branch is permitted only when a
@@ -157,7 +159,10 @@ an untested operating-system branch.
 
 `npm run check:static` is the broad static-check aggregate. It runs the
 application and maintenance typechecks together with the independent platform,
-code-ASCII, and Git whitespace checks. `npm run check:platform`
+relative-import, code-ASCII, and Git whitespace checks. The
+`check:relative-imports` check rejects a relative module specifier that ascends
+and then re-enters a source directory it already left, such as using
+`../scripts/...` from a file in `scripts/`. `npm run check:platform`
 parses source, test,
 launcher, and maintenance files with the
 TypeScript AST and rejects access to runtime platform APIs such as
@@ -351,14 +356,16 @@ dispatched release run, not in the ordinary pre-commit harness.
   README link rule.
 - `scripts/node-test-runtime.mjs` and `scripts/run-source-tests.mjs` select the
   Node.js test runner for source and published-consumer TypeScript tests.
+  `scripts/npm-runtime.mjs` provides the shell-free npm launcher for
+  maintenance scripts.
   `scripts/update-version-badge.mjs` generates `version_badge.json` from the
   Core version and `version_badge_cli.json` from the CLI version. These two
   generated badges are release metadata, not application or package code; the
   independent badge workflow owns their commits.
   `scripts/check-cli-help.ts`, `scripts/check-package-contents.ts`,
   `scripts/check-platform-neutral.ts`, `scripts/typecheck-maintenance.ts`,
-  `scripts/node-test-runtime.mjs`, `scripts/run-source-tests.mjs`,
-  `scripts/validate-release.mjs`, and
+  `scripts/node-test-runtime.mjs`, `scripts/npm-runtime.mjs`,
+  `scripts/run-source-tests.mjs`, `scripts/validate-release.mjs`, and
   `scripts/run-compiled-tests.mjs` are maintenance scripts; none is published
   as application runtime code. `scripts/clean.mjs` removes ignored generated
   build, test, coverage, and TypeScript cache artifacts before the pre-commit

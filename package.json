@@ -41,10 +41,11 @@
     "test:all": "npm test && npm run test:bdd && npm run test:compiled && npm run test:local-install",
     "typecheck": "tsc --noEmit",
     "typecheck:maintenance": "node --import tsx ./scripts/typecheck-maintenance.ts .",
-    "check:static": "npm run typecheck && npm run typecheck:maintenance && npm run check:platform && npm run check:ascii && git diff --check && git diff --cached --check && node -e \"console.log('Git whitespace checks passed.')\"",
+    "check:static": "npm run typecheck && npm run typecheck:maintenance && npm run check:platform && npm run check:relative-imports && npm run check:ascii && git diff --check && git diff --cached --check && node -e \"console.log('Git whitespace checks passed.')\"",
     "verify:precommit": "npm run clean && npm run test:all && npm audit --omit=dev --audit-level=moderate && npm audit --audit-level=moderate && npm run pack:check && npm run check:static",
     "check:help": "node --conditions=source --import tsx ./scripts/check-cli-help.ts",
     "check:platform": "node --import tsx ./scripts/check-platform-neutral.ts",
+    "check:relative-imports": "node --import tsx ./scripts/check-relative-imports.ts",
     "pack:check": "npm run build:cli && node --import tsx ./scripts/check-package-contents.ts"
   },
   "engines": {

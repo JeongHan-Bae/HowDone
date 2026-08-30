@@ -7,6 +7,7 @@ import {
 import { resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
+import { npmCliArguments } from "./npm-runtime.mjs";
 
 interface PackageMetadata {
   name: string;
@@ -71,16 +72,19 @@ function readPackageMetadata(directory: string): PackageMetadata {
 }
 
 function packReport(spec: PackageSpec, cacheDirectory: string): PackageReport {
-  const output = execFileSync("npm", ["pack", "--dry-run", "--json"], {
-    cwd: spec.directory,
-    encoding: "utf8",
-    env: {
-      ...process.env,
-      npm_config_cache: cacheDirectory,
+  const output = execFileSync(
+    process.execPath,
+    npmCliArguments(["pack", "--dry-run", "--json"]),
+    {
+      cwd: spec.directory,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        npm_config_cache: cacheDirectory,
+      },
+      stdio: ["ignore", "pipe", "inherit"],
     },
-    shell: true,
-    stdio: ["ignore", "pipe", "inherit"],
-  });
+  );
   return readPackageReport(output);
 }
 

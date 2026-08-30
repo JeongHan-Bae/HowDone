@@ -5,6 +5,7 @@ import { appendFileSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { npmCliArguments } from "./npm-runtime.mjs";
 
 /** @typedef {"both" | "cli" | "core"} ReleaseKind */
 
@@ -56,13 +57,12 @@ function parseReleaseTag(tag) {
 function packageVersionExists(name, version) {
   try {
     const output = execFileSync(
-      "npm",
-      ["view", `${name}@${version}`, "version", "--json"],
+      process.execPath,
+      npmCliArguments(["view", `${name}@${version}`, "version", "--json"]),
       {
         cwd: projectRoot,
         encoding: "utf8",
         env: { ...process.env, npm_config_loglevel: "error" },
-        shell: true,
         stdio: ["ignore", "pipe", "pipe"],
       },
     ).trim();

@@ -2,6 +2,14 @@
   "name": "howdone",
   "version": "0.1.2",
   "description": "HowDone's framework-independent hexagonal core package.",
+  "keywords": [
+    "markdown",
+    "checklist",
+    "task-list",
+    "progress",
+    "completion",
+    "gfm"
+  ],
   "type": "module",
   "main": "./dist/core/index.js",
   "types": "./dist/core/index.d.ts",

@@ -2,6 +2,16 @@
   "name": "howdone-cli",
   "version": "0.1.2",
   "description": "HowDone's primary CLI product and howdone command executor.",
+  "keywords": [
+    "howdone",
+    "markdown",
+    "checklist",
+    "task-list",
+    "progress",
+    "completion",
+    "cli",
+    "gfm"
+  ],
   "type": "module",
   "bin": {
     "howdone": "./dist/boot/cli-main.js",

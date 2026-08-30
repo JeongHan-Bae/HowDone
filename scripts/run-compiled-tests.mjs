@@ -15,10 +15,11 @@ import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { npmCliArguments } from "./npm-runtime.mjs";
 import { nodeTestArguments } from "./node-test-runtime.mjs";
 
 /** @typedef {"tdd" | "bdd" | "package" | "local-install" | "all"} CompiledTestMode */
-/** @typedef {{ name: string, version: string, description?: string, dependencies?: Record<string, string>, optionalDependencies?: Record<string, string> }} PackageMetadata */
+/** @typedef {{ name: string, version: string, description?: string, keywords?: string[], dependencies?: Record<string, string>, optionalDependencies?: Record<string, string> }} PackageMetadata */
 const mode = /** @type {CompiledTestMode | undefined} */ (process.argv[2]);
 if (
   mode !== "tdd" &&
@@ -183,8 +184,8 @@ function stageLocalPackageSources(runtimeRoot) {
  */
 function installLocalPackages(runtimeRoot, localCoreRoot, localCliRoot) {
   execFileSync(
-    "npm",
-    [
+    process.execPath,
+    npmCliArguments([
       "install",
       "--ignore-scripts",
       "--no-audit",
@@ -192,8 +193,8 @@ function installLocalPackages(runtimeRoot, localCoreRoot, localCliRoot) {
       "--package-lock=false",
       localCoreRoot,
       localCliRoot,
-    ],
-    { cwd: runtimeRoot, shell: true, stdio: "inherit" },
+    ]),
+    { cwd: runtimeRoot, stdio: "inherit" },
   );
 }
 
@@ -217,11 +218,22 @@ function copyCompiledTests(runtimeRoot) {
   cpSync(resolve(testBuildRoot, "test"), resolve(runtimeRoot, "test"), {
     recursive: true,
   });
-  mkdirSync(resolve(runtimeRoot, "packages", "cli"), { recursive: true });
-  cpSync(
-    resolve(cliRoot, "package.json"),
-    resolve(runtimeRoot, "packages", "cli", "package.json"),
-  );
+  copyExpectedPackageMetadata(runtimeRoot);
+}
+
+/** @param {string} runtimeRoot */
+function copyExpectedPackageMetadata(runtimeRoot) {
+  for (const [directoryName, packageRoot] of [
+    ["core", coreRoot],
+    ["cli", cliRoot],
+  ]) {
+    const targetRoot = resolve(runtimeRoot, "packages", directoryName);
+    mkdirSync(targetRoot, { recursive: true });
+    cpSync(
+      resolve(packageRoot, "package.json"),
+      resolve(targetRoot, "package.json"),
+    );
+  }
 }
 
 /** @param {string} runtimeRoot */
@@ -251,6 +263,7 @@ function stageCorePackageFiles(runtimeRoot) {
       name: coreMetadata.name,
       version: coreMetadata.version,
       description: coreMetadata.description,
+      keywords: coreMetadata.keywords,
       type: "module",
       main: "./dist/core/index.js",
       types: "./dist/core/index.d.ts",
@@ -281,11 +294,7 @@ function stageCorePackage(runtimeRoot) {
     dereference: true,
   });
   stageCorePackageFiles(runtimeRoot);
-  mkdirSync(resolve(runtimeRoot, "packages", "cli"), { recursive: true });
-  cpSync(
-    resolve(cliRoot, "package.json"),
-    resolve(runtimeRoot, "packages", "cli", "package.json"),
-  );
+  copyExpectedPackageMetadata(runtimeRoot);
 }
 
 /** @param {string} runtimeRoot */
@@ -358,11 +367,7 @@ function runCompiledBdd(runtimeRoot) {
 
 /** @param {string} runtimeRoot */
 function copyConsumerPackageMetadata(runtimeRoot) {
-  mkdirSync(resolve(runtimeRoot, "packages", "cli"), { recursive: true });
-  cpSync(
-    resolve(cliRoot, "package.json"),
-    resolve(runtimeRoot, "packages", "cli", "package.json"),
-  );
+  copyExpectedPackageMetadata(runtimeRoot);
 }
 
 /** @param {string} runtimeRoot */
@@ -375,9 +380,15 @@ function runInstalledCliCommands(runtimeRoot) {
 
   for (const command of ["howdone", "howdone-cli"]) {
     const output = execFileSync(
-      "npm",
-      ["exec", "--offline", "--", command, "local-install-tasks.md"],
-      { cwd: runtimeRoot, encoding: "utf8", shell: true },
+      process.execPath,
+      npmCliArguments([
+        "exec",
+        "--offline",
+        "--",
+        command,
+        "local-install-tasks.md",
+      ]),
+      { cwd: runtimeRoot, encoding: "utf8" },
     );
     if (!output.includes("100%")) {
       throw new Error(

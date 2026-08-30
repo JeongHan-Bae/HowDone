@@ -59,9 +59,9 @@ oracles into this development guide.
 
 - Return non-zero status for invalid CLI input, unreadable/non-Markdown paths, invalid option values, and parser errors.
 - Use Node `node:path`/`node:fs` for platform-native path semantics; never hand-roll a Windows/POSIX path grammar.
-- Prefer platform-neutral Node.js and npm interfaces; avoid runtime platform
-  branches. `npm run check:static` runs the platform and code-ASCII policy
-  checks.
+- Prefer platform-neutral Node.js and npm interfaces; maintenance scripts invoke
+  npm through Node with an argument array and no shell. `npm run check:static`
+  runs the platform and code-ASCII policy checks.
 - Keep business and parsing logic TypeScript. The CommonJS launcher is an execution shim only.
 - Keep application and domain code free of network access, browser APIs, and
   dynamic code generation. The CommonJS launcher may use Node's `--eval` only

@@ -27,11 +27,9 @@ product and command executor. The CLI's command-line names are `howdone` and
 │   └── syntax.md
 ├── packages/
 │   ├── cli/
-│   │   ├── docs/
 │   │   ├── package.json
 │   │   └── README.md
 │   └── core/
-│       ├── docs/
 │       ├── source/
 │       │   ├── application/
 │       │   │   └── index.ts
