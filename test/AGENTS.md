@@ -711,9 +711,17 @@ helper cannot silently become a step module.
 ### Compiled parity
 
 Existing TDD entry files, fixtures, feature files, and assertions remain
-unchanged. `npm test` and `npm run test:bdd`
-explicitly select the source runtime, preserving native Node.js TypeScript on
-Node.js 23+ and bundled `tsx` on Node.js 18.18-22. The command
+unchanged. `npm test` delegates to `scripts/run-source-tests.mjs`, and the
+published Core consumer TDD commands (`test:package`, the package phase of
+`test:compiled`, and the package phase of `test:local-install`) use the same
+`scripts/node-test-runtime.mjs` selector. It runs TypeScript tests with native
+Node.js on Node.js 23+ and with the bundled `tsx` loader on Node.js 18.18-22.
+The source and package TDD paths must therefore have identical version
+selection; do not hardcode `--import tsx` in one path or native execution in
+the other. TypeScript reached by the native path must use erasable syntax;
+replace constructs such as parameter properties with explicit typed fields.
+
+The command
 `npm run test:tdd:compiled` compiles the same `src/` and `test/` modules into the
 ignored `.test-build/` directory, stages both compiled packages and the CLI's
 resolved production dependency closure into a temporary project, and runs the
@@ -727,7 +735,12 @@ test orchestration; it must not provide a module to the application or package
 consumer process. Do not create
 a second fixture set or change expected values for compiled verification;
 parity means the same test files, feature files, fixtures, and assertions
-exercise both paths. Each test command selects its runtime explicitly.
+exercise both paths. The compiled source-checkout TDD files are emitted
+JavaScript and run directly with Node.js because their production-only staging
+intentionally omits development loaders; the TypeScript package consumer files
+still use the shared native/`tsx` selector. Source, compiled, and local-install
+BDD modes keep the Cucumber `tsx/cjs` loader configuration aligned. Each test
+command selects its runtime explicitly.
 
 ### Local package installation
 
@@ -736,7 +749,10 @@ compiled `howdone` and `howdone-cli` packages from local paths with npm, and
 resolves only the CLI's production dependencies. It then runs the published-
 package consumer, compiled BDD features, and both installed bin aliases. This
 proves local npm installation behavior; it is not a download of an already
-published npm registry version.
+package consumer, compiled BDD features, and both installed bin aliases. Its
+Package TDD process uses the same native/`tsx` selector as the source and
+compiled consumer runs. This proves local npm installation behavior; it is not
+a download of an already published npm registry version.
 
 The test layout tree in `test/README.md` follows the repository tree order.
 When adding a test directory or file to a documented tree, insert it in the

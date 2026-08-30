@@ -34,12 +34,14 @@ function replaceTemplate(
 
 class ConsumerTerminalOutput implements TerminalOutput {
   readonly lines: ConsumerTerminalContentFixture["lines"];
+  private readonly text: string;
 
   constructor(
     content: ConsumerTerminalContentFixture,
-    private readonly text: string,
+    text: string,
   ) {
     this.lines = content.lines;
+    this.text = text;
   }
 
   writeTo(destination: TextWritable): void {

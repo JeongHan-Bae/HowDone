@@ -93,8 +93,11 @@ const fixtures = JSON.parse(
 
 class TestTerminalOutput implements TerminalOutput {
   readonly lines: readonly TerminalOutputLine[] = [];
+  readonly tag: "report" | "warning" | "error" | "info";
 
-  constructor(readonly tag: "report" | "warning" | "error" | "info") {}
+  constructor(tag: "report" | "warning" | "error" | "info") {
+    this.tag = tag;
+  }
 
   writeTo(destination: { write(chunk: string): void }): void {
     destination.write(`${this.tag}\n`);
@@ -180,8 +183,11 @@ interface JsonObservation {
 
 class RecordingJsonRenderer implements JsonOutputPort {
   readonly observation: JsonObservation = { renders: [], deliveries: [] };
+  private readonly expected: JsonObject;
 
-  constructor(private readonly expected: JsonObject) {}
+  constructor(expected: JsonObject) {
+    this.expected = expected;
+  }
 
   render(
     report: ProgressReport,

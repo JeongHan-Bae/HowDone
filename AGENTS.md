@@ -254,8 +254,18 @@ and TypeScript cache artifacts so stale package output cannot satisfy a check.
 Run this one aggregate command before a commit; do not repeat its internal
 steps separately.
 
-`npm test` is the unchanged source TDD gate. `npm run test:bdd` is the
-unchanged source black-box behavior gate. `npm run test:compiled` runs the
+CI runs the same check sequence on Ubuntu, macOS, and Windows across the Node.js
+18.x, 20.x, 22.x, 24.x, and 26.x matrix. The matrix versions are compatibility
+evidence, not alternate test contracts. Node test-runner TypeScript entrypoints
+use native Node.js on 23+ and the bundled `tsx` loader on 18.18-22; compiled
+JavaScript tests run directly with Node.js. Do not remove a high-version job or
+hide a version-specific failure behind a different assertion or test
+configuration. Workflow-level concurrency cancels an unfinished older run for
+the same branch or pull-request ref when a newer run starts, so slow matrix
+rows do not accumulate behind newer changes.
+
+`npm test` is the source TDD gate. `npm run test:bdd` is the source black-box
+behavior gate. `npm run test:compiled` runs the
 compiled TDD, published-package consumer, and the same BDD features against
 the compiled CLI. `npm run test:local-install` installs the two compiled
 packages from local package paths into a separate temporary sandbox, then runs
@@ -339,12 +349,15 @@ dispatched release run, not in the ordinary pre-commit harness.
   `docs/architecture.md`, `docs/development.md`, `AGENTS.md`, `test/README.md`,
   `test/AGENTS.md`, and `CONTRIBUTING.md` are also not subject to the package
   README link rule.
-- `scripts/update-version-badge.mjs` generates `version_badge.json` from the
+- `scripts/node-test-runtime.mjs` and `scripts/run-source-tests.mjs` select the
+  Node.js test runner for source and published-consumer TypeScript tests.
+  `scripts/update-version-badge.mjs` generates `version_badge.json` from the
   Core version and `version_badge_cli.json` from the CLI version. These two
   generated badges are release metadata, not application or package code; the
   independent badge workflow owns their commits.
   `scripts/check-cli-help.ts`, `scripts/check-package-contents.ts`,
   `scripts/check-platform-neutral.ts`, `scripts/typecheck-maintenance.ts`,
+  `scripts/node-test-runtime.mjs`, `scripts/run-source-tests.mjs`,
   `scripts/validate-release.mjs`, and
   `scripts/run-compiled-tests.mjs` are maintenance scripts; none is published
   as application runtime code. `scripts/clean.mjs` removes ignored generated

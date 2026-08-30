@@ -30,7 +30,7 @@
     "check:ascii": "node --import tsx ./scripts/check-ascii.ts",
     "clean": "node ./scripts/clean.mjs",
     "install:local": "node ./scripts/install-local.mjs",
-    "test:tdd": "node --conditions=source --import tsx --test test/index.test.ts test/tdd/index.test.ts",
+    "test:tdd": "node ./scripts/run-source-tests.mjs",
     "test:tdd:compiled": "node ./scripts/run-compiled-tests.mjs tdd",
     "test:package": "node ./scripts/run-compiled-tests.mjs package",
     "test": "npm run test:tdd",

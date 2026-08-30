@@ -324,12 +324,17 @@ consumers machine-readable.
 
 `.github/workflows/ci.yml` runs through `actions/checkout@v5` and
 `actions/setup-node@v5` on Ubuntu, macOS, and Windows. Push and pull-request
-CI is limited to changes in the main CI workflow, `bin/`, `scripts/`, `src/`,
-`test/`, the npm manifests, and `tsconfig.json`; README, other documentation,
-release-only changes, and version-badge automation do not trigger normal CI.
-Manual dispatch
-and `workflow_call` remain available, so the Release workflow can still invoke
-the reusable CI gate.
+CI watches the main CI workflow, `bin/`, `scripts/`, `src/`, `test/`, the root
+npm manifests, TypeScript configs, and only TypeScript and JSON files under
+`packages/`. Package README and documentation changes, root README and
+documentation changes, release-only changes, and version-badge automation do
+not trigger normal CI. Manual dispatch and `workflow_call` remain available,
+so the Release workflow can still invoke the reusable CI gate.
+
+Workflow-level concurrency keeps only the newest run for a branch or pull
+request: when a newer run starts, an unfinished older run for the same ref is
+cancelled, including its matrix jobs. Runs for different refs continue
+independently.
 
 Each operating-system job runs the same Node.js 18, 20, 22, 24, and 26
 matrix, including dependency audit, typecheck, platform API checks, source and

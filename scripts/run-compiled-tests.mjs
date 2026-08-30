@@ -15,6 +15,7 @@ import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { nodeTestArguments } from "./node-test-runtime.mjs";
 
 /** @typedef {"tdd" | "bdd" | "package" | "local-install" | "all"} CompiledTestMode */
 /** @typedef {{ name: string, version: string, description?: string, dependencies?: Record<string, string>, optionalDependencies?: Record<string, string> }} PackageMetadata */
@@ -296,18 +297,6 @@ function copyPublishedPackageTests(runtimeRoot) {
   );
 }
 
-/** @param {string[]} testFiles */
-function sourceNodeTestArguments(testFiles) {
-  const majorVersion = Number(process.versions.node.split(".")[0]);
-  if (majorVersion >= 23) return ["--test", ...testFiles];
-  return [
-    "--import",
-    pathToFileURL(require.resolve("tsx")).href,
-    "--test",
-    ...testFiles,
-  ];
-}
-
 /** @param {string} runtimeRoot */
 function runCompiledTdd(runtimeRoot) {
   execFileSync(
@@ -325,7 +314,7 @@ function runCompiledTdd(runtimeRoot) {
 function runPublishedPackageTests(runtimeRoot) {
   execFileSync(
     process.execPath,
-    sourceNodeTestArguments([
+    nodeTestArguments([
       resolve(runtimeRoot, "test", "package", "tdd", "pipeline.test.ts"),
       resolve(runtimeRoot, "test", "package", "tdd", "application.test.ts"),
       resolve(runtimeRoot, "test", "package", "tdd", "api.test.ts"),
