@@ -48,9 +48,10 @@ installing the command-line product.
 
 ## What you get
 
-The package exports the framework-independent Core contracts from `howdone`
-and the port-driven application from `howdone/application`. It has no CLI bin
-and no runtime adapter dependencies.
+The package exports the framework-independent Core API from `howdone`, the
+standard dependency-free AST parser implementation from `howdone/std`, and the
+port-driven application from `howdone/application`. It has no CLI bin and no
+runtime adapter dependencies.
 
 ## Use it in another project
 
@@ -60,8 +61,10 @@ import { run } from "howdone/application";
 const status = await run(argv, io, dependencies);
 ```
 
-The consumer supplies the filesystem, Markdown, YAML/TOML, warning, and output
-ports.
+The consumer supplies the external filesystem, Markdown, YAML/TOML, and output
+Ports. It may use `TypedAstParser` from `howdone/std` for the parser Port or
+replace that Port with its own implementation. Other external Ports are
+provided by the composing application.
 
 ## Need the command line?
 

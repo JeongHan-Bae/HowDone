@@ -50,7 +50,35 @@ Feature: CLI errors and hard conflicts
       | first_option          | second_option          |
       | --decimal             | --percentage           |
       | --show-trailing-zeros | --no-trailing-zeros    |
-      | --tree                | --json                 |
+
+  Scenario: Decimal precision below one is rejected through the CLI
+    Given a Markdown file containing:
+      """
+      - [x] done
+      """
+    When I run howdone with arguments "tasks.md --format decimal --precision 0 --show-trailing-zeros"
+    Then the command fails
+    And stderr contains "at least 1"
+
+  Scenario Outline: Unconditional terminal feature modes are rejected
+    Given a Markdown file containing:
+      """
+      - [x] done
+      """
+    When I run howdone with arguments "tasks.md <terminal_option>"
+    Then the command fails
+    And stderr contains "Unknown option"
+
+    Examples:
+      | terminal_option |
+      | --color         |
+      | --pager         |
+
+  Scenario: JSON explicit truncation and no-truncate conflict
+    Given the nested contract Markdown fixture
+    When I run howdone with arguments "tasks.md --json --max-label-clusters 5 --no-truncate --silent"
+    Then the command fails
+    And stderr contains "mutually exclusive"
 
   Scenario Outline: Hard conflicts stay errors with warning policy flags and safe options
     Given a Markdown file containing:
@@ -84,6 +112,39 @@ Feature: CLI errors and hard conflicts
     When I run howdone with arguments "tasks.md --precision"
     Then the command fails
     And stderr contains "--precision requires a value"
+
+  Scenario Outline: JSON does not downgrade invalid display values
+    Given a Markdown file containing:
+      """
+      - [x] complete
+      """
+    When I run howdone with arguments "tasks.md <arguments>"
+    Then the command fails
+    And stderr contains "<message>"
+    And stdout is empty
+
+    Examples:
+      | arguments                                  | message                        |
+      | --json --precision 101                     | 0 through 100                 |
+      | --json --max-label-clusters 0              | positive                      |
+      | --json --max-label-clusters=0              | positive                      |
+      | --json --format decimal --precision 0     | at least 1                    |
+
+  Scenario Outline: Frontmatter weight does not consume a following option
+    Given a Markdown file containing:
+      """
+      - [x] complete
+      """
+    When I run howdone with arguments "tasks.md <arguments>"
+    Then the command fails
+    And stderr contains "--frontmatter-weight requires a value"
+
+    Examples:
+      | arguments                    |
+      | --frontmatter-weight --tree  |
+      | --frontmatter-weight --json  |
+      | --frontmatter-weight --      |
+      | --frontmatter-weight=--tree |
 
   Scenario Outline: Argument boundaries remain user-facing errors
     Given a Markdown file containing:

@@ -1,8 +1,12 @@
+import type { InfoDocument, InfoDocumentPort } from "howdone";
 import type { CliDependencies } from "howdone/application";
+import { TypedAstParser } from "howdone/std";
 import {
   consumerCaseForCode,
+  consumerOutputCapabilityCaseForCode,
   readerOutputForCode,
   type ConsumerExpectedResult,
+  type ConsumerOutputCapabilityCase,
 } from "./data.ts";
 import { consumerLexer, consumerParser } from "./markdown.ts";
 import {
@@ -10,53 +14,61 @@ import {
   ConsumerYamlValueParser,
 } from "./frontmatter.ts";
 import { ConsumerFileReader } from "./filesystem.ts";
-import {
-  ConsumerGraphemeSegmenter,
-  ConsumerWarningPort,
-} from "./runtime.ts";
+import { ConsumerGraphemeSegmenter } from "./runtime.ts";
 import { ConsumerJsonRenderer, ConsumerTerminalRenderer } from "./output.ts";
 
 export interface ConsumerContext {
   code: string;
   path: string;
   source: string;
+  parserMode: ConsumerParserMode;
   expected: ConsumerExpectedResult;
   dependencies: CliDependencies;
   reader: ConsumerFileReader;
-  warning: ConsumerWarningPort;
   terminal: ConsumerTerminalRenderer;
   json: ConsumerJsonRenderer;
+  capability?: ConsumerOutputCapabilityCase;
 }
 
-export function createConsumerContext(code: string): ConsumerContext {
+export type ConsumerParserMode = "custom" | "standard";
+
+export function createConsumerContext(
+  code: string,
+  capabilityCode?: string,
+  diagnostics = false,
+  parserMode: ConsumerParserMode = "custom",
+): ConsumerContext {
   const input = consumerCaseForCode(code);
   const reader = new ConsumerFileReader(code);
-  const warning = new ConsumerWarningPort();
   const segmenter = new ConsumerGraphemeSegmenter();
-  const terminal = new ConsumerTerminalRenderer(segmenter);
-  const json = new ConsumerJsonRenderer();
+  const capability = capabilityCode === undefined
+    ? undefined
+    : consumerOutputCapabilityCaseForCode(capabilityCode);
+  const terminal = new ConsumerTerminalRenderer(segmenter, capability, diagnostics);
+  const json = new ConsumerJsonRenderer(capability);
   return {
     code,
     path: input.path,
     source: readerOutputForCode(code).source,
+    parserMode,
     expected: input.expected,
     reader,
-    warning,
     terminal,
     json,
+    capability,
     dependencies: {
       lexer: consumerLexer,
-      parser: consumerParser,
+      parser: parserMode === "standard"
+        ? new TypedAstParser()
+        : consumerParser,
       yamlValueParser: new ConsumerYamlValueParser(),
       tomlValueParser: new ConsumerTomlValueParser(),
       fileReader: reader,
       terminalRenderer: terminal,
       jsonRenderer: json,
-      warning,
-      version: `consumer-${code}`,
-      runtimeDependencies: [
-        { name: "consumer-runtime", version: "1.0.0" },
-      ],
+      infoPort: {
+        execute: (command): InfoDocument => ({ kind: command }),
+      } satisfies InfoDocumentPort,
     },
   };
 }

@@ -1,0 +1,182 @@
+{
+  "yaml-setup": {
+    "format": "yaml",
+    "checklists": [
+      {
+        "type": "checklist",
+        "path": [
+          "checks"
+        ],
+        "entries": [
+          {
+            "label": "setup",
+            "checked": true
+          }
+        ]
+      }
+    ],
+    "progress": {
+      "rootCount": 1,
+      "explicitCheckboxCount": 1,
+      "implicitNodeCount": 1,
+      "nodeCount": 2,
+      "completedEquivalent": 1,
+      "progress": 1,
+      "percentage": 100,
+      "roots": [
+        {
+          "label": "checks",
+          "checked": null,
+          "implicit": true,
+          "children": [
+            {
+              "label": "setup",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 1
+            }
+          ],
+          "progress": 1,
+          "depth": 0
+        }
+      ]
+    }
+  },
+  "yaml-release": {
+    "format": "yaml",
+    "checklists": [
+      {
+        "type": "checklist",
+        "path": [
+          "checks"
+        ],
+        "entries": [
+          {
+            "label": "release",
+            "checked": true
+          }
+        ]
+      }
+    ],
+    "progress": {
+      "rootCount": 1,
+      "explicitCheckboxCount": 1,
+      "implicitNodeCount": 1,
+      "nodeCount": 2,
+      "completedEquivalent": 1,
+      "progress": 1,
+      "percentage": 100,
+      "roots": [
+        {
+          "label": "checks",
+          "checked": null,
+          "implicit": true,
+          "children": [
+            {
+              "label": "release",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 1
+            }
+          ],
+          "progress": 1,
+          "depth": 0
+        }
+      ]
+    }
+  },
+  "toml-setup": {
+    "format": "toml",
+    "checklists": [
+      {
+        "type": "checklist",
+        "path": [
+          "checks"
+        ],
+        "entries": [
+          {
+            "label": "setup",
+            "checked": true
+          }
+        ]
+      }
+    ],
+    "progress": {
+      "rootCount": 1,
+      "explicitCheckboxCount": 1,
+      "implicitNodeCount": 1,
+      "nodeCount": 2,
+      "completedEquivalent": 1,
+      "progress": 1,
+      "percentage": 100,
+      "roots": [
+        {
+          "label": "checks",
+          "checked": null,
+          "implicit": true,
+          "children": [
+            {
+              "label": "setup",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 1
+            }
+          ],
+          "progress": 1,
+          "depth": 0
+        }
+      ]
+    }
+  },
+  "toml-release": {
+    "format": "toml",
+    "checklists": [
+      {
+        "type": "checklist",
+        "path": [
+          "checks"
+        ],
+        "entries": [
+          {
+            "label": "release",
+            "checked": true
+          }
+        ]
+      }
+    ],
+    "progress": {
+      "rootCount": 1,
+      "explicitCheckboxCount": 1,
+      "implicitNodeCount": 1,
+      "nodeCount": 2,
+      "completedEquivalent": 1,
+      "progress": 1,
+      "percentage": 100,
+      "roots": [
+        {
+          "label": "checks",
+          "checked": null,
+          "implicit": true,
+          "children": [
+            {
+              "label": "release",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 1
+            }
+          ],
+          "progress": 1,
+          "depth": 0
+        }
+      ]
+    }
+  }
+}

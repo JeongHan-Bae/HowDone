@@ -1,0 +1,1092 @@
+{
+  "cases": [
+    {
+      "code": "0000-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0000-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0000-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0000-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0001-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0001-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0001-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0001-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0010-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0010-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0010-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0010-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0011-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0011-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0011-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0011-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0100-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0100-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0100-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0100-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0101-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0101-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0101-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0101-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0110-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0110-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0110-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0110-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0111-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0111-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "0111-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "0111-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": false,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1000-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1000-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1000-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1000-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1001-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1001-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1001-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1001-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1010-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1010-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1010-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1010-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1011-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1011-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1011-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1011-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": false
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1100-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1100-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1100-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1100-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1101-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1101-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1101-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1101-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": false,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1110-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1110-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1110-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1110-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": false
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1111-aa",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1111-na",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "auto"
+      }
+    },
+    {
+      "code": "1111-an",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "auto",
+        "pager": "never"
+      }
+    },
+    {
+      "code": "1111-nn",
+      "terminal": {
+        "label": "consumer-terminal-port",
+        "color": true,
+        "pager": true
+      },
+      "json": {
+        "label": "consumer-json-port",
+        "color": true,
+        "pager": true
+      },
+      "request": {
+        "color": "never",
+        "pager": "never"
+      }
+    }
+  ]
+}

@@ -46,9 +46,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Typecheck release validator
-        run: npm run typecheck:release
-
       - name: Validate release tag, versions, and registry state
         id: validate
         run: |

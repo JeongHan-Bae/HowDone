@@ -11,9 +11,9 @@ import {
   runMarkdownPipeline,
   summarizeProgress,
   TokenKind,
-  TypedAstParser,
 } from "howdone";
-import type { CheckboxNode } from "howdone";
+import { TypedAstParser } from "howdone/std";
+import type { CheckboxNode, ProgressReport } from "howdone";
 
 const source = (JSON.parse(
   readFileSync(new URL("./fixtures/markdown-samples.json", import.meta.url), "utf8"),
@@ -199,9 +199,10 @@ test("TDD JSON adapter serializes the progress result without display truncation
     defaultRemarkLexer.lex("- [x] This label is longer than ten\n"),
   ).body;
   const result = calculateProgress(ast);
-  const json = JSON.parse(
-    new JsonRenderer().render({ source: { path: "tasks.md" }, progress: result }),
-  ) as { progress: { roots: Array<{ label: string }>; percentage: number } };
+  const json = new JsonRenderer().render({
+    source: { path: "tasks.md" },
+    progress: result,
+  }) as { progress: { roots: Array<{ label: string }>; percentage: number } };
   assert.equal(json.progress.percentage, 100);
   assert.equal(json.progress.roots[0]?.label, "This label is longer than ten");
 });
@@ -211,18 +212,16 @@ test("TDD JSON adapter truncates labels only when display options request it", (
     defaultRemarkLexer.lex("- [x] 123456789012345\n"),
   ).body;
   const result = calculateProgress(ast);
-  const json = JSON.parse(
-    new JsonRenderer().render(
-      { source: { path: "tasks.md" }, progress: result },
-      {
-        maxLabelClusters: 5,
-        ellipsis: "...",
-        truncate: true,
-        progressFormat: "percentage",
-        precision: 2,
-        showTrailingZeros: false,
-      },
-    ),
+  const json = new JsonRenderer().render(
+    { source: { path: "tasks.md" }, progress: result },
+    {
+      maxLabelClusters: 5,
+      ellipsis: "...",
+      truncate: true,
+      progressFormat: "percentage",
+      precision: 2,
+      showTrailingZeros: false,
+    },
   ) as { progress: { roots: Array<{ label: string }> } };
   assert.equal(json.progress.roots[0]?.label, "12345...");
 });
@@ -232,9 +231,18 @@ test("TDD terminal adapter truncates only terminal labels", () => {
     defaultRemarkLexer.lex("- [x] This label is longer than ten\n"),
   ).body;
   const result = calculateProgress(ast);
+  const report: ProgressReport = {
+    source: { path: "tasks.md" },
+    markdown: result,
+    markdownPresent: true,
+    frontmatter: [],
+    frontmatterPresent: false,
+    presentation: "separate",
+    progress: result,
+  };
   const output = new TerminalRenderer().render(
     "tree",
-    result,
+    report,
     {
       maxLabelClusters: 10,
       ellipsis: "...",
@@ -244,5 +252,7 @@ test("TDD terminal adapter truncates only terminal labels", () => {
       showTrailingZeros: false,
     },
   );
-  assert.match(output, /This label\.\.\./u);
+  let plainText = "";
+  output.writeTo({ write: (chunk: string) => { plainText += chunk; } });
+  assert.match(plainText, /This label\.\.\./u);
 });

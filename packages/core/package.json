@@ -15,6 +15,11 @@
       "types": "./dist/application/index.d.ts",
       "source": "./source/application/index.ts",
       "import": "./dist/application/index.js"
+    },
+    "./std": {
+      "types": "./dist/core/std.d.ts",
+      "source": "./source/core/std.ts",
+      "import": "./dist/core/std.js"
     }
   },
   "files": [

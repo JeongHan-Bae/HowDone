@@ -6,8 +6,8 @@ import {
   buildProgressRoots,
   calculateProgress,
   TokenKind,
-  TypedAstParser,
 } from "howdone";
+import { TypedAstParser } from "howdone/std";
 
 interface PositiveFeature {
   id: string;

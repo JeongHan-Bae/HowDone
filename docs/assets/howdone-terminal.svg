@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="668" viewBox="0 0 1460 668" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="1460" height="668" viewBox="0 0 1460 668" role="img" aria-labelledby="title description">
   <title id="title">howdone-cli output demo</title>
   <desc id="description">A POSIX-style terminal showing the HowDone CLI output</desc>
   <defs>
     <style>
       .terminal-text { fill: #e6e8eb; font-family: "SFMono-Regular", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 450; letter-spacing: 0.1px; }
+      .summary-label { fill: #40d9d0; }
+      .complete { fill: #58d66f; }
+      .partial { fill: #f4d35e; }
+      .not-started { fill: #ff6374; }
       .window-title { fill: #a4a8b0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; font-weight: 500; }
     </style>
   </defs>
@@ -15,25 +19,25 @@
   <circle cx="30" cy="30" r="6" fill="#ff5f57"/>
   <circle cx="51" cy="30" r="6" fill="#febc2e"/>
   <circle cx="72" cy="30" r="6" fill="#28c840"/>
-  <text x="730" y="35" text-anchor="middle" class="window-title">howdone-example — zsh</text>
+  <text x="730" y="35" text-anchor="middle" class="window-title">howdone-example - zsh</text>
     <text x="34" y="78" class="terminal-text">example@demo-desk howdone-example % npx howdone task.md --tree --no-truncate</text>
-    <text x="34" y="106" class="terminal-text">Overall completion: 13.89%</text>
-    <text x="34" y="134" class="terminal-text"> </text>
-    <text x="34" y="162" class="terminal-text">├─ [100%] Create Project</text>
-    <text x="34" y="190" class="terminal-text">├─ [25%] Project Planning</text>
-    <text x="34" y="218" class="terminal-text">│  ├─ [100%] Read Requirement Specification</text>
-    <text x="34" y="246" class="terminal-text">│  ├─ [50%] Analyze Requirements</text>
-    <text x="34" y="274" class="terminal-text">│  │  ├─ [100%] Identify Core Requirements</text>
-    <text x="34" y="302" class="terminal-text">│  │  └─ [0%] Identify Technical Constraints</text>
-    <text x="34" y="330" class="terminal-text">│  ├─ [0%] Technical Selection</text>
-    <text x="34" y="358" class="terminal-text">│  ├─ [0%] Plan Architecture</text>
-    <text x="34" y="386" class="terminal-text">│  ├─ [0%] Initialize Development Environment</text>
-    <text x="34" y="414" class="terminal-text">│  └─ [0%] Create AGENTS.md</text>
-    <text x="34" y="442" class="terminal-text">├─ [0%] Plan Milestones</text>
-    <text x="34" y="470" class="terminal-text">├─ [0%] Basic Functionality</text>
-    <text x="34" y="498" class="terminal-text">├─ [0%] Developer Self-Test</text>
-    <text x="34" y="526" class="terminal-text">├─ [0%] System Test</text>
-    <text x="34" y="554" class="terminal-text">├─ [0%] Production Release</text>
-    <text x="34" y="582" class="terminal-text">├─ [0%] Trial Operation</text>
-    <text x="34" y="610" class="terminal-text">└─ [0%] Acceptance</text>
+    <text x="34" y="106" class="terminal-text"><tspan class="summary-label">Overall completion: </tspan><tspan class="partial">13.89%</tspan></text>
+    <text x="34" y="134" class="terminal-text">\</text>
+    <text x="34" y="162" class="terminal-text">&#x251c;&#x2500; <tspan>[</tspan><tspan class="complete">100%</tspan><tspan>]</tspan> Create Project</text>
+    <text x="34" y="190" class="terminal-text">&#x251c;&#x2500; <tspan>[</tspan><tspan class="partial">25%</tspan><tspan>]</tspan> Project Planning</text>
+    <text x="34" y="218" class="terminal-text">&#x2502;  &#x251c;&#x2500; <tspan>[</tspan><tspan class="complete">100%</tspan><tspan>]</tspan> Read Requirement Specification</text>
+    <text x="34" y="246" class="terminal-text">&#x2502;  &#x251c;&#x2500; <tspan>[</tspan><tspan class="partial">50%</tspan><tspan>]</tspan> Analyze Requirements</text>
+    <text x="34" y="274" class="terminal-text">&#x2502;  &#x2502;  &#x251c;&#x2500; <tspan>[</tspan><tspan class="complete">100%</tspan><tspan>]</tspan> Identify Core Requirements</text>
+    <text x="34" y="302" class="terminal-text">&#x2502;  &#x2502;  &#x2514;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Identify Technical Constraints</text>
+    <text x="34" y="330" class="terminal-text">&#x2502;  &#x251c;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Technical Selection</text>
+    <text x="34" y="358" class="terminal-text">&#x2502;  &#x251c;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Plan Architecture</text>
+    <text x="34" y="386" class="terminal-text">&#x2502;  &#x251c;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Initialize Development Environment</text>
+    <text x="34" y="414" class="terminal-text">&#x2502;  &#x2514;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Create AGENTS.md</text>
+    <text x="34" y="442" class="terminal-text">&#x251c;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Plan Milestones</text>
+    <text x="34" y="470" class="terminal-text">&#x251c;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Basic Functionality</text>
+    <text x="34" y="498" class="terminal-text">&#x251c;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Developer Self-Test</text>
+    <text x="34" y="526" class="terminal-text">&#x251c;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> System Test</text>
+    <text x="34" y="554" class="terminal-text">&#x251c;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Production Release</text>
+    <text x="34" y="582" class="terminal-text">&#x251c;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Trial Operation</text>
+    <text x="34" y="610" class="terminal-text">&#x2514;&#x2500; <tspan>[</tspan><tspan class="not-started">0%</tspan><tspan>]</tspan> Acceptance</text>
 </svg>

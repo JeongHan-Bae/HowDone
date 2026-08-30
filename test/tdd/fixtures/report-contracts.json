@@ -1,0 +1,483 @@
+{
+  "cases": [
+    {
+      "id": "body-only-merge-request-is-ignored",
+      "sourcePath": "body-only.md",
+      "markdown": {
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "frontmatter": [],
+      "markdownPresent": true,
+      "options": {
+        "mergeFrontmatter": true,
+        "frontmatterWeight": 0.25
+      },
+      "expectedFlags": {
+        "mergeIgnored": true,
+        "weightIgnored": false
+      },
+      "expectedReport": {
+        "source": {
+          "path": "body-only.md"
+        },
+        "frontmatter": [],
+        "frontmatterPresent": false,
+        "markdown": {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 0,
+          "nodeCount": 1,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100,
+          "roots": [
+            {
+              "label": "body",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 0
+            }
+          ]
+        },
+        "markdownPresent": true,
+        "presentation": "separate",
+        "progress": {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 0,
+          "nodeCount": 1,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100,
+          "roots": [
+            {
+              "label": "body",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "body-and-frontmatter-weighted-merge",
+      "sourcePath": "mixed.md",
+      "markdown": {
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "checks"
+              ],
+              "entries": [
+                {
+                  "label": "setup",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "roots": [
+            {
+              "label": "checks",
+              "checked": null,
+              "implicit": true,
+              "children": [
+                {
+                  "label": "setup",
+                  "checked": false,
+                  "implicit": false,
+                  "children": [],
+                  "progress": 0,
+                  "depth": 1
+                }
+              ],
+              "progress": 0,
+              "depth": 0
+            }
+          ]
+        }
+      ],
+      "markdownPresent": true,
+      "options": {
+        "mergeFrontmatter": true,
+        "frontmatterWeight": 0.25
+      },
+      "expectedFlags": {
+        "mergeIgnored": false,
+        "weightIgnored": false
+      },
+      "expectedReport": {
+        "source": {
+          "path": "mixed.md"
+        },
+        "frontmatter": [
+          {
+            "format": "yaml",
+            "checklists": [
+              {
+                "type": "checklist",
+                "path": [
+                  "checks"
+                ],
+                "entries": [
+                  {
+                    "label": "setup",
+                    "checked": false
+                  }
+                ]
+              }
+            ],
+            "progress": {
+              "rootCount": 1,
+              "explicitCheckboxCount": 1,
+              "implicitNodeCount": 1,
+              "nodeCount": 2,
+              "completedEquivalent": 0,
+              "progress": 0,
+              "percentage": 0,
+              "roots": [
+                {
+                  "label": "checks",
+                  "checked": null,
+                  "implicit": true,
+                  "children": [
+                    {
+                      "label": "setup",
+                      "checked": false,
+                      "implicit": false,
+                      "children": [],
+                      "progress": 0,
+                      "depth": 1
+                    }
+                  ],
+                  "progress": 0,
+                  "depth": 0
+                }
+              ]
+            }
+          }
+        ],
+        "frontmatterPresent": true,
+        "markdown": {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 0,
+          "nodeCount": 1,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100,
+          "roots": [
+            {
+              "label": "body",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 0
+            }
+          ]
+        },
+        "markdownPresent": true,
+        "presentation": "merged",
+        "frontmatterWeight": 0.25,
+        "progress": {
+          "rootCount": 2,
+          "explicitCheckboxCount": 2,
+          "implicitNodeCount": 1,
+          "nodeCount": 3,
+          "completedEquivalent": 1.5,
+          "progress": 0.75,
+          "percentage": 75,
+          "roots": [
+            {
+              "label": "checks",
+              "checked": null,
+              "implicit": true,
+              "children": [
+                {
+                  "label": "setup",
+                  "checked": false,
+                  "implicit": false,
+                  "children": [],
+                  "progress": 0,
+                  "depth": 1
+                }
+              ],
+              "progress": 0,
+              "depth": 0
+            },
+            {
+              "label": "body",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "multiple-frontmatter-sections-merge",
+      "sourcePath": "frontmatter-only.md",
+      "markdown": {
+        "roots": []
+      },
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [],
+          "roots": [
+            {
+              "label": "first",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 0,
+              "depth": 0
+            }
+          ]
+        },
+        {
+          "format": "toml",
+          "checklists": [],
+          "roots": [
+            {
+              "label": "second",
+              "checked": false,
+              "implicit": false,
+              "children": [],
+              "progress": 0,
+              "depth": 0
+            }
+          ]
+        }
+      ],
+      "markdownPresent": false,
+      "options": {
+        "mergeFrontmatter": true
+      },
+      "expectedFlags": {
+        "mergeIgnored": false,
+        "weightIgnored": false
+      },
+      "expectedReport": {
+        "source": {
+          "path": "frontmatter-only.md"
+        },
+        "frontmatter": [
+          {
+            "format": "yaml",
+            "checklists": [],
+            "progress": {
+              "rootCount": 1,
+              "explicitCheckboxCount": 1,
+              "implicitNodeCount": 0,
+              "nodeCount": 1,
+              "completedEquivalent": 1,
+              "progress": 1,
+              "percentage": 100,
+              "roots": [
+                {
+                  "label": "first",
+                  "checked": true,
+                  "implicit": false,
+                  "children": [],
+                  "progress": 1,
+                  "depth": 0
+                }
+              ]
+            }
+          },
+          {
+            "format": "toml",
+            "checklists": [],
+            "progress": {
+              "rootCount": 1,
+              "explicitCheckboxCount": 1,
+              "implicitNodeCount": 0,
+              "nodeCount": 1,
+              "completedEquivalent": 0,
+              "progress": 0,
+              "percentage": 0,
+              "roots": [
+                {
+                  "label": "second",
+                  "checked": false,
+                  "implicit": false,
+                  "children": [],
+                  "progress": 0,
+                  "depth": 0
+                }
+              ]
+            }
+          }
+        ],
+        "frontmatterPresent": true,
+        "markdown": {
+          "rootCount": 0,
+          "explicitCheckboxCount": 0,
+          "implicitNodeCount": 0,
+          "nodeCount": 0,
+          "completedEquivalent": 0,
+          "progress": 0,
+          "percentage": 0,
+          "roots": []
+        },
+        "markdownPresent": false,
+        "presentation": "merged",
+        "progress": {
+          "rootCount": 2,
+          "explicitCheckboxCount": 2,
+          "implicitNodeCount": 0,
+          "nodeCount": 2,
+          "completedEquivalent": 1,
+          "progress": 0.5,
+          "percentage": 50,
+          "roots": [
+            {
+              "label": "first",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 0
+            },
+            {
+              "label": "second",
+              "checked": false,
+              "implicit": false,
+              "children": [],
+              "progress": 0,
+              "depth": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "weight-with-empty-frontmatter-roots-is-ignored",
+      "sourcePath": "empty-frontmatter.md",
+      "markdown": {
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [],
+          "roots": []
+        }
+      ],
+      "markdownPresent": true,
+      "options": {
+        "mergeFrontmatter": true,
+        "frontmatterWeight": 0.25
+      },
+      "expectedFlags": {
+        "mergeIgnored": false,
+        "weightIgnored": true
+      },
+      "expectedReport": {
+        "source": {
+          "path": "empty-frontmatter.md"
+        },
+        "frontmatter": [
+          {
+            "format": "yaml",
+            "checklists": [],
+            "progress": {
+              "rootCount": 0,
+              "explicitCheckboxCount": 0,
+              "implicitNodeCount": 0,
+              "nodeCount": 0,
+              "completedEquivalent": 0,
+              "progress": 0,
+              "percentage": 0,
+              "roots": []
+            }
+          }
+        ],
+        "frontmatterPresent": true,
+        "markdown": {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 0,
+          "nodeCount": 1,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100,
+          "roots": [
+            {
+              "label": "body",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 0
+            }
+          ]
+        },
+        "markdownPresent": true,
+        "presentation": "merged",
+        "progress": {
+          "rootCount": 1,
+          "explicitCheckboxCount": 1,
+          "implicitNodeCount": 0,
+          "nodeCount": 1,
+          "completedEquivalent": 1,
+          "progress": 1,
+          "percentage": 100,
+          "roots": [
+            {
+              "label": "body",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 1,
+              "depth": 0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

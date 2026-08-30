@@ -170,6 +170,7 @@ function main(): void {
         requiredFiles: [
           "LICENSE",
           "README.md",
+          "docs/guide.md",
           "docs/syntax.md",
           "dist/boot/cli-main.js",
           "package.json",
@@ -178,6 +179,7 @@ function main(): void {
           file === "LICENSE" ||
           file === "README.md" ||
           file === "package.json" ||
+          file === "docs/guide.md" ||
           file === "docs/syntax.md" ||
           file.startsWith("dist/"),
       },

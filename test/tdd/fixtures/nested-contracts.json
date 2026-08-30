@@ -166,7 +166,7 @@
       }
     },
     "terminalOutput": {
-      "tree": "Overall completion: 75%\n\n└─ [75%] Rel...\n   ├─ [50%] Pha...\n   │  ├─ [100%] Com...\n   │  └─ [0%] Pen...\n   └─ [100%] Dir...\n",
+      "tree": "Overall completion: 75%\n\\\n\u2514\u2500 [75%] Rel...\n   \u251c\u2500 [50%] Pha...\n   \u2502  \u251c\u2500 [100%] Com...\n   \u2502  \u2514\u2500 [0%] Pen...\n   \u2514\u2500 [100%] Dir...\n",
       "details": "Overall completion: 75%\n\nOverall statistics:\n- Root nodes: 1\n- Explicit checkboxes: 3\n- Implicit nodes: 2\n- Statistical nodes: 5\n- Equivalent completed: 0.75 / 1\n\nLevel statistics:\n- Level 1: 1 node, 0 leaf nodes, 1 branch node\n- Level 2: 2 nodes, 1 leaf node, 1 branch node\n- Level 3: 2 nodes, 2 leaf nodes, 0 branch nodes\n\nRoot statistics:\n- Rel...: 75%, 2 child nodes\n"
     }
   }

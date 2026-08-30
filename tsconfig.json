@@ -6,9 +6,12 @@
     "baseUrl": ".",
     "paths": {
       "howdone": ["src/core/index.ts"],
+      "howdone/std": ["src/core/std.ts"],
       "howdone/application": ["src/application/index.ts"]
     },
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "forceConsistentCasingInFileNames": true,

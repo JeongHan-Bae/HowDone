@@ -6,48 +6,129 @@ import {
   resolveDisplayOptions,
   runMarkdownPipeline,
 } from "howdone";
+import type {
+  InfoCommand,
+  InfoDocument,
+  TerminalOutput,
+  TerminalOutputOptions,
+  TerminalOutputTarget,
+} from "howdone";
 import {
   parseArguments,
   ArgumentError,
 } from "./cli/args.ts";
 import type { ParsedArguments } from "./cli/args.ts";
-import {
-  HELP_SECTIONS,
-  renderDependenciesText,
-  renderHelpText,
-} from "./cli/help.ts";
 import type { CliDependencies, CliIO } from "./types.ts";
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-function printError(io: CliIO, message: string): void {
-  io.stderr.write(`howdone: error: ${message}\n`);
+async function printTerminalOutput<
+  TOutput extends TerminalOutput,
+  TDocument extends InfoDocument,
+>(
+  content: TOutput,
+  target: TerminalOutputTarget,
+  noColor: boolean,
+  pager: "auto" | "never",
+  io: CliIO,
+  dependencies: CliDependencies<TOutput, TDocument>,
+): Promise<void> {
+  const options: TerminalOutputOptions = {
+    color: noColor ? "never" : "auto",
+    pager,
+    target,
+  };
+  if (dependencies.terminalRenderer.print !== undefined) {
+    await dependencies.terminalRenderer.print(content, options);
+    return;
+  }
+  const destination = target === "stdout" ? io.stdout : io.stderr;
+  content.writeTo(destination);
 }
 
-function emitWarning(
+function renderInfoDocumentOutput<
+  TOutput extends TerminalOutput,
+  TDocument extends InfoDocument,
+>(
+  document: TDocument,
+  target: TerminalOutputTarget,
+  noColor: boolean,
+  dependencies: CliDependencies<TOutput, TDocument>,
+): TOutput {
+  return dependencies.terminalRenderer.renderDocument(document, {
+    color: noColor ? "never" : "auto",
+    target,
+  });
+}
+
+function infoCommandFor(argumentsValue: ParsedArguments): InfoCommand | undefined {
+  if (argumentsValue.help) return "help";
+  if (argumentsValue.version) return "version";
+  if (argumentsValue.dependencies) return "dependencies";
+  return undefined;
+}
+
+async function emitDiagnostic<
+  TOutput extends TerminalOutput,
+  TDocument extends InfoDocument,
+>(
+  message: string,
+  semantic: "warning" | "error",
+  noColor: boolean,
+  io: CliIO,
+  dependencies: CliDependencies<TOutput, TDocument>,
+): Promise<void> {
+  const output = semantic === "warning"
+    ? dependencies.terminalRenderer.renderWarning({ message })
+    : dependencies.terminalRenderer.renderError({ message });
+  await printTerminalOutput(output, "stderr", noColor, "never", io, dependencies);
+}
+
+async function emitWarning<
+  TOutput extends TerminalOutput,
+  TDocument extends InfoDocument,
+>(
   message: string,
   silent: boolean,
-  dependencies: CliDependencies,
-): void {
-  if (!silent) dependencies.warning.warn(message);
+  noColor: boolean,
+  io: CliIO,
+  dependencies: CliDependencies<TOutput, TDocument>,
+): Promise<void> {
+  if (silent) return;
+  await emitDiagnostic(
+    message,
+    "warning",
+    noColor,
+    io,
+    dependencies,
+  );
 }
 
-function warnOrThrow(
+async function warnOrThrow<
+  TOutput extends TerminalOutput,
+  TDocument extends InfoDocument,
+>(
   message: string,
   strict: boolean,
   silent: boolean,
-  dependencies: CliDependencies,
-): void {
+  noColor: boolean,
+  io: CliIO,
+  dependencies: CliDependencies<TOutput, TDocument>,
+): Promise<void> {
   if (strict) throw new Error(message);
-  emitWarning(message, silent, dependencies);
+  await emitWarning(message, silent, noColor, io, dependencies);
 }
 
-function warnForJsonFormatting(
+async function warnForJsonFormatting<
+  TOutput extends TerminalOutput,
+  TDocument extends InfoDocument,
+>(
   argumentsValue: ParsedArguments,
-  dependencies: CliDependencies,
-): void {
+  io: CliIO,
+  dependencies: CliDependencies<TOutput, TDocument>,
+): Promise<void> {
   if (argumentsValue.mode !== "json") return;
   const ignoredOptions: string[] = [];
   if (argumentsValue.formatExplicit) {
@@ -60,58 +141,72 @@ function warnForJsonFormatting(
     ignoredOptions.push("--show-trailing-zeros/--no-trailing-zeros");
   }
   if (ignoredOptions.length === 0) return;
-  warnOrThrow(
+  await warnOrThrow(
     `The following options have no effect with --json because JSON contains raw numeric fields and complete labels: ${ignoredOptions.join(", ")}.`,
     argumentsValue.strict,
     argumentsValue.silent,
+    argumentsValue.noColor,
+    io,
     dependencies,
   );
 }
 
-export async function run(
+export async function run<
+  TOutput extends TerminalOutput,
+  TDocument extends InfoDocument,
+>(
   argv: readonly string[],
   io: CliIO,
-  dependencies: CliDependencies,
+  dependencies: CliDependencies<TOutput, TDocument>,
 ): Promise<number> {
   let argumentsValue;
   try {
     argumentsValue = parseArguments(argv);
   } catch (error) {
-    if (error instanceof ArgumentError) {
-      printError(io, error.message);
-      io.stderr.write("Run `howdone --help` for usage.\n");
-      return 1;
-    }
-    printError(io, errorMessage(error));
-    return 1;
-  }
-
-  if (argumentsValue.help) {
-    io.stdout.write(
-      renderHelpText(
-        HELP_SECTIONS,
-        dependencies.runtimeDependencies,
-        dependencies.syntaxReferencePath,
-      ),
+    const message = error instanceof ArgumentError
+      ? `${errorMessage(error)}\nRun \`howdone --help\` for usage.`
+      : errorMessage(error);
+    await emitDiagnostic(
+      message,
+      "error",
+      argv.includes("--no-color"),
+      io,
+      dependencies,
     );
-    return 0;
-  }
-  if (argumentsValue.version) {
-    io.stdout.write(`${dependencies.version}\n`);
-    return 0;
-  }
-  if (argumentsValue.dependencies) {
-    io.stdout.write(renderDependenciesText(dependencies.runtimeDependencies));
-    return 0;
-  }
-  if (argumentsValue.path === undefined) {
-    printError(io, "a Markdown file path is required");
-    io.stderr.write("Run `howdone --help` for usage.\n");
     return 1;
   }
 
   try {
-    warnForJsonFormatting(argumentsValue, dependencies);
+    const infoCommand = infoCommandFor(argumentsValue);
+    if (infoCommand !== undefined) {
+      const document = renderInfoDocumentOutput(
+        dependencies.infoPort.execute(infoCommand),
+        "stdout",
+        argumentsValue.noColor,
+        dependencies,
+      );
+      await printTerminalOutput(
+        document,
+        "stdout",
+        argumentsValue.noColor,
+        argumentsValue.noPager ? "never" : "auto",
+        io,
+        dependencies,
+      );
+      return 0;
+    }
+    if (argumentsValue.path === undefined) {
+      await emitDiagnostic(
+        "a Markdown file path is required",
+        "error",
+        argumentsValue.noColor,
+        io,
+        dependencies,
+      );
+      return 1;
+    }
+
+    await warnForJsonFormatting(argumentsValue, io, dependencies);
     const sourceText = await dependencies.fileReader.read(argumentsValue.path);
     const sourceDocument = runMarkdownPipeline(
       sourceText,
@@ -132,20 +227,13 @@ export async function run(
     );
     let mergeFrontmatter = argumentsValue.mergeFrontmatter;
     let frontmatterWeight = argumentsValue.frontmatterWeight;
-    const weightInput = argumentsValue.frontmatterWeightInput;
-    if (weightInput !== undefined && frontmatterWeight === undefined) {
-      warnOrThrow(
-        `--frontmatter-weight is illegal; expected a decimal strictly between 0 and 1, received: ${weightInput}. The value was ignored.`,
-        argumentsValue.strict,
-        argumentsValue.silent,
-        dependencies,
-      );
-      frontmatterWeight = undefined;
-    } else if (weightInput !== undefined && !mergeFrontmatter) {
-      warnOrThrow(
+    if (frontmatterWeight !== undefined && !mergeFrontmatter) {
+      await warnOrThrow(
         "--frontmatter-weight is invalid without --merge-frontmatter. The value was ignored.",
         argumentsValue.strict,
         argumentsValue.silent,
+        argumentsValue.noColor,
+        io,
         dependencies,
       );
       mergeFrontmatter = false;
@@ -162,17 +250,21 @@ export async function run(
       const weightMessage = frontmatterWeight !== undefined
         ? " --frontmatter-weight is also invalid unless both frontmatter and Markdown have checklist roots."
         : "";
-      warnOrThrow(
+      await warnOrThrow(
         `--merge-frontmatter is invalid because at least two source components are required.${weightMessage} The merge was ignored.`,
         argumentsValue.strict,
         argumentsValue.silent,
+        argumentsValue.noColor,
+        io,
         dependencies,
       );
     } else if (reportBuild.weightIgnored) {
-      warnOrThrow(
+      await warnOrThrow(
         "--frontmatter-weight is invalid unless both frontmatter and Markdown have checklist roots. The value was ignored.",
         argumentsValue.strict,
         argumentsValue.silent,
+        argumentsValue.noColor,
+        io,
         dependencies,
       );
     }
@@ -190,21 +282,45 @@ export async function run(
         argumentsValue.maxLabelClusters !== undefined
           ? options
           : undefined;
-      io.stdout.write(
-        dependencies.jsonRenderer.render(reportBuild.report, jsonOptions),
+      const jsonOutput = dependencies.jsonRenderer.render(
+        reportBuild.report,
+        jsonOptions,
       );
+      if (dependencies.jsonRenderer.writeWithTerminalFeatures) {
+        await dependencies.jsonRenderer.writeWithTerminalFeatures(
+          jsonOutput,
+          {
+            color: argumentsValue.noColor ? "never" : "auto",
+            pager: argumentsValue.noPager ? "never" : "auto",
+          },
+        );
+      } else {
+        io.stdout.write(`${JSON.stringify(jsonOutput, null, 2)}\n`);
+      }
     } else {
-      io.stdout.write(
-        dependencies.terminalRenderer.render(
-          argumentsValue.mode,
-          reportBuild.report,
-          options,
-        ),
+      const terminalOutput = dependencies.terminalRenderer.render(
+        argumentsValue.mode,
+        reportBuild.report,
+        options,
+      );
+      await printTerminalOutput(
+        terminalOutput,
+        "stdout",
+        argumentsValue.noColor,
+        argumentsValue.noPager ? "never" : "auto",
+        io,
+        dependencies,
       );
     }
     return 0;
   } catch (error) {
-    printError(io, errorMessage(error));
+    await emitDiagnostic(
+      errorMessage(error),
+      "error",
+      argumentsValue.noColor,
+      io,
+      dependencies,
+    );
     return 1;
   }
 }

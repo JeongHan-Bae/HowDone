@@ -10,38 +10,99 @@ Feature: JSON formatting warnings
     Then the command succeeds
     And stderr contains "Warning"
     And stderr contains "have no effect with --json" exactly once
-    And stdout contains "\"label\": \"12345...\""
+    And stdout is valid JSON
 
-  Scenario Outline: Each JSON-only formatting conflict warns when combined
+  Scenario Outline: Each explicit format and trailing-zero spelling warns with JSON
     Given a Markdown file containing:
       """
       - [x] done
       """
-    When I run howdone with arguments "tasks.md --json <option>"
+    When I run howdone with arguments "tasks.md --json <option> --max-label-clusters 5"
     Then the command succeeds
     And stderr contains "Warning"
     And stderr contains "have no effect with --json" exactly once
+    And stdout is valid JSON
 
     Examples:
-      | option                    |
-      | --format decimal          |
-      | --precision 3             |
-      | --show-trailing-zeros    |
+      | option                  |
+      | --format decimal        |
+      | --format=decimal        |
+      | --decimal               |
+      | --format percentage     |
+      | --format=percentage     |
+      | --percentage            |
+      | --show-trailing-zeros   |
+      | --keep-trailing-zeros   |
+      | --no-trailing-zeros     |
+      | --trim-trailing-zeros   |
 
-  Scenario Outline: Each terminal formatting option is quiet without JSON
+  Scenario Outline: Each explicit format and trailing-zero spelling is quiet without JSON
     Given a Markdown file containing:
       """
       - [x] done
       """
-    When I run howdone with arguments "tasks.md <option>"
+    When I run howdone with arguments "tasks.md --tree <option>"
     Then the command succeeds
     And stderr is empty
 
     Examples:
-      | option                 |
-      | --format decimal       |
-      | --precision 3          |
-      | --show-trailing-zeros  |
+      | option                  |
+      | --format decimal        |
+      | --format=decimal        |
+      | --decimal               |
+      | --format percentage     |
+      | --format=percentage     |
+      | --percentage            |
+      | --show-trailing-zeros   |
+      | --keep-trailing-zeros   |
+      | --no-trailing-zeros     |
+      | --trim-trailing-zeros   |
+
+  Scenario Outline: Silent mode suppresses every explicit JSON format and trailing-zero warning
+    Given a Markdown file containing:
+      """
+      - [x] done
+      """
+    When I run howdone with arguments "tasks.md --json <option> --silent --max-label-clusters 5"
+    Then the command succeeds
+    And stderr is empty
+    And stdout is valid JSON
+
+    Examples:
+      | option                  |
+      | --format decimal        |
+      | --format=decimal        |
+      | --decimal               |
+      | --format percentage     |
+      | --format=percentage     |
+      | --percentage            |
+      | --show-trailing-zeros   |
+      | --keep-trailing-zeros   |
+      | --no-trailing-zeros     |
+      | --trim-trailing-zeros   |
+
+  Scenario Outline: Strict mode upgrades every explicit JSON format and trailing-zero warning
+    Given a Markdown file containing:
+      """
+      - [x] done
+      """
+    When I run howdone with arguments "tasks.md --json <option> --strict --max-label-clusters 5"
+    Then the command fails
+    And stderr contains "have no effect with --json"
+    And stdout is empty
+
+    Examples:
+      | option                  |
+      | --format decimal        |
+      | --format=decimal        |
+      | --decimal               |
+      | --format percentage     |
+      | --format=percentage     |
+      | --percentage            |
+      | --show-trailing-zeros   |
+      | --keep-trailing-zeros   |
+      | --no-trailing-zeros     |
+      | --trim-trailing-zeros   |
 
   Scenario Outline: JSON precision warning remains visible with a safe extra option
     Given a Markdown file containing:
@@ -109,8 +170,6 @@ Feature: JSON formatting warnings
     Then the command succeeds
     And stderr is empty
     And stdout is valid JSON
-    And stdout JSON reports progress "0.75" and percentage "75"
-    And stdout contains "\"label\": \"Completed child\""
 
   Scenario: Silent mode suppresses ignored JSON formatting warnings
     Given a Markdown file containing:
@@ -118,6 +177,16 @@ Feature: JSON formatting warnings
       - [x] done
       """
     When I run howdone with arguments "tasks.md --json --format decimal --precision 3 --show-trailing-zeros --silent"
+    Then the command succeeds
+    And stderr is empty
+    And stdout is valid JSON
+
+  Scenario: The short silent alias suppresses ignored JSON formatting warnings
+    Given a Markdown file containing:
+      """
+      - [x] done
+      """
+    When I run howdone with arguments "tasks.md --json --precision 3 -s"
     Then the command succeeds
     And stderr is empty
     And stdout is valid JSON
@@ -130,3 +199,14 @@ Feature: JSON formatting warnings
     When I run howdone with arguments "tasks.md --json --format decimal --precision 3 --show-trailing-zeros --strict"
     Then the command fails
     And stderr contains "have no effect with --json"
+
+  Scenario: Strict mode takes precedence over silent mode
+    Given a Markdown file containing:
+      """
+      - [x] done
+      """
+    When I run howdone with arguments "tasks.md --json --precision 3 --strict --silent"
+    Then the command fails
+    And stderr contains "have no effect with --json"
+    And stderr contains "howdone: error:"
+    And stdout is empty

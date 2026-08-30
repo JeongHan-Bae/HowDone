@@ -1,0 +1,5205 @@
+{
+  "cases": [
+    {
+      "id": "json-001",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--precision",
+        "2"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-002",
+      "sourceFixture": "frontmatter:yaml-checklist-only",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-002"
+    },
+    {
+      "id": "json-003",
+      "sourceFixture": "frontmatter:yaml-nested-checklist",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--format",
+        "decimal",
+        "--precision",
+        "3",
+        "--show-trailing-zeros",
+        "--no-truncate"
+      ],
+      "output": "json-003"
+    },
+    {
+      "id": "json-004",
+      "sourceFixture": "frontmatter:yaml-checklist-with-body",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-004"
+    },
+    {
+      "id": "json-005",
+      "sourceFixture": "frontmatter:yaml-toml-multiple-with-body",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-005"
+    },
+    {
+      "id": "json-006",
+      "sourceFixture": "frontmatter:yaml-toml-toml-yaml-with-body",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-006"
+    },
+    {
+      "id": "json-007",
+      "sourceFixture": "frontmatter:yaml-toml-toml-yaml-with-body",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--no-truncate"
+      ],
+      "output": "json-007"
+    },
+    {
+      "id": "json-008",
+      "sourceFixture": "frontmatter:yaml-yaml-toml-only",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-008"
+    },
+    {
+      "id": "json-009",
+      "sourceFixture": "frontmatter:yaml-yaml-with-body",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--no-truncate"
+      ],
+      "output": "json-009"
+    },
+    {
+      "id": "json-010",
+      "sourceFixture": "frontmatter:toml-yaml-with-body",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--no-truncate"
+      ],
+      "output": "json-010"
+    },
+    {
+      "id": "json-011",
+      "sourceFixture": "frontmatter:yaml-yaml-with-body",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--frontmatter-weight",
+        "0.5",
+        "--no-truncate"
+      ],
+      "output": "json-011"
+    },
+    {
+      "id": "json-012",
+      "sourceFixture": "frontmatter:toml-yaml-with-body",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--frontmatter-weight",
+        "0.5",
+        "--no-truncate"
+      ],
+      "output": "json-012"
+    },
+    {
+      "id": "json-013",
+      "sourceFixture": "frontmatter:yaml-toml-multiple-with-body",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--frontmatter-weight",
+        "0.5",
+        "--no-truncate"
+      ],
+      "output": "json-013"
+    },
+    {
+      "id": "json-014",
+      "sourceFixture": "frontmatter:yaml-toml-multiple-only",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--no-truncate"
+      ],
+      "output": "json-014"
+    },
+    {
+      "id": "json-015",
+      "sourceFixture": "frontmatter:yaml-toml-multiple-only",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--frontmatter-weight",
+        "0.5",
+        "--no-truncate"
+      ],
+      "output": "json-014"
+    },
+    {
+      "id": "json-016",
+      "sourceFixture": "frontmatter:yaml-toml-multiple-only",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--frontmatter-weight",
+        "0.5",
+        "--silent",
+        "--no-truncate"
+      ],
+      "output": "json-014"
+    },
+    {
+      "id": "json-017",
+      "sourceFixture": "frontmatter:yaml-only",
+      "arguments": [
+        "--json",
+        "--no-truncate",
+        "--format",
+        "decimal",
+        "--precision",
+        "3",
+        "--show-trailing-zeros"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-018",
+      "sourceFixture": "frontmatter:toml-with-body",
+      "arguments": [
+        "--json",
+        "--max-label-clusters",
+        "5",
+        "--format",
+        "decimal",
+        "--precision",
+        "3",
+        "--show-trailing-zeros"
+      ],
+      "output": "json-016"
+    },
+    {
+      "id": "json-019",
+      "sourceFixture": "layout:empty-document",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-020",
+      "sourceFixture": "layout:body-only",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-017"
+    },
+    {
+      "id": "json-021",
+      "sourceFixture": "layout:yaml-only",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-022",
+      "sourceFixture": "layout:toml-only",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-023",
+      "sourceFixture": "layout:yaml-with-body",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-018"
+    },
+    {
+      "id": "json-024",
+      "sourceFixture": "layout:toml-with-body",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-019"
+    },
+    {
+      "id": "json-025",
+      "sourceFixture": "layout:yaml-yaml-frontmatter-only",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-020"
+    },
+    {
+      "id": "json-026",
+      "sourceFixture": "layout:yaml-toml-frontmatter-only",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-021"
+    },
+    {
+      "id": "json-027",
+      "sourceFixture": "layout:toml-yaml-frontmatter-only",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-022"
+    },
+    {
+      "id": "json-028",
+      "sourceFixture": "layout:toml-toml-frontmatter-only",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-023"
+    },
+    {
+      "id": "json-029",
+      "sourceFixture": "layout:yaml-toml-yaml-with-body",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-024"
+    },
+    {
+      "id": "json-030",
+      "sourceFixture": "layout:toml-yaml-toml-with-body",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-025"
+    },
+    {
+      "id": "json-031",
+      "sourceFixture": "frontmatter:yaml-mixed-object-is-not-checklist",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-032",
+      "sourceFixture": "frontmatter:yaml-named-boolean-sequence",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-026"
+    },
+    {
+      "id": "json-033",
+      "sourceFixture": "frontmatter:yaml-named-container-with-unnamed-sequence",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-027"
+    },
+    {
+      "id": "json-034",
+      "sourceFixture": "frontmatter:toml-named-container-with-unnamed-sequence",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-028"
+    },
+    {
+      "id": "json-035",
+      "sourceFixture": "frontmatter:yaml-mixed-named-and-unnamed-sequence",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-036",
+      "sourceFixture": "frontmatter:yaml-root-sequence-is-not-checklist",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-037",
+      "sourceFixture": "frontmatter:yaml-root-boolean-map-is-not-checklist",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-038",
+      "sourceFixture": "frontmatter:toml-root-boolean-map-is-not-checklist",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-039",
+      "sourceFixture": "frontmatter:yaml-named-boolean-sequence-with-invalid-leaf",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-040",
+      "sourceFixture": "frontmatter:yaml-named-boolean-sequence-with-empty-nested-list",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-041",
+      "sourceFixture": "frontmatter:toml-named-boolean-sequence-with-invalid-leaf",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-042",
+      "sourceFixture": "frontmatter:yaml-single-named-record",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-029"
+    },
+    {
+      "id": "json-043",
+      "sourceFixture": "frontmatter:yaml-named-checklist",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-030"
+    },
+    {
+      "id": "json-044",
+      "sourceFixture": "frontmatter:toml-named-checklist",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-030"
+    },
+    {
+      "id": "json-045",
+      "sourceFixture": "frontmatter:yaml-root-named-record",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-031"
+    },
+    {
+      "id": "json-046",
+      "sourceFixture": "frontmatter:toml-root-named-record",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-031"
+    },
+    {
+      "id": "json-047",
+      "sourceFixture": "frontmatter:yaml-named-record-with-extra-fields",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-032"
+    },
+    {
+      "id": "json-048",
+      "sourceFixture": "frontmatter:toml-named-record-with-extra-fields",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-033"
+    },
+    {
+      "id": "json-049",
+      "source": "---\nrelease_item:\n  name: Build documentation\n  done: true\n  details:\n    child: false\n---\n",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-032"
+    },
+    {
+      "id": "json-050",
+      "source": "+++\n[release_item]\nname = \"Build documentation\"\ndone = true\n\n[release_item.details]\nchild = false\n+++\n",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-032"
+    },
+    {
+      "id": "json-051",
+      "sourceFixture": "frontmatter:toml-named-checklist-with-invalid-record",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-052",
+      "sourceFixture": "frontmatter:yaml-mixed-root-keeps-valid-named-candidates",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-034"
+    },
+    {
+      "id": "json-053",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-054",
+      "sourceFixture": "display:unicode-grapheme-label",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-035"
+    },
+    {
+      "id": "json-055",
+      "source": "- [x] 123456789012345\n",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-036"
+    },
+    {
+      "id": "json-056",
+      "source": "- [x] 123456789012345\n",
+      "arguments": [
+        "--json",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-037"
+    },
+    {
+      "id": "json-057",
+      "sourceFixture": "nested:nested-contract",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-038"
+    },
+    {
+      "id": "json-058",
+      "sourceFixture": "nested:nested-contract",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-038"
+    },
+    {
+      "id": "json-059",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--no-color"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-060",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--no-pager"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-061",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--no-color",
+        "--no-pager"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-062",
+      "sourceFixture": "nested:nested-contract",
+      "arguments": [
+        "--json",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-039"
+    },
+    {
+      "id": "json-063",
+      "sourceFixture": "layout:yaml-shaped-block-after-body-is-markdown",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-017"
+    },
+    {
+      "id": "json-064",
+      "sourceFixture": "layout:toml-shaped-block-after-body-is-markdown",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-017"
+    },
+    {
+      "id": "json-065",
+      "source": "- [X] complete\n- [ ] pending\n",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-040"
+    },
+    {
+      "id": "json-066",
+      "source": "- [-] unsupported\n- [ x] wrong spacing\n- [x] valid\n",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-041"
+    },
+    {
+      "id": "json-067",
+      "source": "- [x] valid\n\nParagraph\n\n    - [x] indented code\n\n<div>\n- [x] html text\n</div>\n\n<!--\n- [x] comment text\n-->\n",
+      "arguments": [
+        "--json",
+        "--no-truncate"
+      ],
+      "output": "json-041"
+    },
+    {
+      "id": "json-068",
+      "source": "# Text\n\nA quoted string: \"- [x] ordinary text\"\n\n> - [x] quoted text\n\n| state | value |\n| --- | --- |\n| build | [x] |\n\n~~~markdown\n- [x] code text\n~~~\n",
+      "arguments": [
+        "--json"
+      ],
+      "output": "json-015"
+    },
+    {
+      "id": "json-069",
+      "sourceFixture": "native:relative",
+      "arguments": [
+        "--json",
+        "--format=percentage",
+        "--precision",
+        "2",
+        "--show-trailing-zeros",
+        "--max-label-clusters=10"
+      ],
+      "output": "json-042"
+    },
+    {
+      "id": "json-070",
+      "sourceFixture": "native:relative-space",
+      "arguments": [
+        "--json",
+        "--format=percentage",
+        "--precision",
+        "2",
+        "--show-trailing-zeros",
+        "--max-label-clusters=10"
+      ],
+      "output": "json-042"
+    },
+    {
+      "id": "json-071",
+      "sourceFixture": "native:absolute",
+      "arguments": [
+        "--json",
+        "--format",
+        "decimal",
+        "--precision=3",
+        "--keep-trailing-zeros",
+        "--no-truncate"
+      ],
+      "output": "json-042"
+    },
+    {
+      "id": "json-072",
+      "sourceFixture": "native:absolute-space",
+      "arguments": [
+        "--json",
+        "--format",
+        "decimal",
+        "--precision=3",
+        "--keep-trailing-zeros",
+        "--no-truncate"
+      ],
+      "output": "json-042"
+    },
+    {
+      "id": "json-073",
+      "sourceFixture": "frontmatter:yaml-checklist-with-body",
+      "arguments": [
+        "--json",
+        "--frontmatter-weight",
+        "0.5"
+      ],
+      "output": "json-004"
+    },
+    {
+      "id": "json-074",
+      "sourceFixture": "frontmatter:yaml-checklist-with-body",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter"
+      ],
+      "output": "json-043"
+    },
+    {
+      "id": "json-075",
+      "sourceFixture": "frontmatter:yaml-checklist-with-body",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--frontmatter-weight=0.5"
+      ],
+      "output": "json-043"
+    },
+    {
+      "id": "json-076",
+      "sourceFixture": "frontmatter:yaml-checklist-with-body",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--frontmatter-weight",
+        "0.5",
+        "--format",
+        "decimal",
+        "--precision",
+        "4",
+        "--show-trailing-zeros"
+      ],
+      "output": "json-043"
+    },
+    {
+      "id": "json-077",
+      "sourceFixture": "frontmatter:yaml-checklist-only",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter",
+        "--frontmatter-weight",
+        "0.5"
+      ],
+      "output": "json-002"
+    },
+    {
+      "id": "json-078",
+      "sourceFixture": "frontmatter:body-only",
+      "arguments": [
+        "--json",
+        "--merge-frontmatter"
+      ],
+      "output": "json-044"
+    },
+    {
+      "id": "json-079",
+      "source": "- [x] 123456789012345\n",
+      "arguments": [
+        "--json",
+        "--format",
+        "decimal",
+        "--precision",
+        "3",
+        "--show-trailing-zeros",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-037"
+    },
+    {
+      "id": "json-080",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--format",
+        "decimal",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-081",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--format=decimal",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-082",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--decimal",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-083",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--format",
+        "percentage",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-084",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--format=percentage",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-085",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--percentage",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-086",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--show-trailing-zeros",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-087",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--keep-trailing-zeros",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-088",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--no-trailing-zeros",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-089",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--trim-trailing-zeros",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-090",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--format",
+        "decimal",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-091",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--format=decimal",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-092",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--decimal",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-093",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--format",
+        "percentage",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-094",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--format=percentage",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-095",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--percentage",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-096",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--show-trailing-zeros",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-097",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--keep-trailing-zeros",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-098",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--no-trailing-zeros",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-099",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--trim-trailing-zeros",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-100",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--precision",
+        "3"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-101",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--precision",
+        "3",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-102",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--precision",
+        "3",
+        "--silent"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-103",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--precision",
+        "3",
+        "--silent",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-104",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--max-label-clusters",
+        "5"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-105",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--format",
+        "decimal",
+        "--precision",
+        "3",
+        "--show-trailing-zeros",
+        "--silent"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-106",
+      "source": "- [x] done\n",
+      "arguments": [
+        "--json",
+        "--precision",
+        "3",
+        "-s"
+      ],
+      "output": "json-001"
+    },
+    {
+      "id": "json-107",
+      "source": "- [x] complete\n",
+      "arguments": [
+        "--json",
+        "--",
+        "$input-path"
+      ],
+      "output": "json-045"
+    }
+  ],
+  "outputs": {
+    "json-001": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "done",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-002": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 1,
+        "nodeCount": 4,
+        "completedEquivalent": 0.3333333333333333,
+        "progress": 0.3333333333333333,
+        "percentage": 33.33333333333333,
+        "roots": [
+          {
+            "label": "checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              },
+              {
+                "label": "publish",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.3333333333333333,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-003": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 1,
+        "nodeCount": 4,
+        "completedEquivalent": 1.5,
+        "progress": 0.75,
+        "percentage": 75,
+        "roots": [
+          {
+            "label": "release",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          },
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "merged",
+      "frontmatterWeight": 0.5,
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "release"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                },
+                {
+                  "label": "test",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 1,
+            "nodeCount": 3,
+            "completedEquivalent": 0.5,
+            "progress": 0.5,
+            "percentage": 50,
+            "roots": [
+              {
+                "label": "release",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  },
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0.5,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-004": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 4,
+        "implicitNodeCount": 1,
+        "nodeCount": 5,
+        "completedEquivalent": 1.3333333333333333,
+        "progress": 0.6666666666666666,
+        "percentage": 66.66666666666666,
+        "roots": [
+          {
+            "label": "checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              },
+              {
+                "label": "publish",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.3333333333333333,
+            "depth": 0
+          },
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "checks"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                },
+                {
+                  "label": "test",
+                  "checked": false
+                },
+                {
+                  "label": "publish",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 3,
+            "implicitNodeCount": 1,
+            "nodeCount": 4,
+            "completedEquivalent": 0.3333333333333333,
+            "progress": 0.3333333333333333,
+            "percentage": 33.33333333333333,
+            "roots": [
+              {
+                "label": "checks",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  },
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  },
+                  {
+                    "label": "publish",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0.3333333333333333,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-005": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 1,
+        "progress": 0.3333333333333333,
+        "percentage": 33.33333333333333,
+        "roots": [
+          {
+            "label": "checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "Publish",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "checks"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "checks",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "checks"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "checks",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "Publish",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-006": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 6,
+        "explicitCheckboxCount": 6,
+        "implicitNodeCount": 5,
+        "nodeCount": 11,
+        "completedEquivalent": 3,
+        "progress": 0.5,
+        "percentage": 50,
+        "roots": [
+          {
+            "label": "yaml_first",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "toml_first",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "toml_second",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "publish",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "toml_third",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "ship",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "yaml_last",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "verify",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "yaml_first"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "yaml_first",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "toml_first"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": true
+                }
+              ]
+            },
+            {
+              "type": "checklist",
+              "path": [
+                "toml_second"
+              ],
+              "entries": [
+                {
+                  "label": "publish",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 2,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 2,
+            "nodeCount": 4,
+            "completedEquivalent": 1,
+            "progress": 0.5,
+            "percentage": 50,
+            "roots": [
+              {
+                "label": "toml_first",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              },
+              {
+                "label": "toml_second",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "publish",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "toml_third"
+              ],
+              "entries": [
+                {
+                  "label": "ship",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "toml_third",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "ship",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "yaml_last"
+              ],
+              "entries": [
+                {
+                  "label": "verify",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "yaml_last",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "verify",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-007": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 6,
+        "explicitCheckboxCount": 6,
+        "implicitNodeCount": 5,
+        "nodeCount": 11,
+        "completedEquivalent": 3,
+        "progress": 0.5,
+        "percentage": 50,
+        "roots": [
+          {
+            "label": "yaml_first",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "toml_first",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "toml_second",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "publish",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "toml_third",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "ship",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "yaml_last",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "verify",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "merged",
+      "frontmatterWeight": 0.8333333333333334,
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "yaml_first"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "yaml_first",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "toml_first"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": true
+                }
+              ]
+            },
+            {
+              "type": "checklist",
+              "path": [
+                "toml_second"
+              ],
+              "entries": [
+                {
+                  "label": "publish",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 2,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 2,
+            "nodeCount": 4,
+            "completedEquivalent": 1,
+            "progress": 0.5,
+            "percentage": 50,
+            "roots": [
+              {
+                "label": "toml_first",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              },
+              {
+                "label": "toml_second",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "publish",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "toml_third"
+              ],
+              "entries": [
+                {
+                  "label": "ship",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "toml_third",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "ship",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "yaml_last"
+              ],
+              "entries": [
+                {
+                  "label": "verify",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "yaml_last",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "verify",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-008": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 3,
+        "nodeCount": 6,
+        "completedEquivalent": 2,
+        "progress": 0.6666666666666666,
+        "percentage": 66.66666666666666,
+        "roots": [
+          {
+            "label": "first",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "second",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "third",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "publish",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "first"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "first",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "second"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "second",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "third"
+              ],
+              "entries": [
+                {
+                  "label": "publish",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "third",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "publish",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "json-009": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 2,
+        "progress": 0.6666666666666666,
+        "percentage": 66.66666666666666,
+        "roots": [
+          {
+            "label": "first",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "second",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "merged",
+      "frontmatterWeight": 0.6666666666666666,
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "first"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "first",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "second"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "second",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-010": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 1,
+        "progress": 0.3333333333333333,
+        "percentage": 33.33333333333333,
+        "roots": [
+          {
+            "label": "first",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "second",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "merged",
+      "frontmatterWeight": 0.6666666666666666,
+      "frontmatter": [
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "first"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "first",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "second"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "second",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-011": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 2.25,
+        "progress": 0.75,
+        "percentage": 75,
+        "roots": [
+          {
+            "label": "first",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "second",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "merged",
+      "frontmatterWeight": 0.5,
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "first"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "first",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "second"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "second",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-012": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 0.75,
+        "progress": 0.25,
+        "percentage": 25,
+        "roots": [
+          {
+            "label": "first",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "second",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "merged",
+      "frontmatterWeight": 0.5,
+      "frontmatter": [
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "first"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "first",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "second"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "second",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-013": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 0.75,
+        "progress": 0.25,
+        "percentage": 25,
+        "roots": [
+          {
+            "label": "checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          },
+          {
+            "label": "Publish",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "merged",
+      "frontmatterWeight": 0.5,
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "checks"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "checks",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "checks"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "checks",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "Publish",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-014": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 2,
+        "nodeCount": 4,
+        "completedEquivalent": 1,
+        "progress": 0.5,
+        "percentage": 50,
+        "roots": [
+          {
+            "label": "checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "merged",
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "checks"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "roots": [
+              {
+                "label": "checks",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  }
+                ],
+                "progress": 1,
+                "depth": 0
+              }
+            ]
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "checks"
+              ],
+              "entries": [
+                {
+                  "label": "test",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 1,
+            "nodeCount": 2,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": [
+              {
+                "label": "checks",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "json-015": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": []
+      }
+    },
+    "json-016": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 1,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50,
+        "roots": [
+          {
+            "label": "Relea...",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Compl...",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "Pendi...",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "toml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 1,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50,
+        "roots": [
+          {
+            "label": "Relea...",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Compl...",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "Pendi...",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-017": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-018": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-019": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "toml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-020": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": []
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        }
+      ]
+    },
+    "json-021": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": []
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        }
+      ]
+    },
+    "json-022": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": []
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "toml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        }
+      ]
+    },
+    "json-023": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 0,
+        "explicitCheckboxCount": 0,
+        "implicitNodeCount": 0,
+        "nodeCount": 0,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": []
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "toml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        }
+      ]
+    },
+    "json-024": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-025": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "separate",
+      "frontmatter": [
+        {
+          "format": "toml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        },
+        {
+          "format": "yaml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        },
+        {
+          "format": "toml",
+          "checklists": [],
+          "progress": {
+            "rootCount": 0,
+            "explicitCheckboxCount": 0,
+            "implicitNodeCount": 0,
+            "nodeCount": 0,
+            "completedEquivalent": 0,
+            "progress": 0,
+            "percentage": 0,
+            "roots": []
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 0,
+        "progress": 0,
+        "percentage": 0,
+        "roots": [
+          {
+            "label": "body",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-026": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 5,
+        "implicitNodeCount": 2,
+        "nodeCount": 7,
+        "completedEquivalent": 0.625,
+        "progress": 0.625,
+        "percentage": 62.5,
+        "roots": [
+          {
+            "label": "release_states",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "0",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "1",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              },
+              {
+                "label": "2",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "2.0",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  },
+                  {
+                    "label": "2.1",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 2
+                  }
+                ],
+                "progress": 0.5,
+                "depth": 1
+              },
+              {
+                "label": "3",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 0.625,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-027": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 6,
+        "implicitNodeCount": 4,
+        "nodeCount": 10,
+        "completedEquivalent": 1.25,
+        "progress": 0.625,
+        "percentage": 62.5,
+        "roots": [
+          {
+            "label": "checks.named",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          },
+          {
+            "label": "checks.unnamed",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "0",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "0.0",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  },
+                  {
+                    "label": "0.1",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 2
+                  }
+                ],
+                "progress": 0.5,
+                "depth": 1
+              },
+              {
+                "label": "1",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "1.0",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  },
+                  {
+                    "label": "1.1",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  }
+                ],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 0.75,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-028": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 6,
+        "implicitNodeCount": 4,
+        "nodeCount": 10,
+        "completedEquivalent": 1.25,
+        "progress": 0.625,
+        "percentage": 62.5,
+        "roots": [
+          {
+            "label": "checks.unnamed",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "0",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "0.0",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  },
+                  {
+                    "label": "0.1",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 2
+                  }
+                ],
+                "progress": 0.5,
+                "depth": 1
+              },
+              {
+                "label": "1",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "1.0",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  },
+                  {
+                    "label": "1.1",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  }
+                ],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 0.75,
+            "depth": 0
+          },
+          {
+            "label": "checks.named",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-029": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 1,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "release_item",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Single named task",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-030": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 4,
+        "implicitNodeCount": 1,
+        "nodeCount": 5,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50,
+        "roots": [
+          {
+            "label": "release_items",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "README describes CLI usage",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "README contains no development instructions",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "Development instructions moved to AGENTS.md",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              },
+              {
+                "label": "NPM README renders correctly",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-031": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 1,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "release_item",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Root named task",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-032": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 1,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "release_item",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Build documentation",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-033": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 1,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "release_items",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Build documentation",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-034": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 3,
+        "explicitCheckboxCount": 9,
+        "implicitNodeCount": 4,
+        "nodeCount": 13,
+        "completedEquivalent": 1.625,
+        "progress": 0.5416666666666666,
+        "percentage": 54.166666666666664,
+        "roots": [
+          {
+            "label": "release_states",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "0",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "1",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              },
+              {
+                "label": "2",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "2.0",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  },
+                  {
+                    "label": "2.1",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 2
+                  }
+                ],
+                "progress": 0.5,
+                "depth": 1
+              },
+              {
+                "label": "3",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 0.625,
+            "depth": 0
+          },
+          {
+            "label": "release_checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          },
+          {
+            "label": "release_items",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Build docs",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "Publish docs",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-035": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "👩‍💻👩‍💻👩‍💻",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-036": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "123456789012345",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-037": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "12345...",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-038": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 0.75,
+        "progress": 0.75,
+        "percentage": 75,
+        "roots": [
+          {
+            "label": "Release",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Phase",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "Completed child",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  },
+                  {
+                    "label": "Pending child",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 2
+                  }
+                ],
+                "progress": 0.5,
+                "depth": 1
+              },
+              {
+                "label": "Direct child",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 0.75,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-039": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 3,
+        "implicitNodeCount": 2,
+        "nodeCount": 5,
+        "completedEquivalent": 0.75,
+        "progress": 0.75,
+        "percentage": 75,
+        "roots": [
+          {
+            "label": "Relea...",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Phase",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "Compl...",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 2
+                  },
+                  {
+                    "label": "Pendi...",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 2
+                  }
+                ],
+                "progress": 0.5,
+                "depth": 1
+              },
+              {
+                "label": "Direc...",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 0.75,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-040": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 0,
+        "nodeCount": 2,
+        "completedEquivalent": 1,
+        "progress": 0.5,
+        "percentage": 50,
+        "roots": [
+          {
+            "label": "complete",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          },
+          {
+            "label": "pending",
+            "checked": false,
+            "implicit": false,
+            "children": [],
+            "progress": 0,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-041": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "valid",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-042": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 1,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50,
+        "roots": [
+          {
+            "label": "Parent",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "first",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "second",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-043": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 4,
+        "implicitNodeCount": 1,
+        "nodeCount": 5,
+        "completedEquivalent": 1.3333333333333333,
+        "progress": 0.6666666666666666,
+        "percentage": 66.66666666666666,
+        "roots": [
+          {
+            "label": "checks",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              },
+              {
+                "label": "publish",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.3333333333333333,
+            "depth": 0
+          },
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      },
+      "presentation": "merged",
+      "frontmatterWeight": 0.5,
+      "frontmatter": [
+        {
+          "format": "yaml",
+          "checklists": [
+            {
+              "type": "checklist",
+              "path": [
+                "checks"
+              ],
+              "entries": [
+                {
+                  "label": "build",
+                  "checked": true
+                },
+                {
+                  "label": "test",
+                  "checked": false
+                },
+                {
+                  "label": "publish",
+                  "checked": false
+                }
+              ]
+            }
+          ],
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 3,
+            "implicitNodeCount": 1,
+            "nodeCount": 4,
+            "completedEquivalent": 0.3333333333333333,
+            "progress": 0.3333333333333333,
+            "percentage": 33.33333333333333,
+            "roots": [
+              {
+                "label": "checks",
+                "checked": null,
+                "implicit": true,
+                "children": [
+                  {
+                    "label": "build",
+                    "checked": true,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 1,
+                    "depth": 1
+                  },
+                  {
+                    "label": "test",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  },
+                  {
+                    "label": "publish",
+                    "checked": false,
+                    "implicit": false,
+                    "children": [],
+                    "progress": 0,
+                    "depth": 1
+                  }
+                ],
+                "progress": 0.3333333333333333,
+                "depth": 0
+              }
+            ]
+          }
+        }
+      ],
+      "markdown": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "body",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-044": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 2,
+        "implicitNodeCount": 1,
+        "nodeCount": 3,
+        "completedEquivalent": 0.5,
+        "progress": 0.5,
+        "percentage": 50,
+        "roots": [
+          {
+            "label": "ReleaseLongLabel",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "CompletedLongLabel",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "PendingLongLabel",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          }
+        ]
+      }
+    },
+    "json-045": {
+      "source": {
+        "path": "$input-path"
+      },
+      "progress": {
+        "rootCount": 1,
+        "explicitCheckboxCount": 1,
+        "implicitNodeCount": 0,
+        "nodeCount": 1,
+        "completedEquivalent": 1,
+        "progress": 1,
+        "percentage": 100,
+        "roots": [
+          {
+            "label": "complete",
+            "checked": true,
+            "implicit": false,
+            "children": [],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      }
+    }
+  }
+}

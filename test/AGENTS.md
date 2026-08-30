@@ -6,7 +6,29 @@ architecture, runtime constraints, and the high-level test taxonomy. If a test
 rule is specific to fixture construction, TDD, BDD, or test verification, use
 this file as the detailed source of truth.
 
+`test/README.md` is only the test-tree index. It deliberately does not repeat
+the ownership, fixture, oracle, or verification rules in this file. Read this
+file before adding or moving a test, fixture, feature, step, or consumer Port.
+
 ## Test purpose
+
+The following names are fixed terms in this guide. They identify different
+subjects and evidence boundaries; they are not interchangeable labels for the
+same test suite.
+
+| Layer | Location | What it verifies | Hard boundary |
+|---|---|---|---|
+| CLI TDD | `test/tdd/` | Source-checkout CLI application, adapter, and source-stage contracts through direct calls | It does not prove the published Core consumer contract. |
+| CLI BDD | `test/bdd/` | Final CLI behavior through a real source or compiled executable: arguments, files, stdout, stderr, and status | It does not inject Core Ports or consumer implementations. |
+| Package TDD | `test/package/tdd/` | The published compiled `howdone` Core/application API through direct consumer calls and consumer-owned Ports | It does not import CLI adapters, run a CLI child process, or use `docs/guide.md` as its contract. |
+| Package BDD | `test/package/bdd/` | Published Core/application composition as a consumer BDD flow, including Port routing and output capability requests | It does not test CLI adapters or mirror CLI feature files; its contract is `docs/api.md`. |
+
+In this guide, `Core` in Package TDD and Package BDD means the published
+`howdone` public API. CLI TDD may contain direct tests for source-side Core
+stages because the CLI source checkout composes those stages, but those tests
+remain source-checkout evidence and cannot replace Package TDD. Likewise,
+Package BDD uses Cucumber only as orchestration for consumer composition; it
+does not become CLI BDD merely because an application call accepts `argv`.
 
 Tests are executable evidence for the complete local pipeline:
 
@@ -26,14 +48,58 @@ wrong in two compensating ways and still look correct. Every changed stage
 therefore needs an assertion at its own boundary, and user-visible behavior
 needs a separate black-box scenario when applicable.
 
-Tests must remain local and deterministic. They must not require a browser,
-network access, a remote service, or mutation of a user input file.
+Application behavior and ordinary TDD/BDD tests must remain local and
+deterministic. They must not require a browser, a remote service, or mutation
+of a user input file. `npm run test:local-install` is a separate installation
+gate: its temporary project may resolve production dependencies from npm, but
+it must install the compiled packages from local paths and must not use a
+published package or remote fixture as its oracle. If the execution sandbox
+blocks that dependency resolution, run the same gate with the approved network
+permission; do not hide the network-dependent step inside another offline
+sandbox or mark it complete without its exit status.
+
+## Coverage audit workflow
+
+Use the following order when auditing documented coverage. It keeps final
+command behavior separate from intermediate contracts and makes completion
+evidence explicit:
+
+1. Read the owning contract first: `docs/guide.md` and `docs/syntax.md` for
+   the CLI, or `docs/api.md` for the published Core/application API.
+2. Complete the CLI BDD audit against the CLI documents. Exercise the real
+   source and compiled executables and classify each scenario by its owning
+   feature.
+3. Complete the published Core consumer BDD audit against `docs/api.md`.
+   Verify Core/application/Port composition with consumer-owned
+   implementations; do not turn it into a CLI documentation mirror.
+4. Only after both BDD audits are complete, inspect CLI TDD and Package TDD
+   independently. Add the missing boundary or public-API oracles in their own
+   layer; never use one layer as evidence for the other.
+5. Run focused BDD and TDD checks, then run `npm run verify:precommit` after
+   the final file change. A partial check does not replace the aggregate gate.
+
+Coverage is complete only when every claimed branch has a named scenario or
+test, an independent fixture or oracle where data is involved, and a passing
+verification command. If a branch is incomplete or blocked, report the exact
+missing evidence or blocker instead of describing it as covered.
+
+Any documented parameter that is not explicitly a standalone command must be
+tested in at least one relevant invocation with other parameters and source
+components. Testing the parameter alone is not complete coverage. Where the
+combination changes behavior, cover each applicable branch: successful output,
+inapplicable-option warning, `--silent`, `--strict`, hard conflict, and any
+documented value or `--name=value` spelling. The expected result of the
+combination must be asserted, not merely that argument parsing accepted it.
 
 ## Evidence layers
 
-### TDD
+### Source-checkout TDD
 
-TDD tests verify intermediate contracts with direct, deterministic calls:
+`test/tdd/` is the source-checkout TDD layer. It verifies the source pipeline,
+source application, and source adapters through direct, deterministic calls.
+It is not published-package consumer evidence and it must not import
+`test/package/**`, staged `howdone` files, package consumer implementations, or
+CLI BDD steps. Keep each test at the boundary it proves:
 
 - `test/tdd/pipeline.test.ts` verifies the source-to-token, token-to-AST, and
   composed source-pipeline boundaries. It also verifies that the source text
@@ -52,6 +118,12 @@ TDD tests verify intermediate contracts with direct, deterministic calls:
   `test/tdd/fixtures/markdown-tree-contracts.json`.
 - `test/tdd/cli-paths.test.ts` verifies argument objects, invalid argument
   boundaries, current-platform paths, file access, and application composition.
+- `test/tdd/application-contracts.test.ts` verifies representative mixed
+  application arguments, report snapshots, output-port selection, and warning
+  precedence from `test/tdd/fixtures/application-contracts.json`.
+- `test/tdd/report-contracts.test.ts` verifies the complete serializable
+  `ProgressReport` contract and merge/weight ignored flags from
+  `test/tdd/fixtures/report-contracts.json`.
 - `test/tdd/frontmatter-contracts.test.ts` verifies DocumentAst channel
   separation, YAML/TOML semantic checklist classification, independent
   expected metrics, and root-count versus explicit merge weighting.
@@ -60,8 +132,16 @@ TDD tests verify intermediate contracts with direct, deterministic calls:
   source-order, and late YAML/TOML-shaped delimiter blocks remaining in the
   Markdown channel from
   `test/tdd/fixtures/frontmatter-layouts.json`.
-- `test/tdd/help.test.ts` verifies that help usage, option arguments, and
-  explanatory sections are structured data rendered by the help formatter.
+- `test/tdd/help.test.ts` verifies that Help usage, option arguments, and
+  explanatory sections are structured data rendered by the CLI Help document
+  renderer. It
+  also keeps CLI syntax parts (commands, options, and arguments) separate from
+  file and dependency references: code parts keep non-TTY markers while
+  references do not.
+- `test/tdd/diagnostics.test.ts` verifies that Core preserves warning/error
+  semantics through the shared terminal output port and that CLI adapters color
+  the warning/error documents. JSON remains a data-only output path and does
+  not receive human-readable diagnostics.
 - Output-boundary TDD tests must verify both the original flat single-source
   shape and the grouped multi-source shape. The top-level report result and
   each channel result are separate assertions.
@@ -69,15 +149,22 @@ TDD tests verify intermediate contracts with direct, deterministic calls:
   acceptance behavior, Unicode/display boundaries, CLI errors, filesystem
   errors, and focused adapter/application contracts.
 
-The TDD layer must assert the shape that the next stage consumes. Do not
+The source TDD layer must assert the shape that the next stage consumes. Do not
 replace a token assertion with a final progress assertion, or replace a tree
 assertion with a renderer assertion. When a stage changes, update the test for
 that stage and the incoming or outgoing contract as needed.
 
-### BDD
+Source-checkout assertions for Core internals are useful implementation
+evidence for the CLI path, but they are not published-package evidence. A
+fixed Core operation that the CLI cannot replace through a Port must also be
+verified in Package TDD against the staged compiled Core. Do not move that
+requirement into CLI TDD merely because the source test can import the same
+function.
 
-BDD tests live in `test/bdd/features/` and `test/bdd/steps/`. They verify the
-user-visible command through the real executable path:
+### CLI BDD
+
+CLI BDD tests live in `test/bdd/features/` and `test/bdd/steps/`. They verify
+the user-visible command through the real executable path:
 
 ```text
 source BDD    -> bin/howdone.cjs -> src/boot/main.ts -> src/application/analyze.ts
@@ -100,6 +187,22 @@ BDD scenarios cover final behavior such as:
   strict/silent merge and weight handling, JSON display-option warnings, and
   user-visible error messages.
 
+The combination rule from the coverage audit is mandatory here: a parameter
+that is not documented as standalone-only needs a real CLI scenario in a
+non-isolated invocation. Combine it with every relevant option family and
+source component needed to expose its documented behavior. Do not count an
+isolated option test, a parser-only test, or a path-only test as proof of the
+combined output. Use compact fixture case identifiers and assert the status,
+diagnostics, output mode, and resulting output for the combination.
+
+For both source and compiled CLI BDD runs, all expected JSON data is fixture
+data. A feature may
+name a case and say that stdout is valid JSON, while a TypeScript helper loads
+the fixture and compares the complete parsed object. Do not put JSON values,
+field lists, or partial JSON oracles in Gherkin or step definitions. Expected
+human-readable terminal text and stderr diagnostics may remain Cucumber
+assertions when that is the clearest contract.
+
 The BDD suite is intentionally divided by behavior. Do not put every scenario
 in one feature file or every definition in one step module. The current
 feature ownership is:
@@ -107,18 +210,25 @@ feature ownership is:
 - `test/bdd/features/cli-basics.feature` covers entrypoint basics, the four
   independent CLI commands, standalone-command validation, and the ordinary
   Markdown task-tree contract, including the exact `--version` value sourced
-  from the package's `package.json`.
+  from the package's `package.json`. It also owns Help presentation details;
+  Help is not a diagnostic scenario.
 - `test/bdd/features/markdown-display.feature` covers default, decimal,
   percentage, tree, and details display composition.
 - `test/bdd/features/markdown-output.feature` covers output shape, JSON label
-  policy, and terminal truncation behavior.
+  policy, and terminal truncation behavior. Invalid option values and
+  option conflicts belong to `errors.feature`, even when they select an
+  output mode.
 - `test/bdd/features/markdown-complex.feature` covers a combined Markdown
-  tree with nested progress and display controls.
+  tree with nested progress and display controls. Standalone truncation
+  examples belong to `markdown-output.feature`.
+- `test/bdd/features/markdown-semantics.feature` covers Markdown task-marker
+  recognition and exclusions for code, HTML, comments, quotes, and tables.
 - `test/bdd/features/frontmatter-output.feature` covers optional channels and
   single-source versus grouped output.
 - `test/bdd/features/frontmatter-composition.feature` covers repeated and
   alternating YAML/TOML sections, source order, separate output, and explicit
-  merging.
+  merging. Semantic recognition belongs to `frontmatter-semantics.feature`,
+  and warning-policy branches belong to `warnings-frontmatter.feature`.
 - `test/bdd/features/frontmatter-semantics.feature` covers recognized and
   rejected YAML/TOML checklist shapes.
 - `test/bdd/features/warnings-json.feature` and
@@ -128,16 +238,39 @@ feature ownership is:
   and round trips.
 - `test/bdd/features/errors.feature` covers filesystem, argument, and hard
   option errors.
+- `test/bdd/features/diagnostics.feature` covers stderr diagnostic placement,
+  JSON stdout preservation, strict warning-to-error conversion, and plain
+  redirected or `--no-color` diagnostics.
+- `test/bdd/features/audit-combinations.feature` is the compact
+  fixture-driven cross-contract matrix for combinations that span these
+  feature owners. Its TypeScript steps only map fixture case identifiers to
+  real CLI execution and fixture-owned assertions; it is not a replacement
+  for the focused feature ownership above.
 
-Step ownership is equally explicit:
+The ownership audit keeps each focused CLI scenario in the block for the
+contract it proves: command entrypoints and Help in `cli-basics`, source syntax
+in `markdown-semantics` and `frontmatter-semantics`, report presentation in
+`markdown-display`, `markdown-output`, and `frontmatter-output`, source-channel
+composition in `frontmatter-composition`, hard validation in `errors`,
+diagnostic rendering in `diagnostics`, and warning policy in the two warning
+features. The fixture-driven `audit-combinations.feature` is the only
+intentional cross-contract matrix; it is an explicit exception to single-block
+ownership and references compact case identifiers instead of duplicating
+option combinations and expected outputs in Gherkin.
 
-- `workspace.steps.ts` owns temporary workspaces, files, directories, fixture
-  lookup, and cleanup.
-- `command.steps.ts` owns process invocation and plain stdout/stderr/status
-  assertions.
-- `json.steps.ts` owns parsed JSON assertions.
-- `support.ts` owns fixture loading and process/workspace helpers only; it
-  must not register Cucumber steps.
+CLI step ownership is equally explicit:
+
+- `workspace.steps.ts` selects a loaded source/path fixture, owns temporary
+  files and directories, and cleans up each workspace.
+- `command.steps.ts` owns real process invocation and plain
+  stdout/stderr/status assertions.
+- `json.steps.ts` owns fixture-driven complete parsed JSON assertions; it does
+  not expose field-level Gherkin steps.
+- `audit.steps.ts` owns audit-case selection, argument/source mapping, and the
+  cross-contract result assertions; it delegates complete JSON comparison to
+  fixture helpers.
+- `support.ts` owns fixture-file loading and shared process/workspace helpers
+  only; it must not register Cucumber steps.
 
 Every feature must have one focused `Feature:` declaration. A scenario belongs
 in the feature that owns the behavior it proves, even when its steps are
@@ -148,37 +281,112 @@ that the lexer emitted the right tokens or that the tree contained the right
 implicit nodes. Conversely, a TDD test does not prove that the executable,
 argument parsing, filesystem adapter, and output stream work together.
 
-### Published package consumer tests
+### Published Core consumer tests
 
 Published-package consumer tests live in `test/package/`. They run against the
-staged compiled `howdone` core entry and verify the public hexagonal API as a
+staged compiled `howdone` Core entry and verify the public hexagonal API as a
 consumer would use it. The staged files represent the compiled package that
 would be published; this suite does not download a package from the npm
-registry. The test supplies its own `MarkdownLexer` port and other required
-collaborators; it must not import repository adapters or rely on development-
-only modules. The `implementations/` directory contains the consumer's simple
-port implementations and paired JSON input-to-code and code-to-output
-fixtures. The `tdd/` directory verifies every pipeline boundary and package
-metadata, while `bdd/` composes all fixtures through the published application.
-This is a separate evidence layer from TDD stage tests and BDD CLI behavior
-tests. Run it with `npm run test:package`; `npm run test:compiled` includes the
-same consumer test in its isolated compiled staging.
+registry. The test supplies its own `MarkdownLexer` port and other replaceable
+collaborators, and must not import repository adapters or rely on
+development-only modules. When the published Core provides a standard
+implementation, consumers exercise both that implementation and a replacement.
+The `implementations/` directory owns the consumer Ports and their paired JSON
+input/output fixtures.
+
+The published Core consumer layer is independent from the CLI layer:
+`test/package/tdd/` and `test/package/bdd/` must not import CLI adapters, CLI
+BDD steps, CLI fixtures, or CLI output oracles. Conversely, `test/bdd/` and
+source-checkout TDD must not use consumer Ports as a substitute for the real
+CLI path. Similar source text is not a reason to share a fixture. The package
+consumer suite runs with `npm run test:package`; `npm run test:compiled`
+includes it in compiled staging.
+
+#### Published Core TDD
+
+`test/package/tdd/` is Core/application TDD only. It uses the public
+`howdone`, `howdone/std`, and `howdone/application` entries plus
+consumer-owned Ports. It verifies package metadata, every exposed pipeline
+boundary, standard implementations, replacement implementations, failure and
+fallback behavior, and complete fixture-owned output objects. It must not
+prove a Core contract through a CLI adapter or a real CLI child process.
+Source-checkout TDD under `test/tdd/` is a separate evidence layer and is
+audited separately; neither suite may be used to mark the other complete.
+
+Package TDD must cover Core-owned fixed behavior even when that behavior is not
+customizable through CLI Ports. This includes the public tree, metric,
+frontmatter-classification, report-composition, display-policy, and standard
+parser operations documented by `docs/api.md`. A private helper does not need
+to become a public testing export: observe it through its nearest public Core
+operation and assert the complete fixture-owned result. Consumer Ports are for
+replaceable syntax, filesystem, decoding, runtime, and output collaborators;
+they are not a substitute for testing the fixed Core implementation.
+
+Package TDD must also contain continuous pipeline evidence. At least one test
+must run the published application from a consumer file reader through lexer,
+parser, semantic frontmatter decoding, fixed Core progress/report composition,
+and output delivery, with the stage order and resulting contract asserted.
+Isolated operation tests, Port-call tests, or a final percentage alone do not
+prove continuous pipeline behavior.
+
+#### Published Core BDD
+
+`test/package/bdd/` is consumer BDD. It composes the published Core application
+with consumer-owned Ports and is classified by the Core/API boundary in
+`docs/api.md`, not by the CLI feature names. It covers Port composition, the
+standard parser entry, application and collaborator failures,
+information/warning/error documents, merged `ProgressReport` values, and
+terminal/JSON output capability requests. Command-shaped `argv` values here
+exercise the published application contract; they do not make this suite a
+`docs/guide.md` or CLI mirror.
+
+All data-shaped JSON objects in package BDD come from implementation fixtures
+and TypeScript lookup helpers. The step may identify a case and compare the
+complete parsed or delivered object, but it must not assemble expected JSON in
+Gherkin or in the step definition. Human-readable consumer terminal text may
+use focused Cucumber assertions where appropriate.
+
+`test/package/bdd/steps/consumer.steps.ts` is the package BDD orchestration
+boundary. It maps a compact case or capability identifier to consumer-owned
+fixture data, composes public Core Ports, invokes the published application,
+and asserts the resulting Core/output contract. It must not import CLI BDD
+steps or CLI adapters, and it must not reimplement Core calculations to form
+an expected value.
+
+The `output-capabilities-input.json` and
+`output-capabilities-output.json` fixture pair defines 64 consumer output
+cases. The first four bits of each case code describe terminal color,
+terminal Pager, JSON color, and JSON Pager support in that order. The suffix
+describes the requested color and Pager modes: `aa` is `auto/auto`, `na` is
+`never/auto`, `an` is `auto/never`, and `nn` is `never/never`. Every case runs
+both terminal and JSON ports, verifies distinct consumer port labels, and
+verifies ordinary stream/object delivery or the optional feature hook with the
+same output value.
 
 ## Fixture construction
 
 ### General rule
 
 Large Markdown samples, expected output, nested objects, argument matrices,
-and path cases belong in JSON fixtures or Gherkin feature documents. Test
-TypeScript should load data, construct the explicitly requested runtime
-objects, call the subject under test, and assert contracts. It should not
-contain large inline domain documents or generated expected values.
+and path cases belong in JSON fixtures. Gherkin should keep only a readable
+scenario structure, a compact case identifier, and short text that is itself
+the behavior under discussion. Test TypeScript should load fixture data,
+construct the explicitly requested runtime objects, call the subject under
+test, and assert contracts. It should not contain large inline domain
+documents or generated expected values.
 
 TDD and BDD fixtures are layer-owned. There is no general-purpose fixture
 directory at present, and one layer must not import the other layer's fixture.
 Similar source text does not make two tests share an oracle: TDD fixtures carry
-intermediate expectations, while BDD fixtures carry only the input needed to
-drive the real executable.
+intermediate expectations, while BDD fixtures carry executable inputs and the
+complete JSON output oracles required by the black-box contract.
+
+For every BDD layer, every expected JSON output is fixture-owned. A TypeScript
+helper may resolve a fixture by case ID, substitute a temporary path into the
+fixture input, parse the actual stdout or delivered value, and compare the
+complete object. It must not calculate, reconstruct, or partially assert the
+JSON oracle. Non-JSON terminal output and stderr diagnostics may use Cucumber
+text assertions when those assertions are clearer than a fixture.
 
 The TDD fixture set is:
 
@@ -203,6 +411,18 @@ The TDD fixture set is:
   sample and the pipeline sample.
 - `test/tdd/fixtures/output-contracts.json` contains independent renderer
   input and output contracts.
+- `test/tdd/fixtures/application-contracts.json` contains source application
+  combinations and independent report, option, diagnostic, and JSON-port
+  expectations.
+- `test/tdd/fixtures/report-contracts.json` contains independent Core report
+  inputs and complete serializable report expectations for merge branches.
+
+Package Core TDD fixtures are consumer-layer owned:
+
+- `test/package/implementations/data/core-contracts.json` contains an
+  independent nested Core progress tree with complete pre-metric and metric
+  results, layer statistics, flattened labels, and valid/invalid display-policy
+  expectations.
 
 The BDD fixture set is deliberately smaller and source-only:
 
@@ -214,9 +434,22 @@ The BDD fixture set is deliberately smaller and source-only:
   addressed by their behavior IDs.
 - `test/bdd/fixtures/frontmatter-layout-sources.json` contains source-layout
   cases addressed by their behavior IDs.
+- `test/bdd/fixtures/audit-cases.json` contains the cross-contract CLI
+  combination cases, including complete JSON output oracles. It is the source
+  for the JSON results asserted by `audit-combinations.feature`.
+- `test/bdd/fixtures/json-output-cases.json` maps every successful JSON CLI
+  input/argument case to a complete parsed output object. The shared JSON step
+  resolves its input-path placeholder and compares the complete object; JSON
+  values must not be authored in Gherkin steps.
+- A CLI JSON scenario keeps only `stdout is valid JSON` for its data output.
+  Do not add JSON key, field, label, or substring assertions to Gherkin; put
+  the complete expected object in the fixture and retrieve it through the
+  TypeScript helper. Human-readable terminal output and stderr diagnostics may
+  remain as Cucumber assertions.
 - Short DocStrings remain in Gherkin when the source is clearer beside the
-  scenario. Large or deeply nested input belongs in the BDD fixture set, not
-  in step TypeScript.
+  scenario, but they must not become a second large fixture or a JSON oracle.
+  Large or deeply nested input belongs in the BDD fixture set, not in step
+  TypeScript.
 
 If a future value is genuinely an independent contract consumed unchanged by
 both layers, it may live in `test/fixtures/` with an explicit ownership note.
@@ -368,12 +601,18 @@ root-count weighting, an explicit weight in the open interval `(0, 1)`, and a
 merge request when there is only one source component. The last case warns and
 discards the merge request by default; `--strict` makes it an error. Every
 frontmatter section and the Markdown body count as one merge component, so two
-frontmatter sections can be merged without a body. A numeric weight without a
-merge is invalid; an out-of-range or non-decimal weight is illegal. A weight is
-also invalid when there is no Markdown checklist side, even if multiple
-frontmatter sections can otherwise be merged. All such conditions use the
-process warning channel by default, `--silent` suppresses the warning, and
-`--strict` makes the condition an error.
+frontmatter sections can be merged without a body. A syntactically valid weight
+without a merge is an ignored-option warning; a valid weight is also warned
+when the selected merge has no Markdown checklist side, even if multiple
+frontmatter sections can otherwise be merged. A syntactically or numerically
+illegal weight is a hard argument error and cannot be suppressed. A valid
+weight that has no effect is a warning by default, can be suppressed by
+`--silent`, and can be upgraded by `--strict`. Diagnostic delivery is separately
+covered by Core consumer TDD and BDD: a terminal output port receives a
+semantic warning/error document through `renderWarning` or `renderError`, and
+the optional `print` member receives the same concrete output with the stderr
+target. When `print` is absent, Core IO receives the output through `stderr`;
+JSON output remains data-only. There is no dedicated warning port.
 JSON format, precision, and trailing-zero options are warning-level no-ops when
 combined with `--json`; JSON alone and JSON with `--no-truncate` do not warn,
 while `--json --max-label-clusters N` remains meaningful. Hard option conflicts
@@ -385,8 +624,11 @@ format or matching keys. Their recognized roots are aggregated for report-level
 calculation, and the default frontmatter weight is
 `frontmatter roots / (frontmatter roots + Markdown roots)`.
 For output layout, a body-only document or a frontmatter-only document with
-one section stays flat, while a body plus frontmatter or multiple frontmatter
-sections is grouped by source and preserves frontmatter order.
+one section stays flat. A body plus frontmatter or multiple frontmatter
+sections is expanded by source for default, tree, and details terminal output
+and preserves frontmatter order; JSON uses the corresponding grouped shape.
+An explicit merge produces one merged progress result after all frontmatter
+sections have been aggregated.
 
 ## Output assertions
 
@@ -399,6 +641,11 @@ Output has separate data and text contracts:
   optional merge weight. In either shape, assert all numeric fields, node
   labels, checked state, implicit state, children, progress, and depth.
   Display truncation may change labels only when explicitly requested.
+- In CLI BDD, every successful JSON result is loaded from the applicable
+  `test/bdd/fixtures/json-output-cases.json` or
+  `test/bdd/fixtures/audit-cases.json` case and compared as a complete object.
+  Gherkin may describe terminal text and diagnostic fragments, but it must not
+  become the JSON oracle.
 - Terminal output is a text contract. Keep expected text in JSON or Gherkin,
   preferably as line-oriented data when line boundaries are important. Join
   lines in the test with the same explicitly documented final-newline rule.
@@ -409,12 +656,16 @@ are part of the contract. Use a focused `contains` assertion in BDD only when
 the scenario is intentionally checking a stable fragment rather than the
 whole rendering format.
 
-The default CLI output and all diagnostic messages remain English. When a test
-needs a non-ASCII character, encode its code point with the escape syntax
-supported by the file format instead of writing the character literally. For
-example, use JSON `\uXXXX` escapes. Project source, tests, fixtures, and
-documentation must not contain literal CJK characters. The scan is run from
-the repository root across the whole project, not only across `test/`.
+The default CLI output and all diagnostic messages remain English. Source,
+test code, maintenance scripts, and generated JavaScript or TypeScript are
+ASCII-only. When test code needs a non-ASCII character, encode its code point
+with the escape syntax supported by the language instead of writing the
+character literally. The code-only checker excludes documentation, fixtures,
+configuration, text assets, dependencies, IDE state, and the ignored temporary
+workspace. It is a focused check, not a separate pre-commit command.
+
+Test documentation must contain no emoji or CJK text. Unicode Box Drawing
+characters are permitted only in documentation directory and file trees.
 
 ## Native path testing
 
@@ -462,7 +713,7 @@ helper cannot silently become a step module.
 Existing TDD entry files, fixtures, feature files, and assertions remain
 unchanged. `npm test` and `npm run test:bdd`
 explicitly select the source runtime, preserving native Node.js TypeScript on
-Node.js 23+ and bundled `tsx` on Node.js 18.18–22. The command
+Node.js 23+ and bundled `tsx` on Node.js 18.18-22. The command
 `npm run test:tdd:compiled` compiles the same `src/` and `test/` modules into the
 ignored `.test-build/` directory, stages both compiled packages and the CLI's
 resolved production dependency closure into a temporary project, and runs the
@@ -498,21 +749,28 @@ fixture and a named step when a scenario needs a large or deeply nested input.
 
 ## Adding or changing a behavior
 
-Use this sequence:
+For a coverage audit or a user-visible behavior change, use this sequence:
 
-1. Identify the owning pipeline stage and the user-visible consequence.
-2. Add or update an independent JSON or Gherkin fixture.
-3. Add the incoming and outgoing TDD boundary assertions.
-4. Add the required coverage label for a new source boundary.
-5. Add or update a real-executable BDD scenario when the CLI behavior changes.
-6. Add or update a `test/package` consumer test when the published package
-   contract changes.
-7. Update `docs/syntax.md` when a user-facing source syntax contract changes.
-8. Update `test/README.md` or this file when fixture or test construction rules
-   change.
-9. Run the complete verification gate.
-10. Run a repository-wide scan for forbidden literal CJK characters before
-   handoff.
+1. Read the owning contract and identify the pipeline stage and user-visible
+   consequence.
+2. Add or update an independent JSON fixture. Keep Gherkin compact and add a
+   required source-boundary coverage label when the category is new.
+3. Complete and classify the real-executable CLI BDD and published Core
+   consumer BDD cases independently. Verify the documented combinations before
+   moving on to TDD.
+4. Only after the BDD audit is complete, add the incoming and outgoing
+   source-checkout TDD boundary assertions.
+5. Separately add or update `test/package/tdd/` Core/application assertions
+   when the published Core contract changes, including fixed Core operations
+   and at least one continuous published-application pipeline case. Do not
+   reuse CLI adapters, consumer Ports, or the other layer's fixtures as
+   evidence.
+6. Update `docs/syntax.md` for source/result language changes and
+   `docs/guide.md` for CLI command or parameter changes. Update `docs/api.md`
+   for public Core/application changes.
+7. Update `test/README.md` only for the test-tree index, and update this file
+   when fixture or test construction rules change.
+8. Run focused BDD and TDD checks, followed by the complete verification gate.
 
 Do not treat a passing BDD scenario as proof that the implementation is right
 if its fixture or expected value was generated by the same implementation.
@@ -530,8 +788,7 @@ npm run test:bdd
 npm run test:package
 npm run test:compiled
 npm run test:local-install
-npm run typecheck:maintenance
-npm run check:platform
+npm run check:static
 npm run pack:check
 ```
 
@@ -540,14 +797,16 @@ npm run pack:check
 suite, `npm run test:package` runs the published-package consumer, and
 `npm run test:compiled` runs the same TDD, package-consumer, and BDD contracts
 through the compiled entry. `npm run test:local-install` verifies the same
-consumer and BDD contracts after local npm installation. None of these suites
-downloads a package from the npm registry. For the final repository boundary, run
-`npm run verify:precommit` as required by
+consumer and BDD contracts after local npm installation; it may download
+production dependencies, but it installs the Core and CLI packages from local
+paths and never uses a registry package as the Core oracle. For the final
+repository boundary, run `npm run verify:precommit` as required by
 [`CONTRIBUTING.md`](../CONTRIBUTING.md). That command also runs both dependency
-audits and staged/unstaged Git checks; the focused commands above are not a
+audits through the aggregate boundary; the focused commands above are not a
 substitute for it.
 
-For the literal-CJK policy, use a read-only repository-wide scan such as:
+For the literal-CJK policy in source, test code, fixtures, or documentation,
+use a read-only repository-wide scan such as:
 
 ```bash
 rg -n --pcre2 '[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}]' \
@@ -555,4 +814,5 @@ rg -n --pcre2 '[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}]' \
 ```
 
 The scan should produce no matches in source, tests, fixtures, or test
-documentation.
+documentation. A documentation file tree may still contain Box Drawing
+characters, which are outside the CJK ranges in this scan.

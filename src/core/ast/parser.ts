@@ -83,7 +83,21 @@ function isFrontmatterToken(token: LexerToken): token is FrontmatterToken {
   return token.kind === ("frontmatter" satisfies TokenKind);
 }
 
+/**
+ * @brief Standard Core implementation of `MarkdownAstParser`.
+ *
+ * @details
+ * The parser normalizes the published lexer-token contract without depending
+ * on a Markdown parser library. Consumers may use it with any lexer that
+ * emits compatible tokens or provide their own `MarkdownAstParser`.
+ */
 export class TypedAstParser implements MarkdownAstParser {
+  /**
+   * @brief Converts lexer tokens into a normalized document AST.
+   *
+   * @param tokens The ordered tokens produced by a `MarkdownLexer`.
+   * @returns The normalized document with separate frontmatter and body ASTs.
+   */
   parse(tokens: readonly LexerToken[]): DocumentAst {
     return {
       type: "document",

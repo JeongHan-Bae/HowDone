@@ -17,9 +17,14 @@ export {
 } from "./progress/analyzer.ts";
 export { calculateNodeProgress, summarizeProgress } from "./progress/metrics.ts";
 export { buildProgressReport } from "./progress/report.ts";
+export type {
+  ProgressReportBuild,
+  ProgressReportOptions,
+} from "./progress/report.ts";
 export { buildProgressRoots } from "./progress/tree-builder.ts";
 export { runMarkdownPipeline } from "./source/pipeline.ts";
 export { TokenKind } from "./source/types.ts";
+export { TerminalTextSemantic } from "./ports.ts";
 export type * from "./ast/types.ts";
 export type * from "./config/types.ts";
 export type * from "./frontmatter/types.ts";

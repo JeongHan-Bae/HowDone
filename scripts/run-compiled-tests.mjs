@@ -262,6 +262,10 @@ function stageCorePackageFiles(runtimeRoot) {
           types: "./dist/application/index.d.ts",
           import: "./dist/application/index.js",
         },
+        "./std": {
+          types: "./dist/core/std.d.ts",
+          import: "./dist/core/std.js",
+        },
       },
     })}\n`,
     "utf8",

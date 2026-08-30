@@ -14,6 +14,7 @@
   },
   "include": [
     "src/adapters/**/*.ts",
-    "src/boot/cli-main.ts"
+    "src/boot/cli-main.ts",
+    "src/boot/pipeline.ts"
   ]
 }

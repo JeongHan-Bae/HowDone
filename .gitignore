@@ -62,4 +62,5 @@ temp/
 /packages/core/LICENSE
 /packages/core/docs/api.md
 /packages/cli/LICENSE
+/packages/cli/docs/guide.md
 /packages/cli/docs/syntax.md

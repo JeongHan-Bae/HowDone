@@ -12,12 +12,13 @@ import {
   calculateProgress,
   classifyFrontmatter,
   resolveDisplayOptions,
-  TypedAstParser,
 } from "howdone";
+import { TypedAstParser } from "howdone/std";
 import type {
   FrontmatterAst,
   FrontmatterValueParser,
   ProgressReport,
+  TerminalOutput,
 } from "howdone";
 
 function valueParserFor(section: FrontmatterAst): FrontmatterValueParser {
@@ -78,16 +79,76 @@ function reportFor(source: string): ProgressReport {
   };
 }
 
+function plainText(output: TerminalOutput): string {
+  let text = "";
+  output.writeTo({ write: (chunk: string) => { text += chunk; } });
+  return text;
+}
+
+const progressKeys = [
+  "rootCount",
+  "explicitCheckboxCount",
+  "implicitNodeCount",
+  "nodeCount",
+  "completedEquivalent",
+  "progress",
+  "percentage",
+  "roots",
+];
+
+const nodeKeys = [
+  "label",
+  "checked",
+  "implicit",
+  "children",
+  "progress",
+  "depth",
+];
+
+function recordOf(value: unknown, description: string): Record<string, unknown> {
+  assert.equal(typeof value, "object", `${description} must be an object`);
+  assert.notEqual(value, null, `${description} must not be null`);
+  assert.equal(Array.isArray(value), false, `${description} must not be an array`);
+  return value as Record<string, unknown>;
+}
+
+function assertNodeShape(value: unknown, description: string): void {
+  const node = recordOf(value, description);
+  assert.deepEqual(Object.keys(node).sort(), [...nodeKeys].sort(), description);
+  assert.equal(typeof node.label, "string");
+  assert.ok(node.checked === null || typeof node.checked === "boolean");
+  assert.equal(typeof node.implicit, "boolean");
+  assert.equal(typeof node.progress, "number");
+  assert.equal(typeof node.depth, "number");
+  assert.ok(Array.isArray(node.children));
+  for (const [index, child] of node.children.entries()) {
+    assertNodeShape(child, `${description}.children[${index}]`);
+  }
+}
+
+function assertProgressShape(value: unknown, description: string): void {
+  const progress = recordOf(value, description);
+  assert.deepEqual(Object.keys(progress).sort(), [...progressKeys].sort(), description);
+  for (const key of progressKeys.slice(0, -1)) {
+    assert.equal(typeof progress[key], "number", `${description}.${key}`);
+  }
+  assert.ok(Array.isArray(progress.roots));
+  for (const [index, root] of progress.roots.entries()) {
+    assertNodeShape(root, `${description}.roots[${index}]`);
+  }
+}
+
 for (const fixture of fixtures.cases) {
   test(`TDD output contract ${fixture.id} keeps its presentation shape`, () => {
     const report = reportFor(fixture.source);
-    const parsed = JSON.parse(new JsonRenderer().render(report)) as {
+    const parsed = new JsonRenderer().render(report) as {
       source?: unknown;
       progress?: { progress?: number; percentage?: number };
       presentation?: string;
       markdown?: { progress?: number };
       frontmatter?: Array<{
         format?: string;
+        checklists?: unknown[];
         progress?: { progress?: number };
       }>;
     };
@@ -98,6 +159,7 @@ for (const fixture of fixtures.cases) {
     assert.deepEqual(Object.keys(parsed), fixture.expectedKeys);
     assert.equal(parsed.progress?.progress, fixture.expectedProgress);
     assert.equal(parsed.progress?.percentage, fixture.expectedPercentage);
+    assertProgressShape(parsed.progress, `${fixture.id}.progress`);
     assert.equal(parsed.presentation, fixture.expectedTreeSections.length > 0
       ? "separate"
       : undefined);
@@ -117,7 +179,15 @@ for (const fixture of fixtures.cases) {
       );
     }
 
-    const tree = new TerminalRenderer().render("tree", report, options);
+    if (parsed.markdown !== undefined) {
+      assertProgressShape(parsed.markdown, `${fixture.id}.markdown`);
+    }
+    for (const [index, section] of (parsed.frontmatter ?? []).entries()) {
+      assert.ok(Array.isArray(section.checklists));
+      assertProgressShape(section.progress, `${fixture.id}.frontmatter[${index}].progress`);
+    }
+
+    const tree = plainText(new TerminalRenderer().render("tree", report, options));
     for (const section of fixture.expectedTreeSections) {
       assert.ok(tree.includes(section), `${fixture.id} is missing ${section}`);
     }

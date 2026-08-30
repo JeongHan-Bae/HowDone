@@ -1,47 +1,27 @@
 #!/usr/bin/env node
 
-import { TypedAstParser } from "howdone";
-import { run } from "howdone/application";
-import { defaultRemarkLexer } from "../adapters/markdown/remark-lexer.ts";
-import { defaultTomlValueParser } from "../adapters/frontmatter/toml-value-parser.ts";
-import { defaultYamlValueParser } from "../adapters/frontmatter/yaml-value-parser.ts";
-import { defaultFileReader } from "../adapters/filesystem/node-file-reader.ts";
-import { defaultJsonRenderer } from "../adapters/output/json-renderer.ts";
-import { defaultTerminalRenderer } from "../adapters/output/terminal-renderer.ts";
 import { runtimeMetadataFor } from "../adapters/runtime/node-package-version.ts";
-import { defaultWarningPort } from "../adapters/runtime/node-warning-sink.ts";
-import { CLI_SYNTAX_REFERENCE } from "../application/cli/args.ts";
-import { runIfEntrypoint } from "./entrypoint.ts";
-import type { CliDependencies, CliIO } from "howdone/application";
+import { CLI_SYNTAX_REFERENCE } from "../adapters/output/cli-help.ts";
 import { fileURLToPath } from "node:url";
-
-const io: CliIO = {
-  stdout: process.stdout,
-  stderr: process.stderr,
-};
+import { createCliRuntime } from "./cli-runtime.ts";
+import { runIfEntrypoint } from "./entrypoint.ts";
 
 const metadata = runtimeMetadataFor(
   new URL("../../package.json", import.meta.url),
 );
 
-const dependencies: CliDependencies = {
-  lexer: defaultRemarkLexer,
-  parser: new TypedAstParser(),
-  yamlValueParser: defaultYamlValueParser,
-  tomlValueParser: defaultTomlValueParser,
-  fileReader: defaultFileReader,
-  terminalRenderer: defaultTerminalRenderer,
-  jsonRenderer: defaultJsonRenderer,
-  warning: defaultWarningPort,
+const syntaxReferencePath = fileURLToPath(
+  new URL(`../../${CLI_SYNTAX_REFERENCE}`, import.meta.url),
+);
+
+const runCli = createCliRuntime({
   version: metadata.version,
   runtimeDependencies: metadata.runtimeDependencies,
-  syntaxReferencePath: fileURLToPath(
-    new URL(`../../${CLI_SYNTAX_REFERENCE}`, import.meta.url),
-  ),
-};
+  syntaxReferencePath,
+});
 
 export function main(): Promise<number> {
-  return run(process.argv.slice(2), io, dependencies);
+  return runCli(process.argv.slice(2));
 }
 
 runIfEntrypoint(import.meta.url, main);

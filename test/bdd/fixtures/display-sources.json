@@ -1,0 +1,9 @@
+{
+  "cases": [
+    {
+      "id": "unicode-grapheme-label",
+      "fileName": "grapheme-\ud83d\udc69\u200d\ud83d\udcbb.md",
+      "source": "- [x] \ud83d\udc69\u200d\ud83d\udcbb\ud83d\udc69\u200d\ud83d\udcbb\ud83d\udc69\u200d\ud83d\udcbb\n"
+    }
+  ]
+}

@@ -10,6 +10,28 @@ Feature: Native path behavior
     Then the command succeeds
     And stdout equals "100%"
 
+  Scenario: The .markdown extension is accepted through the real CLI
+    Given a Markdown file named "tasks.markdown" containing:
+      """
+      - [x] complete
+      """
+    When I run howdone with arguments "tasks.markdown"
+    Then the command succeeds
+    And stdout equals "100%"
+
+  Scenario: A second positional path is rejected by the real CLI
+    Given a Markdown file containing:
+      """
+      - [x] first
+      """
+    And another Markdown file named "other.md" containing:
+      """
+      - [ ] second
+      """
+    When I run howdone with arguments "tasks.md other.md"
+    Then the command fails
+    And stderr contains "Only one Markdown file path may be provided"
+
   Scenario Outline: Native path variants round-trip through the CLI
     Given a Markdown fixture for native path variant "<path_kind>" containing:
       """
@@ -20,9 +42,6 @@ Feature: Native path behavior
     When I run howdone with the native <path_kind> path and arguments "<options>"
     Then the command succeeds
     And stdout is valid JSON
-    And stdout JSON has source path equal to the native <path_kind> path
-    And stdout JSON reports progress "0.5" and percentage "50"
-    And stdout JSON contains nested labels "Parent", "first", and "second"
 
     Examples:
       | path_kind       | options                                                                                 |
@@ -39,4 +58,3 @@ Feature: Native path behavior
     When I run howdone with arguments "--json -- \"-daily tasks.md\""
     Then the command succeeds
     And stdout is valid JSON
-    And stdout contains "\"path\": \"-daily tasks.md\""

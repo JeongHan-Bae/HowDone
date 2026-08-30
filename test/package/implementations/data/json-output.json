@@ -1,8 +1,128 @@
 {
-  "json-body-complete": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
-  "json-body-half": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
-  "json-one-header": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
-  "json-one-header-body": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
-  "json-two-headers": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } },
-  "json-two-headers-body": { "fields": { "sourcePath": "source.path", "percentage": "progress.percentage", "rootCount": "progress.rootCount", "frontmatterSections": "frontmatter.length" } }
+  "json-body-complete": {
+    "fields": {
+      "sourcePath": "source.path",
+      "percentage": "progress.percentage",
+      "rootCount": "progress.rootCount",
+      "frontmatterSections": "frontmatter.length"
+    },
+    "expected": {
+      "sourcePath": "body-only-complete.md",
+      "percentage": 100,
+      "rootCount": 1,
+      "frontmatterSections": 0
+    }
+  },
+  "json-body-half": {
+    "fields": {
+      "sourcePath": "source.path",
+      "percentage": "progress.percentage",
+      "rootCount": "progress.rootCount",
+      "frontmatterSections": "frontmatter.length"
+    },
+    "expected": {
+      "sourcePath": "body-two-items.md",
+      "percentage": 50,
+      "rootCount": 2,
+      "frontmatterSections": 0
+    }
+  },
+  "json-one-header": {
+    "fields": {
+      "sourcePath": "source.path",
+      "percentage": "progress.percentage",
+      "rootCount": "progress.rootCount",
+      "frontmatterSections": "frontmatter.length"
+    },
+    "expectedBySource": {
+      "yaml-only.md": {
+        "sourcePath": "yaml-only.md",
+        "percentage": 100,
+        "rootCount": 1,
+        "frontmatterSections": 1
+      },
+      "toml-only.md": {
+        "sourcePath": "toml-only.md",
+        "percentage": 100,
+        "rootCount": 1,
+        "frontmatterSections": 1
+      }
+    }
+  },
+  "json-one-header-body": {
+    "fields": {
+      "sourcePath": "source.path",
+      "percentage": "progress.percentage",
+      "rootCount": "progress.rootCount",
+      "frontmatterSections": "frontmatter.length"
+    },
+    "expected": {
+      "sourcePath": "yaml-plus-body.md",
+      "percentage": 100,
+      "rootCount": 2,
+      "frontmatterSections": 1
+    }
+  },
+  "json-two-headers": {
+    "fields": {
+      "sourcePath": "source.path",
+      "percentage": "progress.percentage",
+      "rootCount": "progress.rootCount",
+      "frontmatterSections": "frontmatter.length"
+    },
+    "expected": {
+      "sourcePath": "yaml-yaml-plus-body.md",
+      "percentage": 100,
+      "rootCount": 2,
+      "frontmatterSections": 2
+    }
+  },
+  "json-two-headers-body": {
+    "fields": {
+      "sourcePath": "source.path",
+      "percentage": "progress.percentage",
+      "rootCount": "progress.rootCount",
+      "frontmatterSections": "frontmatter.length"
+    },
+    "expectedBySource": {
+      "yaml-yaml-plus-body.md": {
+        "sourcePath": "yaml-yaml-plus-body.md",
+        "percentage": 100,
+        "rootCount": 3,
+        "frontmatterSections": 2
+      },
+      "yaml-toml-plus-body.md": {
+        "sourcePath": "yaml-toml-plus-body.md",
+        "percentage": 100,
+        "rootCount": 3,
+        "frontmatterSections": 2
+      },
+      "toml-yaml-plus-body.md": {
+        "sourcePath": "toml-yaml-plus-body.md",
+        "percentage": 100,
+        "rootCount": 3,
+        "frontmatterSections": 2
+      },
+      "toml-toml-plus-body.md": {
+        "sourcePath": "toml-toml-plus-body.md",
+        "percentage": 100,
+        "rootCount": 3,
+        "frontmatterSections": 2
+      }
+    }
+  },
+  "json-weighted-mixed": {
+    "fields": {
+      "sourcePath": "source.path",
+      "percentage": "progress.percentage",
+      "rootCount": "progress.rootCount",
+      "frontmatterSections": "frontmatter.length"
+    },
+    "expected": {
+      "sourcePath": "yaml-plus-body.md",
+      "percentage": 75,
+      "rootCount": 2,
+      "frontmatterSections": 1
+    }
+  }
 }

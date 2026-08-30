@@ -14,8 +14,6 @@ export const CLI_USAGE = [
   "howdone --dependencies",
 ] as const;
 
-export const CLI_SYNTAX_REFERENCE = "docs/syntax.md";
-
 export const CLI_COMMANDS = [
   ["--help", "-h"],
   ["--version", "-v"],
@@ -40,11 +38,16 @@ export const CLI_OPTIONS = [
   { command: "--json", argument: "" },
   { command: "--max-label-clusters", argument: "N" },
   { command: "--no-truncate", argument: "" },
-  { command: ["--silent", "-s"], argument: "" },
   { command: "--merge-frontmatter", argument: "" },
   { command: "--frontmatter-weight", argument: "N" },
-  { command: "--strict", argument: "" },
   { command: "--", argument: "" },
+] as const satisfies readonly CliOptionHeader[];
+
+export const CLI_GLOBAL_OPTIONS = [
+  { command: ["--silent", "-s"], argument: "" },
+  { command: "--strict", argument: "" },
+  { command: "--no-color", argument: "" },
+  { command: "--no-pager", argument: "" },
 ] as const satisfies readonly CliOptionHeader[];
 
 export type OutputMode = "default" | "tree" | "details" | "json";
@@ -63,9 +66,10 @@ export interface ParsedArguments {
   noTruncate: boolean;
   mergeFrontmatter: boolean;
   frontmatterWeight?: number;
-  frontmatterWeightInput?: string;
   silent: boolean;
   strict: boolean;
+  noColor: boolean;
+  noPager: boolean;
 }
 
 export class ArgumentError extends Error {
@@ -90,12 +94,31 @@ function parsePositiveInteger(value: string): number {
   return parsed;
 }
 
-function parseFrontmatterWeight(value: string): number | undefined {
-  if (!/^\d+(?:\.\d+)?$/u.test(value)) return undefined;
+function parseFrontmatterWeight(value: string): number {
+  const invalid = () => {
+    throw new ArgumentError(
+      `--frontmatter-weight must be a decimal strictly between 0 and 1; received: ${value}`,
+    );
+  };
+  if (!/^-?\d+(?:\.\d+)?$/u.test(value)) invalid();
   const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 && parsed < 1
-    ? parsed
-    : undefined;
+  if (!Number.isFinite(parsed) || parsed <= 0 || parsed >= 1) invalid();
+  return parsed;
+}
+
+function isNumericFrontmatterWeightValue(value: string): boolean {
+  return /^-?(?:\d+(?:\.\d*)?|\.\d+)$/u.test(value);
+}
+
+function requireFrontmatterWeightValue(value: string | undefined): string {
+  if (
+    value === undefined ||
+    value.length === 0 ||
+    (value.startsWith("-") && !isNumericFrontmatterWeightValue(value))
+  ) {
+    throw new ArgumentError("--frontmatter-weight requires a value.");
+  }
+  return value;
 }
 
 function parsePrecision(value: string): number {
@@ -146,13 +169,22 @@ function chooseProgressFormat(
   return next;
 }
 
+const STANDALONE_GLOBAL_OPTIONS = new Set(
+  CLI_GLOBAL_OPTIONS.flatMap(({ command }) =>
+    Array.isArray(command) ? [...command] : [command]
+  ),
+);
+
 function requireStandaloneCommand(
   argv: readonly string[],
   command: string,
 ): void {
-  if (argv.length !== 1) {
+  const commandArguments = argv.filter((argument) =>
+    !STANDALONE_GLOBAL_OPTIONS.has(argument)
+  );
+  if (commandArguments.length !== 1) {
     throw new ArgumentError(
-      `${command} is a standalone command and cannot be combined with a Markdown path or options.`,
+      `${command} is a standalone command and cannot be combined with a Markdown path or analysis options.`,
     );
   }
 }
@@ -180,9 +212,10 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
   let noTruncate = false;
   let mergeFrontmatter = false;
   let frontmatterWeight: number | undefined;
-  let frontmatterWeightInput: string | undefined;
   let silent = false;
   let strict = false;
+  let noColor = false;
+  let noPager = false;
   let positionalOnly = false;
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -307,22 +340,24 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
       strict = true;
       continue;
     }
+    if (argument === "--no-color") {
+      noColor = true;
+      continue;
+    }
+    if (argument === "--no-pager") {
+      noPager = true;
+      continue;
+    }
     if (argument === "--frontmatter-weight") {
-      const value = argv[index + 1];
-      if (value === undefined) {
-        throw new ArgumentError("--frontmatter-weight requires a value.");
-      }
-      frontmatterWeightInput = value;
+      const value = requireFrontmatterWeightValue(argv[index + 1]);
       frontmatterWeight = parseFrontmatterWeight(value);
       index += 1;
       continue;
     }
     if (argument.startsWith("--frontmatter-weight=")) {
-      const value = argument.slice("--frontmatter-weight=".length);
-      if (value.length === 0) {
-        throw new ArgumentError("--frontmatter-weight requires a value.");
-      }
-      frontmatterWeightInput = value;
+      const value = requireFrontmatterWeightValue(
+        argument.slice("--frontmatter-weight=".length),
+      );
       frontmatterWeight = parseFrontmatterWeight(value);
       continue;
     }
@@ -377,10 +412,9 @@ export function parseArguments(argv: readonly string[]): ParsedArguments {
     noTruncate,
     mergeFrontmatter,
     frontmatterWeight,
-    ...(frontmatterWeightInput === undefined
-      ? {}
-      : { frontmatterWeightInput }),
     silent,
     strict,
+    noColor,
+    noPager,
   };
 }
