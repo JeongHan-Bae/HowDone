@@ -4,7 +4,9 @@ HowDone is developed and published in two parts: the `howdone` npm package is
 the framework-independent hexagonal core, and `howdone-cli` is the primary
 product and command executor. The CLI command is named `howdone`.
 
-This document owns development commands, CI, maintenance, and release details.
+This document owns development commands, CI, maintenance, and release workflow
+context. The authoritative release publication contract is in
+[`AGENTS.md`](../AGENTS.md#release-publication-contract).
 Commit-message, pull-request, review, and handoff rules are defined in
 [`CONTRIBUTING.md`](../CONTRIBUTING.md) and are not repeated here.
 
@@ -393,38 +395,13 @@ Starting with `0.1.2`, every published npm release uses compiled packages:
 adapters. TypeScript source, the repository launcher, tests, development
 documentation, and maintenance scripts are not part of either package.
 
-### Tag contract
-
-The stable Release workflow accepts exactly these tag forms:
-
-- `vX.Y.Z` publishes both packages. Both package versions and the CLI's exact
-  `howdone` dependency must be `X.Y.Z`.
-- `vX.Y.Z-cli` publishes only `howdone-cli`. The CLI version must be `X.Y.Z`,
-  its exact core dependency must be the current `howdone` version, and the
-  core and CLI versions must share `X.Y`.
-- `vX.Y.Z-core` publishes only `howdone`. The core version must be `X.Y.Z`;
-  the local CLI manifest must still point to that exact core version, and the
-  two manifests must share `X.Y` even though the CLI is not published.
-
-### Publication safeguards
-
-The workflow validates both workspace entries in `package-lock.json` and all
-of these relationships before publishing. It also checks that every selected
-`name@version` is absent from npm. An existing GitHub Release does not by
-itself prove that npm publication completed; GitHub Release content is separate
-from the npm workflow. After the selected packages publish under the `latest`
-dist-tag, the workflow does not create or update a Release page. Immediately
-before the CLI step it confirms that the exact Core dependency version is
-visible from npm. For a `-cli` tag this check is the guard that catches a Core
-version that was forgotten or never published. npm versions cannot be
-overwritten, so a partial publish is intentionally fail-closed on a later retry
-rather than pretending the two package publishes are atomic. The workflow also
-supports an explicit dispatch for rerunning a stable tag without moving that
-tag.
-
-The workflow is the only publisher for final stable releases. It does not
-accept prerelease tags; a bootstrap alpha publish is a separate, explicitly
-reviewed operation.
+The authoritative tag, validation, registry, and publication-order contract is
+in [`AGENTS.md`](../AGENTS.md#release-publication-contract). In brief, the
+validator checks the package versions, exact CLI-to-Core dependency, lockfile,
+and npm state before CI. `both` and `core` publish Core first, every valid kind
+confirms the exact Core version is visible, and every valid kind publishes the
+CLI. This document provides workflow context; it does not duplicate the tag
+matrix or release policy.
 
 ## Release package and dependency audit
 

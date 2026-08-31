@@ -6,11 +6,13 @@ implementation, architecture, test, release, and documentation details in
 their owning guides:
 
 - [`AGENTS.md`](AGENTS.md): implementation constraints, architecture, runtime
-  policy, documentation ownership, and high-level test taxonomy;
+  policy, the authoritative release publication contract, documentation
+  ownership, and high-level test taxonomy;
 - [`test/AGENTS.md`](test/AGENTS.md): detailed TDD, BDD, fixture, combination,
   oracle, and test-verification rules;
 - [`docs/development.md`](docs/development.md): development commands, CI,
-  package maintenance, and release procedure;
+  package maintenance, and release workflow context; the release publication
+  contract itself is defined in [`AGENTS.md`](AGENTS.md#release-publication-contract);
 - [`docs/guide.md`](docs/guide.md), [`docs/syntax.md`](docs/syntax.md), and
   [`docs/api.md`](docs/api.md): the CLI, source/result, and public Core
   contracts.
@@ -130,6 +132,10 @@ final gate result, any focused checks that add useful evidence, and any
 intentionally uncommitted work. An unavailable or failed check remains
 unverified until its blocker is resolved and the aggregate gate passes.
 
-Stable release tags and publishing are workflow-owned; follow
-[`docs/development.md`](docs/development.md) for that procedure rather than
-adding release steps to a commit or pull-request description.
+Stable release tags and publishing are workflow-owned. Follow the authoritative
+[`release publication contract`](AGENTS.md#release-publication-contract) in
+`AGENTS.md` rather than adding release steps to a commit or pull-request
+description. In brief, the validator checks the tag, package versions, exact
+CLI-to-Core dependency, lockfile, and npm state before CI; the workflow then
+runs CI, publishes Core when selected, waits for Core visibility, and always
+publishes the CLI.

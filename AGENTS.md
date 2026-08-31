@@ -309,15 +309,57 @@ package-content checks from the same workspace. `.github/workflows/ci.yml` is
 reusable by the tag-based release workflow; publishing is permitted only after
 that CI job succeeds.
 
-Final releases use `vX.Y.Z`, `vX.Y.Z-cli`, or `vX.Y.Z-core` tags. The release
-validator requires matching core/CLI major and minor versions, an exact CLI
-dependency on the current core version, synchronized lockfile entries, and
-unused npm versions for every selected target before any publish step. The
-workflow validates this release-only validator and publishes only unused npm
-targets. GitHub Release pages are separate release content and do not gate
-npm publication; the npm registry checks are authoritative. These
-version and registry checks run only for a release tag or an explicitly
-dispatched release run, not in the ordinary pre-commit harness.
+Final releases use `vX.Y.Z`, `vX.Y.Z-cli`, or `vX.Y.Z-core` tags. The complete
+tag, validation, and publication contract is defined in the Release publication
+contract below. These version and registry checks run only for a release tag or
+an explicitly dispatched release run, not in the ordinary pre-commit harness.
+
+## Release publication contract
+
+This section is the authoritative repository rule for final npm publication.
+`scripts/validate-release.mjs` owns tag interpretation, package-version and
+dependency validation, lockfile synchronization, npm registry checks, and the
+release outputs consumed by the workflow. `.github/workflows/release.yml` owns
+orchestration and publication order; it does not reimplement release policy.
+
+Before CI or publication, the validator checks the Core version, the CLI
+version, and the CLI's declared `howdone` dependency. The dependency must equal
+the current Core version. Core and CLI versions must share their major and
+minor components when they differ, and both workspace lockfile entries plus the
+CLI lockfile dependency must be synchronized.
+
+The accepted stable tags and release kinds are:
+
+- `vX.Y.Z` has kind `both`. The tag version must equal both package versions.
+  Both `howdone@X.Y.Z` and `howdone-cli@X.Y.Z` must be absent from npm.
+- `vX.Y.Z-core` has kind `core`. The tag version must equal the Core package
+  version. Both the Core version and the current CLI version must be absent
+  from npm. A Core release publishes Core first and then the CLI; the package
+  versions may differ, subject to the shared major/minor and exact dependency
+  rules above.
+- `vX.Y.Z-cli` has kind `cli`. The tag version must equal the CLI package
+  version. The CLI version must be absent from npm, and the exact current Core
+  version must already exist on npm. This kind does not publish Core.
+
+Every valid release publishes the CLI. The validator emits `publish_core=true`
+for `both` and `core`, and `publish_cli=true` for all three kinds. For `both`
+and `core`, the workflow publishes Core first; for every kind it confirms that
+the exact Core version is visible from npm immediately before publishing the
+CLI.
+
+The release pipeline is ordered as follows:
+
+1. The `validate` job performs the tag, version, dependency, lockfile, and
+   registry checks above.
+2. The reusable CI workflow starts only after validation succeeds.
+3. The publish job starts only after both validation and CI succeed.
+4. It publishes Core when `publish_core` is true.
+5. It confirms the exact Core version is available from npm.
+6. It publishes the CLI, which is required for every valid release kind.
+
+GitHub Release pages are separate release content and do not gate npm
+publication; npm registry state is authoritative. A partial npm publication
+fails closed on a later retry because an already published target is rejected.
 
 ## Documentation ownership
 
@@ -376,7 +418,8 @@ dispatched release run, not in the ordinary pre-commit harness.
 - Document ownership:
   - `docs/architecture.md`: architecture and dependency direction.
   - `docs/api.md`: public Core/application API.
-  - `docs/development.md`: development, CI, release, and maintenance workflow.
+  - `docs/development.md`: development, CI, and package-maintenance workflow
+    context; the release publication contract is defined here.
   - `docs/guide.md`: standalone complete CLI usage, command ownership, and
     parameter behavior shipped with `howdone-cli`.
   - `docs/syntax.md`: standalone source and result language contract shipped
