@@ -14,21 +14,25 @@
 </h1>
 
 <p align="center">
-  <img
-    src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/version_badge_cli.json"
-    alt="CLI Version"
-    width="216"
-  >
+  <a href="https://github.com/JeongHan-Bae/HowDone/tree/main/packages/cli#readme">
+    <img
+      src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/version_badge_cli.json"
+      alt="Version"
+      width="196"
+    >
+  </a>
 </p>
 
 <p align="center">
-  <img
-    src="https://github.com/JeongHan-Bae/HowDone/actions/workflows/ci.yml/badge.svg"
-    alt="CI"
-    width="96"
-  >
+  <a href="https://github.com/JeongHan-Bae/HowDone/actions/workflows/ci.yml">
+    <img
+      src="https://github.com/JeongHan-Bae/HowDone/actions/workflows/ci.yml/badge.svg"
+      alt="CI"
+      width="96"
+    >
+  </a>
   <br>
-  <a href="LICENSE">
+  <a href="https://github.com/JeongHan-Bae/HowDone/tree/main?tab=Apache-2.0-1-ov-file#readme">
     <img
       src="https://img.shields.io/github/license/JeongHan-Bae/HowDone"
       alt="CLI Version"
@@ -89,7 +93,29 @@ display are standalone commands. The complete CLI usage, including command and
 option ownership, is documented in the [CLI guide](docs/guide.md). The source
 language rules are documented in the [source syntax contract](docs/syntax.md).
 
+## HowDone in action
+
+<p align="center">
+  <a href="https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/docs/assets/task-editor.svg">
+    <img
+      src="https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/docs/assets/task-editor.svg"
+      alt="Illustrative Markdown task list"
+    >
+  </a>
+  <br>
+  <a href="https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/docs/assets/howdone-terminal.svg">
+    <img
+      src="https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/docs/assets/howdone-terminal.svg"
+      alt="Illustrative HowDone terminal report"
+    >
+  </a>
+</p>
+
+Write or update a Markdown checklist, run HowDone, and see its completion state
+as a structured terminal report. HowDone reads the local file and leaves **the
+source unchanged**.
+
 ## More information
 
 For complete CLI usage, read the [CLI guide](docs/guide.md). For the complete
-project context, read the [source README on GitHub](https://github.com/JeongHan-Bae/HowDone/blob/main/README.md).
+project context, read the [source README on GitHub](https://github.com/JeongHan-Bae/HowDone#readme).

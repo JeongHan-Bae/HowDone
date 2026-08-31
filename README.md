@@ -62,16 +62,16 @@ and never modifies or uploads the source file.
 ## HowDone in action
 
 <p align="center">
-  <a href="docs/assets/task-editor.svg">
+  <a href="https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/docs/assets/task-editor.svg">
     <img
-      src="docs/assets/task-editor.svg"
+      src="https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/docs/assets/task-editor.svg"
       alt="Illustrative task.md editor mockup"
     >
   </a>
   <br>
-  <a href="docs/assets/howdone-terminal.svg">
+  <a href="https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/docs/assets/howdone-terminal.svg">
     <img
-      src="docs/assets/howdone-terminal.svg"
+      src="https://raw.githubusercontent.com/JeongHan-Bae/HowDone/main/docs/assets/howdone-terminal.svg"
       alt="Illustrative HowDone tree-output terminal mockup"
     >
   </a>
