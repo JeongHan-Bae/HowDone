@@ -230,8 +230,8 @@ children; deeper branches and deduped nodes are checked by the full command
 below.
 
 ```text
-howdone-cli@0.1.2
-├── howdone@0.1.2
+howdone-cli@0.1.3
+├── howdone@0.1.3
 ├── chalk@5.6.2
 ├── ink@5.2.1
 │   ├── @alcalzone/ansi-tokenize@0.1.3
