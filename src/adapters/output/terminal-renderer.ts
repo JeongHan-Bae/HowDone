@@ -5,17 +5,30 @@ import type {
   ProgressResult,
   ProgressFormat,
   ResolvedDisplayOptions,
+  TerminalTextSemantic,
+  InfoDocument,
+  ErrorDocument,
+  TerminalOutputOptions,
   TerminalOutputPort,
+  TerminalTextDocument,
+  WarningDocument,
 } from "howdone";
 import { collectLayerStatistics } from "howdone";
 import { defaultGraphemeSegmenter } from "../unicode/intl-grapheme-segmenter.ts";
+import { formatLabel } from "./label-formatter.ts";
 import {
-  countGraphemeClusters,
-  formatLabel,
-  truncateLabel,
-} from "./label-formatter.ts";
+  TerminalOutputDocument,
+  type TerminalOutput,
+  type TerminalOutputLine,
+  type TerminalOutputPart,
+} from "./terminal-output.ts";
 
 export { countGraphemeClusters, formatLabel, truncateLabel } from "./label-formatter.ts";
+
+type TerminalDocumentRenderer<TDocument extends InfoDocument> = (
+  document: TDocument,
+  options?: TerminalOutputOptions,
+) => TerminalTextDocument;
 
 export function formatNumber(
   value: number,
@@ -64,11 +77,87 @@ function formatDisplayProgress(
   );
 }
 
+function outputPart(
+  text: string,
+  attributes: Pick<TerminalOutputPart, "semantic"> = {},
+): TerminalOutputPart {
+  return { text, ...attributes };
+}
+
+function outputLine(...parts: TerminalOutputPart[]): TerminalOutputLine {
+  return { parts };
+}
+
+function treeSeparatorLine(): TerminalOutputLine {
+  return { parts: [], emptyLineMarker: true };
+}
+
+function progressAttributes(progress: number): { semantic: TerminalTextSemantic } {
+  if (progress >= 1) {
+    return { semantic: "complete" };
+  }
+  if (progress <= 0) {
+    return { semantic: "zero" };
+  }
+  return { semantic: "partial" };
+}
+
+function statisticAttributes(value: number): { semantic: TerminalTextSemantic } {
+  return { semantic: value === 0 ? "muted" : "accent" };
+}
+
+function statisticPart(value: number, text = String(value)): TerminalOutputPart {
+  return outputPart(text, statisticAttributes(value));
+}
+
+function completionAttributes(
+  value: number,
+  total: number,
+): { semantic: TerminalTextSemantic } {
+  if (value <= 0) {
+    return { semantic: "zero" };
+  }
+  if (total > 0 && value >= total) {
+    return { semantic: "complete" };
+  }
+  return { semantic: "partial" };
+}
+
+function completionPart(
+  value: number,
+  total: number,
+  text: string,
+): TerminalOutputPart {
+  return outputPart(text, completionAttributes(value, total));
+}
+
+function statisticCountParts(
+  value: number,
+  singular: string,
+  plural = `${singular}s`,
+): TerminalOutputPart[] {
+  return [
+    statisticPart(value),
+    outputPart(` ${value === 1 ? singular : plural}`),
+  ];
+}
+
+function statisticLine(label: string, value: number): TerminalOutputLine {
+  return outputLine(outputPart(label), statisticPart(value));
+}
+
 function renderDefault(
   result: ProgressResult,
   options: ResolvedDisplayOptions,
-): string {
-  return `${formatDisplayProgress(result.progress, options)}\n`;
+): TerminalOutputLine[] {
+  return [
+    outputLine(
+      outputPart(
+        formatDisplayProgress(result.progress, options),
+        progressAttributes(result.progress),
+      ),
+    ),
+  ];
 }
 
 function renderNode(
@@ -77,12 +166,22 @@ function renderNode(
   isLast: boolean,
   options: ResolvedDisplayOptions,
   segmenter: GraphemeSegmenter,
-): string[] {
-  const connector = isLast ? "└─" : "├─";
+): TerminalOutputLine[] {
+  const connector = isLast ? "\u2514\u2500" : "\u251c\u2500";
   const lines = [
-    `${prefix}${connector} [${formatDisplayProgress(node.progress, options)}] ${formatLabel(node.label, options, segmenter)}`,
+    outputLine(
+      outputPart(prefix),
+      outputPart(connector),
+      outputPart(" ["),
+      outputPart(
+        formatDisplayProgress(node.progress, options),
+        progressAttributes(node.progress),
+      ),
+      outputPart("] "),
+      outputPart(formatLabel(node.label, options, segmenter)),
+    ),
   ];
-  const childPrefix = `${prefix}${isLast ? "   " : "│  "}`;
+  const childPrefix = `${prefix}${isLast ? "   " : "\u2502  "}`;
   node.children.forEach((child, index) => {
     lines.push(
       ...renderNode(
@@ -101,10 +200,16 @@ function renderTree(
   result: ProgressResult,
   options: ResolvedDisplayOptions,
   segmenter: GraphemeSegmenter,
-): string {
+): TerminalOutputLine[] {
   const lines = [
-    `Overall completion: ${formatDisplayProgress(result.progress, options)}`,
-    "",
+    outputLine(
+      outputPart("Overall completion: ", { semantic: "accent" }),
+      outputPart(
+        formatDisplayProgress(result.progress, options),
+        progressAttributes(result.progress),
+      ),
+    ),
+    treeSeparatorLine(),
   ];
   result.roots.forEach((root, index) => {
     lines.push(
@@ -118,78 +223,107 @@ function renderTree(
     );
   });
   if (result.roots.length === 0) {
-    lines.push("No statistical nodes found.");
+    lines.push(outputLine(outputPart("No statistical nodes found.", { semantic: "silent" })));
   }
-  return `${lines.join("\n")}\n`;
-}
-
-function pluralize(value: number, singular: string, plural = `${singular}s`): string {
-  return `${value} ${value === 1 ? singular : plural}`;
+  return lines;
 }
 
 function renderDetails(
   result: ProgressResult,
   options: ResolvedDisplayOptions,
   segmenter: GraphemeSegmenter,
-): string {
+): TerminalOutputLine[] {
   const lines = [
-    `Overall completion: ${formatDisplayProgress(result.progress, options)}`,
-    "",
-    "Overall statistics:",
-    `- Root nodes: ${result.rootCount}`,
-    `- Explicit checkboxes: ${result.explicitCheckboxCount}`,
-    `- Implicit nodes: ${result.implicitNodeCount}`,
-    `- Statistical nodes: ${result.nodeCount}`,
-    `- Equivalent completed: ${formatNumber(result.completedEquivalent)} / ${result.rootCount}`,
-    "",
-    "Level statistics:",
+    outputLine(
+      outputPart("Overall completion: ", { semantic: "accent" }),
+      outputPart(
+        formatDisplayProgress(result.progress, options),
+        progressAttributes(result.progress),
+      ),
+    ),
+    outputLine(),
+    outputLine(outputPart("Overall statistics:", { semantic: "accent" })),
+    statisticLine("- Root nodes: ", result.rootCount),
+    statisticLine("- Explicit checkboxes: ", result.explicitCheckboxCount),
+    statisticLine("- Implicit nodes: ", result.implicitNodeCount),
+    statisticLine("- Statistical nodes: ", result.nodeCount),
+    outputLine(
+      outputPart("- Equivalent completed: "),
+      completionPart(
+        result.completedEquivalent,
+        result.rootCount,
+        formatNumber(result.completedEquivalent),
+      ),
+      outputPart(" / "),
+      statisticPart(result.rootCount),
+    ),
+    outputLine(),
+    outputLine(outputPart("Level statistics:", { semantic: "accent" })),
   ];
 
   const layers = collectLayerStatistics(result);
   if (layers.length === 0) {
-    lines.push("- No statistical nodes found.");
+    lines.push(outputLine(outputPart("- No statistical nodes found.", { semantic: "silent" })));
   } else {
     for (const level of layers) {
       lines.push(
-        `- Level ${level.depth + 1}: ${pluralize(level.nodeCount, "node")}, ${pluralize(level.leafCount, "leaf node")}, ${pluralize(level.branchCount, "branch node")}`,
+        outputLine(
+          outputPart("- Level "),
+          statisticPart(level.depth + 1),
+          outputPart(": "),
+          ...statisticCountParts(level.nodeCount, "node"),
+          outputPart(", "),
+          ...statisticCountParts(level.leafCount, "leaf node"),
+          outputPart(", "),
+          ...statisticCountParts(level.branchCount, "branch node"),
+        ),
       );
     }
   }
 
-  lines.push("", "Root statistics:");
+  lines.push(
+    outputLine(),
+    outputLine(outputPart("Root statistics:", { semantic: "accent" })),
+  );
   if (result.roots.length === 0) {
-    lines.push("- No statistical nodes found.");
+    lines.push(outputLine(outputPart("- No statistical nodes found.", { semantic: "silent" })));
   } else {
     for (const root of result.roots) {
       lines.push(
-        `- ${formatLabel(root.label, options, segmenter)}: ${formatDisplayProgress(root.progress, options)}, ${pluralize(root.children.length, "child node")}`,
+        outputLine(
+          outputPart(`- ${formatLabel(root.label, options, segmenter)}: `),
+          outputPart(
+            formatDisplayProgress(root.progress, options),
+            progressAttributes(root.progress),
+          ),
+          outputPart(", "),
+          ...statisticCountParts(root.children.length, "child node"),
+        ),
       );
     }
   }
-  return `${lines.join("\n")}\n`;
+  return lines;
 }
 
-export class TerminalRenderer implements TerminalOutputPort {
+export class TerminalRenderer<
+  TDocument extends InfoDocument = InfoDocument,
+> implements TerminalOutputPort<TerminalOutput, TDocument> {
   private readonly segmenter: GraphemeSegmenter;
+  private readonly documentRenderer?: TerminalDocumentRenderer<TDocument>;
 
-  constructor(segmenter: GraphemeSegmenter = defaultGraphemeSegmenter) {
+  constructor(
+    segmenter: GraphemeSegmenter = defaultGraphemeSegmenter,
+    documentRenderer?: TerminalDocumentRenderer<TDocument>,
+  ) {
     this.segmenter = segmenter;
+    this.documentRenderer = documentRenderer;
   }
 
   render(
     mode: "default" | "tree" | "details",
-    input: ProgressReport | ProgressResult,
+    report: ProgressReport,
     options: ResolvedDisplayOptions,
-  ): string {
-    const report: ProgressReport = "source" in input
-      ? input
-      : {
-          source: { path: "" },
-          markdown: input,
-          frontmatter: [],
-          presentation: "separate",
-          progress: input,
-        };
+  ): TerminalOutput {
     const markdown = report.markdown ?? report.progress;
     const frontmatter = report.frontmatter ?? [];
     const presentation = report.presentation ?? "separate";
@@ -197,14 +331,13 @@ export class TerminalRenderer implements TerminalOutputPort {
     const frontmatterPresent = report.frontmatterPresent ?? frontmatter.length > 0;
     const nestedPresentation =
       (markdownPresent && frontmatterPresent) || frontmatter.length > 1;
-    if (
-      mode === "default" ||
-      presentation === "merged" ||
-      !nestedPresentation
-    ) {
-      if (mode === "tree") return renderTree(report.progress, options, this.segmenter);
-      if (mode === "details") return renderDetails(report.progress, options, this.segmenter);
-      return renderDefault(report.progress, options);
+    if (presentation === "merged" || !nestedPresentation) {
+      const lines = mode === "tree"
+        ? renderTree(report.progress, options, this.segmenter)
+        : mode === "details"
+        ? renderDetails(report.progress, options, this.segmenter)
+        : renderDefault(report.progress, options);
+      return new TerminalOutputDocument(lines);
     }
 
     const sections = frontmatter.map((section) => ({
@@ -218,11 +351,52 @@ export class TerminalRenderer implements TerminalOutputPort {
     const rendered = sections.map(({ title, result }) => {
       const body = mode === "tree"
         ? renderTree(result, options, this.segmenter)
-        : renderDetails(result, options, this.segmenter);
-      return `${title}:\n\n${body.trimEnd()}`;
+        : mode === "details"
+        ? renderDetails(result, options, this.segmenter)
+        : renderDefault(result, options);
+      return [
+        outputLine(outputPart(`${title}:`, { semantic: "accent" })),
+        mode === "tree" ? treeSeparatorLine() : outputLine(),
+        ...body,
+      ];
     });
-    return `${rendered.join("\n\n")}\n`;
+    const lines: TerminalOutputLine[] = [];
+    rendered.forEach((section, index) => {
+      if (index > 0) lines.push(outputLine());
+      lines.push(...section);
+    });
+    return new TerminalOutputDocument(lines);
+  }
+
+  renderDocument(
+    document: TDocument,
+    options?: TerminalOutputOptions,
+  ): TerminalOutput {
+    if (this.documentRenderer !== undefined) {
+      return new TerminalOutputDocument(this.documentRenderer(document, options).lines);
+    }
+    if (
+      typeof document === "object" &&
+      document !== null &&
+      "lines" in document &&
+      Array.isArray(document.lines)
+    ) {
+      return new TerminalOutputDocument(
+        document.lines as TerminalOutput["lines"],
+      );
+    }
+    throw new Error("This terminal renderer cannot render the supplied output document.");
+  }
+
+  renderWarning(document: WarningDocument): TerminalOutput {
+    return new TerminalOutputDocument([{
+      parts: [{ text: `Warning: ${document.message}`, semantic: "warning" }],
+    }]);
+  }
+
+  renderError(document: ErrorDocument): TerminalOutput {
+    return new TerminalOutputDocument([{
+      parts: [{ text: `howdone: error: ${document.message}`, semantic: "error" }],
+    }]);
   }
 }
-
-export const defaultTerminalRenderer = new TerminalRenderer();

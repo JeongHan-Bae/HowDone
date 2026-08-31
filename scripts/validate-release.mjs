@@ -5,6 +5,7 @@ import { appendFileSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { npmCliArguments } from "./npm-runtime.mjs";
 
 /** @typedef {"both" | "cli" | "core"} ReleaseKind */
 
@@ -56,13 +57,12 @@ function parseReleaseTag(tag) {
 function packageVersionExists(name, version) {
   try {
     const output = execFileSync(
-      "npm",
-      ["view", `${name}@${version}`, "version", "--json"],
+      process.execPath,
+      npmCliArguments(["view", `${name}@${version}`, "version", "--json"]),
       {
         cwd: projectRoot,
         encoding: "utf8",
         env: { ...process.env, npm_config_loglevel: "error" },
-        shell: true,
         stdio: ["ignore", "pipe", "pipe"],
       },
     ).trim();
@@ -89,11 +89,12 @@ function fail(message) {
 function writeOutputs(release, coreVersion) {
   const outputFile = process.env.GITHUB_OUTPUT;
   if (outputFile === undefined) return;
+  const publishCore = release.kind !== "cli";
+  const publishCli = true;
   appendFileSync(
     outputFile,
     `version=${release.version}\nkind=${release.kind}\ncore_version=${coreVersion}\n` +
-      `publish_core=${release.kind === "both" || release.kind === "core"}\n` +
-      `publish_cli=${release.kind === "both" || release.kind === "cli"}\n`,
+      `publish_core=${publishCore}\npublish_cli=${publishCli}\n`,
     "utf8",
   );
 }
@@ -153,11 +154,9 @@ function main() {
     fail(`core package must be ${release.version} for tag ${releaseTag}`);
   }
 
-  const targets = release.kind === "both"
-    ? [["howdone", core.version], ["howdone-cli", cli.version]]
-    : release.kind === "core"
-      ? [["howdone", core.version]]
-      : [["howdone-cli", cli.version]];
+  const targets = release.kind === "cli"
+    ? [["howdone-cli", cli.version]]
+    : [["howdone", core.version], ["howdone-cli", cli.version]];
   for (const [name, version] of targets) {
     if (packageVersionExists(name, version)) {
       fail(`${name}@${version} is already published; refusing ${releaseTag} before publishing either target`);

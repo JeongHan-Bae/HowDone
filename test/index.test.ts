@@ -5,10 +5,9 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
 import { parseArguments } from "../src/application/cli/args.ts";
-import {
-  run,
-} from "../src/application/analyze.ts";
-import type { CliDependencies, CliIO } from "../src/application/types.ts";
+import { run } from "howdone/application";
+import type { CliDependencies, CliIO } from "howdone/application";
+import { renderHelpOutput } from "../src/adapters/output/cli-help.ts";
 import { NodeMarkdownFileReader } from "../src/adapters/filesystem/node-file-reader.ts";
 import { defaultTomlValueParser } from "../src/adapters/frontmatter/toml-value-parser.ts";
 import { defaultYamlValueParser } from "../src/adapters/frontmatter/yaml-value-parser.ts";
@@ -36,9 +35,20 @@ import {
   resolveDisplayOptions,
   runMarkdownPipeline,
   TokenKind,
-  TypedAstParser,
-} from "../src/core/index.ts";
-import type { RootAst } from "../src/core/index.ts";
+} from "howdone";
+import { TypedAstParser } from "howdone";
+import type { RootAst } from "howdone";
+import type {
+  JsonObject,
+  JsonOutputOptions,
+  JsonOutputPort,
+  InfoDocumentPort,
+  InfoCommand,
+  TerminalOutput,
+  TerminalTextDocument,
+  TerminalOutputOptions,
+  TerminalOutputPort,
+} from "howdone";
 
 const fixedSample = (JSON.parse(
   readFileSync(new URL("./tdd/fixtures/markdown-samples.json", import.meta.url), "utf8"),
@@ -53,7 +63,7 @@ function labels(markdown: string): string[] {
 }
 
 function closeEnough(actual: number, expected: number): void {
-  assert.ok(Math.abs(actual - expected) < 0.0000001, `${actual} ≠ ${expected}`);
+  assert.ok(Math.abs(actual - expected) < 0.0000001, `${actual} != ${expected}`);
 }
 
 function capture(): { io: CliIO; stdout: () => string; stderr: () => string } {
@@ -69,6 +79,35 @@ function capture(): { io: CliIO; stdout: () => string; stderr: () => string } {
   };
 }
 
+function terminalOutputFromText(text: string): TerminalOutput {
+  const body = text.endsWith("\n") ? text.slice(0, -1) : text;
+  return {
+    lines: body.length === 0
+      ? []
+      : body.split("\n").map((line) => ({ parts: [{ text: line }] })),
+    writeTo: (destination) => { destination.write(text); },
+  };
+}
+
+function ordinaryJsonRenderer(): JsonOutputPort {
+  const renderer = new JsonRenderer();
+  return {
+    render: (report, options) => renderer.render(report, options),
+  };
+}
+
+function infoPort(): InfoDocumentPort<TerminalTextDocument> {
+  return {
+    execute: (command: InfoCommand) => command === "help"
+      ? renderHelpOutput(undefined, packageRuntimeDependencies)
+      : command === "version"
+      ? terminalOutputFromText(`${packageVersion}\n`)
+      : terminalOutputFromText(
+        `${packageRuntimeDependencies.map(({ name, version }) => `${name}@${version}`).join("\n")}\n`,
+      ),
+  };
+}
+
 function dependenciesFor(markdown: string): CliDependencies {
   return {
     lexer: defaultRemarkLexer,
@@ -77,10 +116,8 @@ function dependenciesFor(markdown: string): CliDependencies {
     tomlValueParser: defaultTomlValueParser,
     fileReader: { read: async () => markdown },
     terminalRenderer: new TerminalRenderer(),
-    jsonRenderer: new JsonRenderer(),
-    warning: { warn: () => {} },
-    version: packageVersion,
-    runtimeDependencies: packageRuntimeDependencies,
+    jsonRenderer: ordinaryJsonRenderer(),
+    infoPort: infoPort(),
   };
 }
 
@@ -452,7 +489,10 @@ test("68: truncates mixed Chinese and English labels", () => {
 });
 
 test("69: keeps emoji clusters intact", () => {
-  assert.equal(truncateLabel("😀😀😀😀😀😀😀😀😀😀😀", 10), "😀😀😀😀😀😀😀😀😀😀...");
+  assert.equal(
+    truncateLabel("\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}", 10),
+    "\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}\u{1f600}...",
+  );
 });
 
 test("70: keeps combining marks intact", () => {
@@ -462,13 +502,13 @@ test("70: keeps combining marks intact", () => {
 });
 
 test("71: keeps flag clusters intact", () => {
-  const label = "🇨🇳🇺🇸🇯🇵🇬🇧🇫🇷🇩🇪🇮🇹🇪🇸🇰🇷🇦🇺🇨🇦";
+  const label = "\u{1f1e8}\u{1f1f3}\u{1f1fa}\u{1f1f8}\u{1f1ef}\u{1f1f5}\u{1f1ec}\u{1f1e7}\u{1f1eb}\u{1f1f7}\u{1f1e9}\u{1f1ea}\u{1f1ee}\u{1f1f9}\u{1f1ea}\u{1f1f8}\u{1f1f0}\u{1f1f7}\u{1f1e6}\u{1f1fa}\u{1f1e8}\u{1f1e6}";
   assert.equal(countGraphemeClusters(label), 11);
   assert.equal(countGraphemeClusters(truncateLabel(label, 10).replace(/\.\.\.$/u, "")), 10);
 });
 
 test("72: keeps ZWJ emoji clusters intact", () => {
-  const family = "👨‍👩‍👧‍👦";
+  const family = "\u{1f468}\u200d\u{1f469}\u200d\u{1f467}\u200d\u{1f466}";
   assert.equal(countGraphemeClusters(family.repeat(11)), 11);
   assert.equal(truncateLabel(family.repeat(11), 10), `${family.repeat(10)}...`);
 });
@@ -487,11 +527,11 @@ test("75: leaves an empty label empty", () => {
 });
 
 test("76: leaves a one-grapheme label unchanged", () => {
-  assert.equal(truncateLabel("😀", 1), "😀");
+  assert.equal(truncateLabel("\u{1f600}", 1), "\u{1f600}");
 });
 
 test("77: uses the fixed ellipsis for display truncation", () => {
-  assert.equal(truncateLabel("abcdef", 3, "…"), "abc…");
+  assert.equal(truncateLabel("abcdef", 3, "\u2026"), "abc\u2026");
 });
 
 test("78: does not truncate labels in the default summary", () => {
@@ -517,8 +557,8 @@ test("82: renders the tree CLI output", async () => {
   const output = capture();
   const exitCode = await run(["tasks.md", "--tree"], output.io, dependenciesFor(fixedSample));
   assert.equal(exitCode, 0);
-  assert.match(output.stdout(), /└─ \[75%\] A/u);
-  assert.match(output.stdout(), /├─ \[100%\] C1/u);
+  assert.match(output.stdout(), /\u2514\u2500 \[75%\] A/u);
+  assert.match(output.stdout(), /\u251c\u2500 \[100%\] C1/u);
 });
 
 test("83: renders detailed statistics", async () => {
@@ -851,9 +891,7 @@ test("118: supports a .markdown file through the CLI adapter", async () => {
       fileReader: new NodeMarkdownFileReader(),
       terminalRenderer: new TerminalRenderer(),
       jsonRenderer: new JsonRenderer(),
-      warning: { warn: () => {} },
-      version: packageVersion,
-      runtimeDependencies: packageRuntimeDependencies,
+      infoPort: infoPort(),
     });
     assert.equal(exitCode, 0);
     assert.equal(output.stdout(), "100%\n");
@@ -917,7 +955,7 @@ test("124: JSON rendering preserves numeric progress fields and raw labels", () 
     source: { path: "tasks.md" },
     progress: resultOf("- [x] This is a very long label\n"),
   });
-  const parsed = JSON.parse(json) as {
+  const parsed = json as {
     source: { path: string };
     progress: { progress: number; percentage: number; roots: Array<{ label: string }> };
   };
@@ -933,6 +971,157 @@ test("125: exposes JSON as a CLI output mode", async () => {
   assert.equal(exitCode, 0);
   assert.match(output.stdout(), /"progress"/u);
   assert.match(output.stdout(), /"percentage": 75/u);
+});
+
+test("TDD CLI parses independent color and pager switches", () => {
+  const parsed = parseArguments([
+    "tasks.md",
+    "--tree",
+    "--no-color",
+    "--no-pager",
+  ]);
+
+  assert.equal(parsed.noColor, true);
+  assert.equal(parsed.noPager, true);
+  assert.equal(
+    parseArguments(["tasks.md"]).noColor,
+    false,
+  );
+  assert.equal(
+    parseArguments(["tasks.md"]).noPager,
+    false,
+  );
+});
+
+test("TDD terminal output delegates optional delivery to the port", async () => {
+  const renderedOutput = terminalOutputFromText("terminal output\n");
+  const calls: Array<{
+    content: TerminalOutput;
+    options: TerminalOutputOptions | undefined;
+  }> = [];
+  const terminalRenderer: TerminalOutputPort = {
+    render: () => renderedOutput,
+    renderDocument: () => renderedOutput,
+    renderWarning: () => renderedOutput,
+    renderError: () => renderedOutput,
+    print: (content, options) => {
+      calls.push({ content, options });
+    },
+  };
+  const output = capture();
+
+  const exitCode = await run(
+    ["tasks.md", "--tree"],
+    output.io,
+    {
+      ...dependenciesFor("- [x] done\n"),
+      terminalRenderer,
+    },
+  );
+
+  assert.equal(exitCode, 0);
+  assert.equal(output.stdout(), "");
+  assert.equal(calls[0]?.content, renderedOutput);
+  assert.deepEqual(calls, [
+    {
+      content: renderedOutput,
+      options: { color: "auto", pager: "auto", target: "stdout" },
+    },
+  ]);
+});
+
+test("TDD terminal output passes each no-feature policy independently", async () => {
+  const cases = [
+    {
+      argv: ["--no-color"],
+      expected: { color: "never", pager: "auto", target: "stdout" },
+    },
+    {
+      argv: ["--no-pager"],
+      expected: { color: "auto", pager: "never", target: "stdout" },
+    },
+    {
+      argv: ["--no-color", "--no-pager"],
+      expected: { color: "never", pager: "never", target: "stdout" },
+    },
+  ] as const;
+
+  for (const testCase of cases) {
+    const renderedOutput = terminalOutputFromText("terminal output\n");
+    const calls: Array<{
+      content: TerminalOutput;
+      options: TerminalOutputOptions | undefined;
+    }> = [];
+    const terminalRenderer: TerminalOutputPort = {
+      render: () => renderedOutput,
+      renderDocument: () => renderedOutput,
+      renderWarning: () => renderedOutput,
+      renderError: () => renderedOutput,
+      print: (content, options) => {
+        calls.push({ content, options });
+      },
+    };
+    const output = capture();
+
+    const exitCode = await run(
+      ["tasks.md", "--tree", ...testCase.argv],
+      output.io,
+      {
+        ...dependenciesFor("- [x] done\n"),
+        terminalRenderer,
+      },
+    );
+
+    assert.equal(exitCode, 0, testCase.argv.join(" "));
+    assert.equal(calls[0]?.content, renderedOutput);
+    assert.deepEqual(calls[0]?.options, testCase.expected);
+    assert.equal(output.stdout(), "");
+  }
+});
+
+test("TDD terminal output falls back to direct stdout without the optional hook", async () => {
+  const output = capture();
+  const exitCode = await run(
+    ["tasks.md", "--tree"],
+    output.io,
+    dependenciesFor("- [x] done\n"),
+  );
+
+  assert.equal(exitCode, 0);
+  assert.match(output.stdout(), /^Overall completion: 100%/u);
+});
+
+test("TDD JSON output delegates the same object to its optional hook", async () => {
+  const renderedOutput: JsonObject = { result: true, count: 2 };
+  const calls: Array<{
+    content: JsonObject;
+    options: JsonOutputOptions | undefined;
+  }> = [];
+  const jsonRenderer: JsonOutputPort = {
+    render: () => renderedOutput,
+    writeWithTerminalFeatures: (content, options) => {
+      calls.push({ content, options });
+    },
+  };
+  const output = capture();
+
+  const exitCode = await run(
+    ["tasks.md", "--json", "--no-color", "--no-pager"],
+    output.io,
+    {
+      ...dependenciesFor("- [x] done\n"),
+      jsonRenderer,
+    },
+  );
+
+  assert.equal(exitCode, 0);
+  assert.deepEqual(calls, [
+    {
+      content: renderedOutput,
+      options: { color: "never", pager: "never" },
+    },
+  ]);
+  assert.equal(output.stdout(), "");
 });
 
 test("126: parses progress format and precision options", () => {

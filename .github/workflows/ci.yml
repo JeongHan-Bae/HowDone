@@ -9,7 +9,8 @@ on:
       - "scripts/**"
       - "src/**"
       - "test/**"
-      - "packages/**"
+      - "packages/**/*.ts"
+      - "packages/**/*.json"
       - "package.json"
       - "package-lock.json"
       - "tsconfig.json"
@@ -23,7 +24,8 @@ on:
       - "scripts/**"
       - "src/**"
       - "test/**"
-      - "packages/**"
+      - "packages/**/*.ts"
+      - "packages/**/*.json"
       - "package.json"
       - "package-lock.json"
       - "tsconfig.json"
@@ -34,6 +36,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ubuntu:

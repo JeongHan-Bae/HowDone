@@ -1,7 +1,17 @@
 import { readFileSync } from "node:fs";
 import type {
+  CheckboxNode,
   DocumentAst,
+  FrontmatterChecklist,
+  JsonObject,
+  LayerStatistics,
+  ProgressFormat,
+  ProgressReport,
+  ProgressResult,
+  ResolvedDisplayOptions,
+  RootAst,
   ScannedBlockNode,
+  TerminalTextSemantic,
 } from "howdone";
 
 interface CodePair {
@@ -49,10 +59,95 @@ interface TerminalOutput {
 
 interface JsonOutput {
   fields: Record<string, string>;
+  expected?: JsonObject;
+  expectedBySource?: Record<string, JsonObject>;
 }
 
-interface WarningOutput {
+interface FrontmatterOutput {
+  format: "yaml" | "toml";
+  checklists: FrontmatterChecklist[];
+  progress: ProgressResult;
+}
+
+interface ConsumerComposition {
+  report: ProgressReport;
+  terminalOptions: ResolvedDisplayOptions;
+  jsonOptions: ResolvedDisplayOptions;
+}
+
+export interface CoreProgressCase {
+  code: string;
+  ast: RootAst;
+  expectedRoots: CheckboxNode[];
+  expectedResult: ProgressResult;
+  expectedLayers: LayerStatistics[];
+  expectedFlatLabels: string[];
+}
+
+export interface DisplayOptionsInput {
+  maxLabelClusters?: number;
+  noTruncate: boolean;
+  progressFormat?: ProgressFormat;
+  precision?: number;
+  showTrailingZeros?: boolean;
+}
+
+export interface DisplayOptionsCase {
+  code: string;
+  input: DisplayOptionsInput;
+  expected?: ResolvedDisplayOptions;
+  error?: string;
+}
+
+export interface ConsumerOutputCapabilities {
+  color: boolean;
+  pager: boolean;
+}
+
+export interface ConsumerOutputPortCapabilities extends ConsumerOutputCapabilities {
   label: string;
+}
+
+export interface ConsumerOutputRequest {
+  color: "auto" | "never";
+  pager: "auto" | "never";
+}
+
+export interface ConsumerOutputCapabilityCase {
+  code: string;
+  terminal: ConsumerOutputPortCapabilities;
+  json: ConsumerOutputPortCapabilities;
+  request: ConsumerOutputRequest;
+}
+
+export interface ConsumerTerminalContentFixture {
+  lines: Array<{
+    parts: Array<{
+      text: string;
+      semantic?: TerminalTextSemantic;
+    }>;
+    emptyLineMarker?: boolean;
+  }>;
+}
+
+export interface ConsumerTerminalCapabilityOutput {
+  label: string;
+  content: ConsumerTerminalContentFixture;
+  fallbackStdout: string;
+  hook: boolean;
+  effective: ConsumerOutputCapabilities;
+}
+
+export interface ConsumerJsonCapabilityOutput {
+  label: string;
+  object: JsonObject;
+  hook: boolean;
+  effective: ConsumerOutputCapabilities;
+}
+
+export interface ConsumerOutputCapabilityOutput {
+  terminal: ConsumerTerminalCapabilityOutput;
+  json: ConsumerJsonCapabilityOutput;
 }
 
 export interface ConsumerExpectedResult {
@@ -87,10 +182,26 @@ const terminalInput = readJson<PairFile<ValuePair>>("terminal-input");
 const terminalOutput = readJson<Record<string, TerminalOutput>>("terminal-output");
 const jsonInput = readJson<PairFile<ValuePair>>("json-input");
 const jsonOutput = readJson<Record<string, JsonOutput>>("json-output");
-const warningInput = readJson<PairFile<ValuePair>>("warning-input");
-const warningOutput = readJson<Record<string, WarningOutput>>("warning-output");
-
+const frontmatterOutput = readJson<Record<string, FrontmatterOutput>>(
+  "frontmatter-output",
+);
+const compositions = readJson<Record<string, ConsumerComposition>>(
+  "compositions",
+);
+const outputCapabilitiesInput = readJson<{
+  cases: ConsumerOutputCapabilityCase[];
+}>("output-capabilities-input");
+const outputCapabilitiesOutput = readJson<
+  Record<string, ConsumerOutputCapabilityOutput>
+>("output-capabilities-output");
+const coreContracts = readJson<{
+  progress: CoreProgressCase[];
+  displayOptions: DisplayOptionsCase[];
+}>("core-contracts");
 export const consumerCases = readerInput.cases;
+export const consumerOutputCapabilityCases = outputCapabilitiesInput.cases;
+export const coreProgressCases = coreContracts.progress;
+export const displayOptionsCases = coreContracts.displayOptions;
 
 export function readerOutputForCode(code: string): ReaderOutput {
   const result = readerOutput[code];
@@ -169,6 +280,18 @@ export function yamlValueOutput(value: string): unknown {
   return outputForCode(yamlOutput, code, "YAML value");
 }
 
+export function frontmatterOutputForSection(
+  format: "yaml" | "toml",
+  value: string,
+): FrontmatterOutput {
+  const code = valueCodeForInput(
+    format === "yaml" ? yamlInput.cases : tomlInput.cases,
+    value,
+    format === "yaml" ? "YAML" : "TOML",
+  );
+  return outputForCode(frontmatterOutput, code, `${format} frontmatter`);
+}
+
 export function tomlValueOutput(value: string): unknown {
   const code = valueCodeForInput(tomlInput.cases, value, "TOML");
   return outputForCode(tomlOutput, code, "TOML value");
@@ -200,10 +323,42 @@ export function jsonOutputForSignature(signature: string): JsonOutput {
   return outputForCode(jsonOutput, code, "JSON");
 }
 
-export function warningOutputForMessage(message: string): WarningOutput {
-  const pair = warningInput.cases.find((candidate) =>
-    message.includes(candidate.input)
+export function jsonExpectedForSignature(
+  signature: string,
+  sourcePath: string,
+): JsonObject {
+  const output = jsonOutputForSignature(signature);
+  const expected = output.expectedBySource?.[sourcePath] ?? output.expected;
+  if (expected === undefined) {
+    throw new Error(
+      `missing JSON expected output for ${signature} and ${sourcePath}`,
+    );
+  }
+  return expected;
+}
+
+export function consumerCompositionForCode(code: string): ConsumerComposition {
+  const result = compositions[code];
+  if (result === undefined) {
+    throw new Error("missing consumer composition: " + code);
+  }
+  return result;
+}
+
+export function consumerOutputCapabilityCaseForCode(
+  code: string,
+): ConsumerOutputCapabilityCase {
+  const result = consumerOutputCapabilityCases.find((candidate) =>
+    candidate.code === code
   );
-  if (pair === undefined) throw new Error(`missing warning input: ${message}`);
-  return outputForCode(warningOutput, pair.code, "warning");
+  if (result === undefined) {
+    throw new Error(`missing output capability input: ${code}`);
+  }
+  return result;
+}
+
+export function consumerOutputCapabilityOutputForCode(
+  code: string,
+): ConsumerOutputCapabilityOutput {
+  return outputForCode(outputCapabilitiesOutput, code, "output capability");
 }

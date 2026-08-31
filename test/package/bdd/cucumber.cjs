@@ -15,6 +15,6 @@ module.exports = {
     requireModule: ["tsx/cjs"],
     require: ["test/package/bdd/steps/**/*.steps.ts"],
     paths: ["test/package/bdd/features/**/*.feature"],
-    format: ["progress"],
+    format: ["summary"],
   },
 };

@@ -1,15 +1,6 @@
 Feature: Complex Markdown composition
   These scenarios combine nested Markdown progress with multiple display controls.
 
-  Scenario: Terminal label truncation accepts a CLI limit
-    Given a Markdown file containing:
-      """
-      - [x] 123456789012345
-      """
-    When I run howdone with arguments "tasks.md --tree --max-label-clusters 5"
-    Then the command succeeds
-    And stdout contains "12345..."
-
   Scenario: A mixed Markdown document composes nested progress and display controls
     Given a Markdown file containing:
       """

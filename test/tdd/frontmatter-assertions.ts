@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
 import {
   calculateProgress,
-  TypedAstParser,
 } from "howdone";
+import { TypedAstParser } from "howdone/std";
 import type {
   DocumentAst,
   ProgressResult,

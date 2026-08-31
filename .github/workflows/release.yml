@@ -16,15 +16,49 @@ permissions:
   id-token: write
 
 jobs:
+  validate:
+    name: Validate release tag, versions, and registry state
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+    outputs:
+      kind: ${{ steps.validate.outputs.kind }}
+      core_version: ${{ steps.validate.outputs.core_version }}
+      publish_core: ${{ steps.validate.outputs.publish_core }}
+      publish_cli: ${{ steps.validate.outputs.publish_cli }}
+    permissions:
+      contents: read
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.release_tag || github.ref }}
+
+      - name: Set up Node.js for npm registry validation
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate release tag, versions, and registry state
+        id: validate
+        run: |
+          set -euo pipefail
+          node scripts/validate-release.mjs "${RELEASE_TAG}"
+
   ci:
     name: Release CI gate
+    needs: validate
     uses: ./.github/workflows/ci.yml
     permissions:
       contents: read
 
   publish:
     name: Publish to npm
-    needs: ci
+    needs: [validate, ci]
     runs-on: ubuntu-latest
     env:
       RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
@@ -46,26 +80,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Typecheck release validator
-        run: npm run typecheck:release
-
-      - name: Validate release tag, versions, and registry state
-        id: validate
-        run: |
-          set -euo pipefail
-          node scripts/validate-release.mjs "${RELEASE_TAG}"
-
       - name: Build release package
         run: npm run build:cli
 
       - name: Publish the core package
-        if: steps.validate.outputs.publish_core == 'true'
+        if: needs.validate.outputs.publish_core == 'true'
         run: npm publish --workspace packages/core --tag latest --access public
 
       - name: Check exact core dependency before CLI publish
-        if: steps.validate.outputs.publish_cli == 'true'
+        if: needs.validate.outputs.publish_cli == 'true'
         env:
-          CORE_VERSION: ${{ steps.validate.outputs.core_version }}
+          CORE_VERSION: ${{ needs.validate.outputs.core_version }}
         run: |
           set -euo pipefail
           for attempt in {1..30}; do
@@ -80,5 +105,5 @@ jobs:
           exit 1
 
       - name: Publish the CLI package
-        if: steps.validate.outputs.publish_cli == 'true'
+        if: needs.validate.outputs.publish_cli == 'true'
         run: npm publish --workspace packages/cli --tag latest --access public

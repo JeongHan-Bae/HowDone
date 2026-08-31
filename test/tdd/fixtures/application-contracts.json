@@ -1,0 +1,518 @@
+{
+  "cases": [
+    {
+      "id": "terminal-display-options-combined",
+      "source": "- ParentLong\n  - [x] ChildLong\n  - [ ] pending\n",
+      "argv": [
+        "tasks.md",
+        "--tree",
+        "--format=decimal",
+        "--precision",
+        "3",
+        "--no-trailing-zeros",
+        "--max-label-clusters=5",
+        "--no-color",
+        "--no-pager"
+      ],
+      "expected": {
+        "status": 0,
+        "readerPaths": [
+          "tasks.md"
+        ],
+        "diagnostics": [],
+        "report": {
+          "sourcePath": "tasks.md",
+          "frontmatter": [],
+          "frontmatterPresent": false,
+          "markdownPresent": true,
+          "presentation": "separate",
+          "frontmatterWeight": null,
+          "markdown": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 1,
+            "nodeCount": 3,
+            "completedEquivalent": 0.5,
+            "progress": 0.5,
+            "percentage": 50,
+            "rootLabels": [
+              "ParentLong"
+            ]
+          },
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 1,
+            "nodeCount": 3,
+            "completedEquivalent": 0.5,
+            "progress": 0.5,
+            "percentage": 50,
+            "rootLabels": [
+              "ParentLong"
+            ]
+          }
+        },
+        "terminal": {
+          "mode": "tree",
+          "options": {
+            "maxLabelClusters": 5,
+            "ellipsis": "...",
+            "truncate": true,
+            "progressFormat": "decimal",
+            "precision": 3,
+            "showTrailingZeros": false
+          },
+          "print": [
+            {
+              "tag": "report",
+              "options": {
+                "color": "never",
+                "pager": "never",
+                "target": "stdout"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "weighted-frontmatter-details-combination",
+      "source": "---\nchecks:\n  setup: false\n---\n\n- [x] body\n",
+      "argv": [
+        "tasks.md",
+        "--details",
+        "--merge-frontmatter",
+        "--frontmatter-weight=0.25",
+        "--percentage",
+        "--precision=2",
+        "--keep-trailing-zeros",
+        "--no-color",
+        "--no-pager"
+      ],
+      "expected": {
+        "status": 0,
+        "readerPaths": [
+          "tasks.md"
+        ],
+        "diagnostics": [],
+        "report": {
+          "sourcePath": "tasks.md",
+          "frontmatter": [
+            {
+              "format": "yaml",
+              "rootCount": 1,
+              "explicitCheckboxCount": 1,
+              "implicitNodeCount": 1,
+              "nodeCount": 2,
+              "completedEquivalent": 0,
+              "progress": 0,
+              "percentage": 0,
+              "rootLabels": [
+                "checks"
+              ]
+            }
+          ],
+          "frontmatterPresent": true,
+          "markdownPresent": true,
+          "presentation": "merged",
+          "frontmatterWeight": 0.25,
+          "markdown": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 0,
+            "nodeCount": 1,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "rootLabels": [
+              "body"
+            ]
+          },
+          "progress": {
+            "rootCount": 2,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 1,
+            "nodeCount": 3,
+            "completedEquivalent": 1.5,
+            "progress": 0.75,
+            "percentage": 75,
+            "rootLabels": [
+              "checks",
+              "body"
+            ]
+          }
+        },
+        "terminal": {
+          "mode": "details",
+          "options": {
+            "maxLabelClusters": 10,
+            "ellipsis": "...",
+            "truncate": true,
+            "progressFormat": "percentage",
+            "precision": 2,
+            "showTrailingZeros": true
+          },
+          "print": [
+            {
+              "tag": "report",
+              "options": {
+                "color": "never",
+                "pager": "never",
+                "target": "stdout"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "json-format-warning-with-label-limit",
+      "source": "- ParentLong\n  - [x] ChildLong\n  - [ ] pending\n",
+      "argv": [
+        "tasks.md",
+        "--json",
+        "--format=decimal",
+        "--precision=3",
+        "--keep-trailing-zeros",
+        "--max-label-clusters",
+        "4",
+        "--no-color",
+        "--no-pager"
+      ],
+      "expected": {
+        "status": 0,
+        "readerPaths": [
+          "tasks.md"
+        ],
+        "diagnostics": [
+          {
+            "kind": "warning",
+            "message": "The following options have no effect with --json because JSON contains raw numeric fields and complete labels: --format/--decimal/--percentage, --precision, --show-trailing-zeros/--no-trailing-zeros.",
+            "options": {
+              "color": "never",
+              "pager": "never",
+              "target": "stderr"
+            }
+          }
+        ],
+        "report": {
+          "sourcePath": "tasks.md",
+          "frontmatter": [],
+          "frontmatterPresent": false,
+          "markdownPresent": true,
+          "presentation": "separate",
+          "frontmatterWeight": null,
+          "markdown": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 1,
+            "nodeCount": 3,
+            "completedEquivalent": 0.5,
+            "progress": 0.5,
+            "percentage": 50,
+            "rootLabels": [
+              "ParentLong"
+            ]
+          },
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 1,
+            "nodeCount": 3,
+            "completedEquivalent": 0.5,
+            "progress": 0.5,
+            "percentage": 50,
+            "rootLabels": [
+              "ParentLong"
+            ]
+          }
+        },
+        "json": {
+          "renderOptions": {
+            "maxLabelClusters": 4,
+            "ellipsis": "...",
+            "truncate": true,
+            "progressFormat": "decimal",
+            "precision": 3,
+            "showTrailingZeros": true
+          },
+          "output": {
+            "case": "json-format-warning-with-label-limit",
+            "percentage": 50,
+            "labels": [
+              "ParentLong"
+            ]
+          },
+          "delivery": {
+            "color": "never",
+            "pager": "never"
+          }
+        }
+      }
+    },
+    {
+      "id": "json-no-truncate-is-silent",
+      "source": "- [x] body\n",
+      "argv": [
+        "tasks.md",
+        "--json",
+        "--no-truncate",
+        "--no-color",
+        "--no-pager"
+      ],
+      "expected": {
+        "status": 0,
+        "readerPaths": [
+          "tasks.md"
+        ],
+        "diagnostics": [],
+        "report": {
+          "sourcePath": "tasks.md",
+          "frontmatter": [],
+          "frontmatterPresent": false,
+          "markdownPresent": true,
+          "presentation": "separate",
+          "frontmatterWeight": null,
+          "markdown": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 0,
+            "nodeCount": 1,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "rootLabels": [
+              "body"
+            ]
+          },
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 0,
+            "nodeCount": 1,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "rootLabels": [
+              "body"
+            ]
+          }
+        },
+        "json": {
+          "renderOptions": null,
+          "output": {
+            "case": "json-no-truncate-is-silent",
+            "percentage": 100
+          },
+          "delivery": {
+            "color": "never",
+            "pager": "never"
+          }
+        }
+      }
+    },
+    {
+      "id": "strict-json-warning-precedes-reading",
+      "source": "- [x] body\n",
+      "argv": [
+        "tasks.md",
+        "--json",
+        "--precision",
+        "2",
+        "--strict",
+        "--silent"
+      ],
+      "expected": {
+        "status": 1,
+        "readerPaths": [],
+        "diagnostics": [
+          {
+            "kind": "error",
+            "message": "The following options have no effect with --json because JSON contains raw numeric fields and complete labels: --precision.",
+            "options": {
+              "color": "auto",
+              "pager": "never",
+              "target": "stderr"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "silent-inapplicable-merge-and-weight",
+      "source": "- ParentLong\n  - [x] ChildLong\n  - [ ] pending\n",
+      "argv": [
+        "tasks.md",
+        "--tree",
+        "--merge-frontmatter",
+        "--frontmatter-weight",
+        "0.25",
+        "--silent",
+        "--no-color",
+        "--no-pager"
+      ],
+      "expected": {
+        "status": 0,
+        "readerPaths": [
+          "tasks.md"
+        ],
+        "diagnostics": [],
+        "report": {
+          "sourcePath": "tasks.md",
+          "frontmatter": [],
+          "frontmatterPresent": false,
+          "markdownPresent": true,
+          "presentation": "separate",
+          "frontmatterWeight": null,
+          "markdown": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 1,
+            "nodeCount": 3,
+            "completedEquivalent": 0.5,
+            "progress": 0.5,
+            "percentage": 50,
+            "rootLabels": [
+              "ParentLong"
+            ]
+          },
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 2,
+            "implicitNodeCount": 1,
+            "nodeCount": 3,
+            "completedEquivalent": 0.5,
+            "progress": 0.5,
+            "percentage": 50,
+            "rootLabels": [
+              "ParentLong"
+            ]
+          }
+        },
+        "terminal": {
+          "mode": "tree",
+          "options": {
+            "maxLabelClusters": 10,
+            "ellipsis": "...",
+            "truncate": true,
+            "progressFormat": "percentage",
+            "precision": 2,
+            "showTrailingZeros": false
+          },
+          "print": [
+            {
+              "tag": "report",
+              "options": {
+                "color": "never",
+                "pager": "never",
+                "target": "stdout"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "weight-without-frontmatter-roots-warns",
+      "source": "---\ntitle: Release\n---\n\n- [x] body\n",
+      "argv": [
+        "tasks.md",
+        "--details",
+        "--merge-frontmatter",
+        "--frontmatter-weight=0.25",
+        "--no-color",
+        "--no-pager"
+      ],
+      "expected": {
+        "status": 0,
+        "readerPaths": [
+          "tasks.md"
+        ],
+        "diagnostics": [
+          {
+            "kind": "warning",
+            "message": "--frontmatter-weight is invalid unless both frontmatter and Markdown have checklist roots. The value was ignored.",
+            "options": {
+              "color": "never",
+              "pager": "never",
+              "target": "stderr"
+            }
+          }
+        ],
+        "report": {
+          "sourcePath": "tasks.md",
+          "frontmatter": [
+            {
+              "format": "yaml",
+              "rootCount": 0,
+              "explicitCheckboxCount": 0,
+              "implicitNodeCount": 0,
+              "nodeCount": 0,
+              "completedEquivalent": 0,
+              "progress": 0,
+              "percentage": 0,
+              "rootLabels": []
+            }
+          ],
+          "frontmatterPresent": true,
+          "markdownPresent": true,
+          "presentation": "merged",
+          "frontmatterWeight": null,
+          "markdown": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 0,
+            "nodeCount": 1,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "rootLabels": [
+              "body"
+            ]
+          },
+          "progress": {
+            "rootCount": 1,
+            "explicitCheckboxCount": 1,
+            "implicitNodeCount": 0,
+            "nodeCount": 1,
+            "completedEquivalent": 1,
+            "progress": 1,
+            "percentage": 100,
+            "rootLabels": [
+              "body"
+            ]
+          }
+        },
+        "terminal": {
+          "mode": "details",
+          "options": {
+            "maxLabelClusters": 10,
+            "ellipsis": "...",
+            "truncate": true,
+            "progressFormat": "percentage",
+            "precision": 2,
+            "showTrailingZeros": false
+          },
+          "print": [
+            {
+              "tag": "warning",
+              "options": {
+                "color": "never",
+                "pager": "never",
+                "target": "stderr"
+              }
+            },
+            {
+              "tag": "report",
+              "options": {
+                "color": "never",
+                "pager": "never",
+                "target": "stdout"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

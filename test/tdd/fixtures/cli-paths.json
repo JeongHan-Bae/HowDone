@@ -70,7 +70,6 @@
       "noTruncate": false,
       "mergeFrontmatter": true,
       "frontmatterWeight": 0.5,
-      "frontmatterWeightInput": "0.5",
       "strict": true
     }
   },
@@ -176,6 +175,30 @@
     {
       "argv": ["--frontmatter-weight="],
       "message": "requires a value"
+    },
+    {
+      "argv": ["--frontmatter-weight", "--tree"],
+      "message": "requires a value"
+    },
+    {
+      "argv": ["--frontmatter-weight", "--json"],
+      "message": "requires a value"
+    },
+    {
+      "argv": ["--frontmatter-weight", "--"],
+      "message": "requires a value"
+    },
+    {
+      "argv": ["--frontmatter-weight=--tree"],
+      "message": "requires a value"
+    },
+    {
+      "argv": ["--frontmatter-weight=0"],
+      "message": "must be a decimal strictly between 0 and 1"
+    },
+    {
+      "argv": ["--frontmatter-weight=nope"],
+      "message": "must be a decimal strictly between 0 and 1"
     },
     {
       "argv": ["--show-trailing-zeros", "--no-trailing-zeros"],

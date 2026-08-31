@@ -1,116 +1,89 @@
 import assert from "node:assert/strict";
 import { Then } from "@cucumber/cucumber";
 import {
-  nativePathArgument,
+  cliJsonOutputFixtures,
   stdoutText,
   type ScenarioState,
 } from "./support.ts";
+
+function inputArgument(argumentsValue: readonly string[]): string | undefined {
+  if (argumentsValue[0] !== undefined && !argumentsValue[0].startsWith("-")) {
+    return argumentsValue[0];
+  }
+  const endOfOptions = argumentsValue.indexOf("--");
+  return endOfOptions < 0 ? undefined : argumentsValue[endOfOptions + 1];
+}
+
+function normalizedArguments(argumentsValue: readonly string[]): readonly string[] {
+  if (argumentsValue[0] !== undefined && !argumentsValue[0].startsWith("-")) {
+    return argumentsValue.slice(1);
+  }
+  const endOfOptions = argumentsValue.indexOf("--");
+  if (endOfOptions < 0 || argumentsValue[endOfOptions + 1] === undefined) {
+    return argumentsValue;
+  }
+  return [
+    ...argumentsValue.slice(0, endOfOptions),
+    "--",
+    "$input-path",
+  ];
+}
+
+function resolveInputPath(value: unknown, inputPath: string): unknown {
+  if (Array.isArray(value)) {
+    return value.map((item) => resolveInputPath(item, inputPath));
+  }
+  if (typeof value === "object" && value !== null) {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        resolveInputPath(item, inputPath),
+      ]),
+    );
+  }
+  return value === "$input-path" ? inputPath : value;
+}
+
+function normalizedSource(source: string | undefined): string | undefined {
+  return source?.replaceAll("\r\n", "\n").replace(/\n$/u, "");
+}
+
+export function assertJsonOutputMatchesFixture(world: ScenarioState): void {
+  const argumentsValue = world.arguments;
+  if (argumentsValue === undefined) {
+    throw new Error("JSON output arguments are missing");
+  }
+  const inputPath = inputArgument(argumentsValue);
+  if (inputPath === undefined) {
+    throw new Error("JSON output input path is missing");
+  }
+  const normalized = normalizedArguments(argumentsValue);
+  const fixture = cliJsonOutputFixtures.cases.find((candidate) =>
+    candidate.arguments.length === normalized.length &&
+    candidate.arguments.every((argument, index) => argument === normalized[index]) &&
+    (candidate.sourceFixture === undefined
+      ? normalizedSource(candidate.source) === normalizedSource(world.source)
+      : candidate.sourceFixture === world.sourceFixture)
+  );
+  if (fixture === undefined) {
+    throw new Error(
+      `missing CLI JSON output fixture for ${world.sourceFixture ?? "source"}: ${JSON.stringify(normalized)}`,
+    );
+  }
+  const expected = cliJsonOutputFixtures.outputs[fixture.output];
+  if (expected === undefined) {
+    throw new Error(`missing CLI JSON output oracle: ${fixture.output}`);
+  }
+  assert.deepEqual(
+    JSON.parse(stdoutText(world)),
+    resolveInputPath(expected, inputPath),
+  );
+}
 
 Then("stdout is valid JSON", function (this: ScenarioState) {
   const parsed = JSON.parse(stdoutText(this)) as unknown;
   assert.equal(typeof parsed, "object");
   assert.notEqual(parsed, null);
   assert.equal(Array.isArray(parsed), false);
+  assertJsonOutputMatchesFixture(this);
 });
-
-Then(
-  "stdout JSON has keys {string}",
-  function (this: ScenarioState, expected: string) {
-    const parsed = JSON.parse(stdoutText(this)) as Record<string, unknown>;
-    assert.deepEqual(Object.keys(parsed), expected.split(","));
-  },
-);
-
-Then(
-  "stdout JSON has source path equal to the native {word} path",
-  function (this: ScenarioState, kind: string) {
-    const parsed = JSON.parse(stdoutText(this)) as {
-      source?: { path?: string };
-    };
-    assert.equal(parsed.source?.path, nativePathArgument(this, kind));
-  },
-);
-
-Then(
-  "stdout JSON reports progress {string} and percentage {string}",
-  function (this: ScenarioState, expectedProgress: string, expectedPercentage: string) {
-    const parsed = JSON.parse(stdoutText(this)) as {
-      progress?: { progress?: number; percentage?: number };
-    };
-    assert.equal(parsed.progress?.progress, Number(expectedProgress));
-    assert.equal(parsed.progress?.percentage, Number(expectedPercentage));
-  },
-);
-
-Then(
-  "stdout JSON reports frontmatter {string} progress {string} and percentage {string}",
-  function (
-    this: ScenarioState,
-    format: string,
-    expectedProgress: string,
-    expectedPercentage: string,
-  ) {
-    const parsed = JSON.parse(stdoutText(this)) as {
-      frontmatter?: Array<{
-        format?: string;
-        progress?: { progress?: number; percentage?: number };
-      }>;
-    };
-    const section = parsed.frontmatter?.find(
-      (candidate) => candidate.format === format,
-    );
-    assert.equal(section?.progress?.progress, Number(expectedProgress));
-    assert.equal(section?.progress?.percentage, Number(expectedPercentage));
-  },
-);
-
-Then(
-  "stdout JSON reports frontmatter formats {string}",
-  function (this: ScenarioState, expected: string) {
-    const parsed = JSON.parse(stdoutText(this)) as {
-      frontmatter?: Array<{ format?: string }>;
-    };
-    assert.equal(
-      parsed.frontmatter?.map((section) => section.format).join(","),
-      expected,
-    );
-  },
-);
-
-Then(
-  "stdout JSON reports presentation {string}",
-  function (this: ScenarioState, expected: string) {
-    const parsed = JSON.parse(stdoutText(this)) as {
-      presentation?: string;
-    };
-    assert.equal(parsed.presentation, expected);
-  },
-);
-
-Then(
-  "stdout JSON reports frontmatter weight {string}",
-  function (this: ScenarioState, expected: string) {
-    const parsed = JSON.parse(stdoutText(this)) as {
-      frontmatterWeight?: number;
-    };
-    assert.equal(parsed.frontmatterWeight, Number(expected));
-  },
-);
-
-Then(
-  "stdout JSON contains nested labels {string}, {string}, and {string}",
-  function (this: ScenarioState, rootLabel: string, firstChild: string, secondChild: string) {
-    const parsed = JSON.parse(stdoutText(this)) as {
-      progress?: {
-        roots?: Array<{
-          label: string;
-          children: Array<{ label: string }>;
-        }>;
-      };
-    };
-    const root = parsed.progress?.roots?.[0];
-    assert.equal(root?.label, rootLabel);
-    assert.equal(root?.children[0]?.label, firstChild);
-    assert.equal(root?.children[1]?.label, secondChild);
-  },
-);

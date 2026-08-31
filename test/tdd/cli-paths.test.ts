@@ -15,14 +15,10 @@ import { defaultYamlValueParser } from "../../src/adapters/frontmatter/yaml-valu
 import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
 import { JsonRenderer } from "../../src/adapters/output/json-renderer.ts";
 import { TerminalRenderer } from "../../src/adapters/output/terminal-renderer.ts";
-import {
-  packageRuntimeDependencies,
-  packageVersion,
-} from "../../src/adapters/runtime/node-package-version.ts";
 import { run } from "howdone/application";
+import { TypedAstParser } from "howdone/std";
 import type { ParsedArguments } from "../../src/application/cli/args.ts";
 import { parseArguments } from "../../src/application/cli/args.ts";
-import { TypedAstParser } from "howdone";
 
 interface PathVariant {
   kind: "relative" | "relative-space" | "absolute" | "absolute-space";
@@ -44,9 +40,10 @@ interface ArgumentExpectation {
   noTruncate: boolean;
   mergeFrontmatter?: boolean;
   frontmatterWeight?: number | null;
-  frontmatterWeightInput?: string | null;
   silent?: boolean;
   strict?: boolean;
+  noColor?: boolean;
+  noPager?: boolean;
 }
 
 interface ArgumentFixture {
@@ -130,9 +127,9 @@ function dependencies(baseDirectory: string) {
     jsonRenderer: new JsonRenderer(),
     yamlValueParser: defaultYamlValueParser,
     tomlValueParser: defaultTomlValueParser,
-    warning: { warn: () => {} },
-    version: packageVersion,
-    runtimeDependencies: packageRuntimeDependencies,
+    infoPort: {
+      execute: () => ({}),
+    },
   };
 }
 
@@ -151,11 +148,10 @@ function expectedArguments(value: ArgumentExpectation): ParsedArguments {
     noTruncate: value.noTruncate,
     mergeFrontmatter: value.mergeFrontmatter ?? false,
     frontmatterWeight: value.frontmatterWeight ?? undefined,
-    ...(value.frontmatterWeightInput === undefined
-      ? {}
-      : { frontmatterWeightInput: value.frontmatterWeightInput ?? undefined }),
     silent: value.silent ?? false,
     strict: value.strict ?? false,
+    noColor: value.noColor ?? false,
+    noPager: value.noPager ?? false,
   };
 }
 
@@ -255,24 +251,58 @@ test("TDD rejects argument boundary values without falling through", () => {
   }
 });
 
-test("TDD defers frontmatter weight legality to the merge operation", () => {
-  const illegal = parseArguments([
-    "--merge-frontmatter",
-    "--frontmatter-weight",
-    "0",
-  ]);
-  assert.equal(illegal.frontmatterWeight, undefined);
-  assert.equal(illegal.frontmatterWeightInput, "0");
+test("TDD rejects an illegal frontmatter weight during argument parsing", () => {
+  assert.throws(
+    () => parseArguments([
+      "--merge-frontmatter",
+      "--frontmatter-weight",
+      "0",
+    ]),
+    /must be a decimal strictly between 0 and 1/u,
+  );
 
   const validWithoutMerge = parseArguments([
     "--frontmatter-weight",
     "0.5",
   ]);
   assert.equal(validWithoutMerge.frontmatterWeight, 0.5);
-  assert.equal(validWithoutMerge.frontmatterWeightInput, "0.5");
 
   const silent = parseArguments(["--silent", "-s", "tasks.md"]);
   assert.equal(silent.silent, true);
+});
+
+test("TDD accepts global options for every standalone command", () => {
+  for (const command of ["--help", "--version", "--dependencies"]) {
+    const parsed = parseArguments([
+      command,
+      "--silent",
+      "--strict",
+      "--no-color",
+      "--no-pager",
+    ]);
+    assert.equal(parsed.help, command === "--help");
+    assert.equal(parsed.version, command === "--version");
+    assert.equal(parsed.dependencies, command === "--dependencies");
+    assert.equal(parsed.silent, true);
+    assert.equal(parsed.strict, true);
+    assert.equal(parsed.noColor, true);
+    assert.equal(parsed.noPager, true);
+  }
+  assert.throws(
+    () => parseArguments(["--help", "--tree"]),
+    /standalone command/u,
+  );
+});
+
+test("TDD rejects unconditional color and Pager modes", () => {
+  assert.throws(
+    () => parseArguments(["tasks.md", "--color"]),
+    /Unknown option/u,
+  );
+  assert.throws(
+    () => parseArguments(["tasks.md", "--pager"]),
+    /Unknown option/u,
+  );
 });
 
 test("TDD composes a native path with every display option through the app port", async () => {

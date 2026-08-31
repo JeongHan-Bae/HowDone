@@ -26,4 +26,5 @@ function copyIntoPackage(packageName, sourceName, targetName) {
 }
 
 copyIntoPackage("core", "docs/api.md", "api.md");
+copyIntoPackage("cli", "docs/guide.md", "guide.md");
 copyIntoPackage("cli", "docs/syntax.md", "syntax.md");

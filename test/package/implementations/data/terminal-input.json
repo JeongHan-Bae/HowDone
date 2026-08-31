@@ -2,6 +2,9 @@
   "cases": [
     { "input": "default|100|body", "code": "terminal-complete-body" },
     { "input": "default|50|first", "code": "terminal-half-first" },
-    { "input": "default|100|checks", "code": "terminal-complete-checks" }
+    { "input": "default|100|checks", "code": "terminal-complete-checks" },
+    { "input": "tree|50|first", "code": "terminal-tree-half-first" },
+    { "input": "details|50|first", "code": "terminal-details-half-first" },
+    { "input": "tree|75|checks", "code": "terminal-tree-weighted-mixed" }
   ]
 }

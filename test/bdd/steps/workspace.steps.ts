@@ -1,10 +1,11 @@
 import { Given, After } from "@cucumber/cucumber";
-import { mkdirSync, mkdtempSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
 import {
   createNativeVariantWorkspace,
   createWorkspace,
+  displayFixtures,
   frontmatterFixtures,
   frontmatterLayoutFixtures,
   nestedSourceFixture,
@@ -17,8 +18,26 @@ Given("a Markdown file containing:", function (this: ScenarioState, source: stri
 });
 
 Given("the nested contract Markdown fixture", function (this: ScenarioState) {
-  createWorkspace(this, "tasks.md", nestedSourceFixture.source);
+  createWorkspace(
+    this,
+    "tasks.md",
+    nestedSourceFixture.source,
+    "nested:nested-contract",
+  );
 });
+
+Given(
+  "the ASCII-escaped display fixture {string}",
+  function (this: ScenarioState, id: string) {
+    const fixture = displayFixtures.cases.find(
+      (candidate) => candidate.id === id,
+    );
+    if (fixture === undefined) {
+      throw new Error("unknown display fixture: " + id);
+    }
+    createWorkspace(this, fixture.fileName, fixture.source, `display:${id}`);
+  },
+);
 
 Given(
   "the frontmatter fixture {string}",
@@ -29,7 +48,7 @@ Given(
     if (fixture === undefined) {
       throw new Error("unknown frontmatter fixture: " + id);
     }
-    createWorkspace(this, "tasks.md", fixture.source);
+    createWorkspace(this, "tasks.md", fixture.source, `frontmatter:${id}`);
   },
 );
 
@@ -42,7 +61,7 @@ Given(
     if (fixture === undefined) {
       throw new Error("unknown frontmatter layout fixture: " + id);
     }
-    createWorkspace(this, "tasks.md", fixture.source);
+    createWorkspace(this, "tasks.md", fixture.source, `layout:${id}`);
   },
 );
 
@@ -50,6 +69,18 @@ Given(
   "a Markdown file named {string} containing:",
   function (this: ScenarioState, fileName: string, source: string) {
     createWorkspace(this, fileName, source);
+  },
+);
+
+Given(
+  "another Markdown file named {string} containing:",
+  function (this: ScenarioState, fileName: string, source: string) {
+    if (this.directory === undefined) {
+      throw new Error("the BDD workspace has not been created");
+    }
+    const filePath = path.resolve(this.directory, fileName);
+    mkdirSync(path.dirname(filePath), { recursive: true });
+    writeFileSync(filePath, source, "utf8");
   },
 );
 

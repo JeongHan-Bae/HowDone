@@ -5,6 +5,7 @@ import { chmodSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { npmCliArguments } from "./npm-runtime.mjs";
 
 const projectRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const corePackagePath = resolve(projectRoot, "packages", "core");
@@ -31,9 +32,8 @@ function parseOptions() {
  * @returns {boolean}
  */
 function runNpm(argumentsList, workingDirectory) {
-  const result = spawnSync("npm", argumentsList, {
+  const result = spawnSync(process.execPath, npmCliArguments(argumentsList), {
     cwd: workingDirectory,
-    shell: true,
     stdio: "inherit",
     windowsHide: false,
   });

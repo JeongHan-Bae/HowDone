@@ -5,6 +5,7 @@
     { "input": "1|1|100", "code": "json-one-header" },
     { "input": "1|2|100", "code": "json-one-header-body" },
     { "input": "2|2|100", "code": "json-two-headers" },
-    { "input": "2|3|100", "code": "json-two-headers-body" }
+    { "input": "2|3|100", "code": "json-two-headers-body" },
+    { "input": "1|2|75", "code": "json-weighted-mixed" }
   ]
 }

@@ -85,9 +85,11 @@ howdone --dependencies
 ```
 
 Only the Markdown-path command reads a document. Help, version, and dependency
-display are standalone commands. The complete command syntax is documented in
-[`docs/syntax.md`](docs/syntax.md).
+display are standalone commands. The complete CLI usage, including command and
+option ownership, is documented in the [CLI guide](docs/guide.md). The source
+language rules are documented in the [source syntax contract](docs/syntax.md).
 
 ## More information
 
-For the complete project guide, read the [source README on GitHub](https://github.com/JeongHan-Bae/HowDone/blob/main/README.md).
+For complete CLI usage, read the [CLI guide](docs/guide.md). For the complete
+project context, read the [source README on GitHub](https://github.com/JeongHan-Bae/HowDone/blob/main/README.md).

@@ -1,0 +1,257 @@
+{
+  "progress": [
+    {
+      "code": "nested-body-tree",
+      "ast": {
+        "type": "root",
+        "children": [
+          {
+            "type": "list",
+            "ordered": false,
+            "start": null,
+            "items": [
+              {
+                "type": "list-item",
+                "checked": false,
+                "children": [
+                  { "type": "paragraph", "text": "Release" },
+                  {
+                    "type": "list",
+                    "ordered": true,
+                    "start": 1,
+                    "items": [
+                      {
+                        "type": "list-item",
+                        "checked": true,
+                        "children": [
+                          { "type": "paragraph", "text": "Build" }
+                        ]
+                      },
+                      {
+                        "type": "list-item",
+                        "checked": false,
+                        "children": [
+                          { "type": "paragraph", "text": "Test" }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "list-item",
+                "checked": null,
+                "children": [
+                  { "type": "paragraph", "text": "Docs" },
+                  {
+                    "type": "list",
+                    "ordered": false,
+                    "start": null,
+                    "items": [
+                      {
+                        "type": "list-item",
+                        "checked": true,
+                        "children": [
+                          { "type": "paragraph", "text": "Guide" }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "list-item",
+                "checked": null,
+                "children": [
+                  { "type": "paragraph", "text": "Ignored" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expectedRoots": [
+        {
+          "label": "Release",
+          "checked": false,
+          "implicit": false,
+          "children": [
+            {
+              "label": "Build",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 0,
+              "depth": 1
+            },
+            {
+              "label": "Test",
+              "checked": false,
+              "implicit": false,
+              "children": [],
+              "progress": 0,
+              "depth": 1
+            }
+          ],
+          "progress": 0,
+          "depth": 0
+        },
+        {
+          "label": "Docs",
+          "checked": null,
+          "implicit": true,
+          "children": [
+            {
+              "label": "Guide",
+              "checked": true,
+              "implicit": false,
+              "children": [],
+              "progress": 0,
+              "depth": 1
+            }
+          ],
+          "progress": 0,
+          "depth": 0
+        }
+      ],
+      "expectedResult": {
+        "rootCount": 2,
+        "explicitCheckboxCount": 4,
+        "implicitNodeCount": 1,
+        "nodeCount": 5,
+        "completedEquivalent": 1.5,
+        "progress": 0.75,
+        "percentage": 75,
+        "roots": [
+          {
+            "label": "Release",
+            "checked": false,
+            "implicit": false,
+            "children": [
+              {
+                "label": "Build",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              },
+              {
+                "label": "Test",
+                "checked": false,
+                "implicit": false,
+                "children": [],
+                "progress": 0,
+                "depth": 1
+              }
+            ],
+            "progress": 0.5,
+            "depth": 0
+          },
+          {
+            "label": "Docs",
+            "checked": null,
+            "implicit": true,
+            "children": [
+              {
+                "label": "Guide",
+                "checked": true,
+                "implicit": false,
+                "children": [],
+                "progress": 1,
+                "depth": 1
+              }
+            ],
+            "progress": 1,
+            "depth": 0
+          }
+        ]
+      },
+      "expectedLayers": [
+        { "depth": 0, "nodeCount": 2, "leafCount": 0, "branchCount": 2 },
+        { "depth": 1, "nodeCount": 3, "leafCount": 3, "branchCount": 0 }
+      ],
+      "expectedFlatLabels": ["Release", "Build", "Test", "Docs", "Guide"]
+    }
+  ],
+  "displayOptions": [
+    {
+      "code": "percentage-default",
+      "input": { "noTruncate": false },
+      "expected": {
+        "maxLabelClusters": 10,
+        "ellipsis": "...",
+        "truncate": true,
+        "progressFormat": "percentage",
+        "precision": 2,
+        "showTrailingZeros": false
+      }
+    },
+    {
+      "code": "decimal-no-truncate",
+      "input": { "noTruncate": true, "progressFormat": "decimal" },
+      "expected": {
+        "maxLabelClusters": 10,
+        "ellipsis": "...",
+        "truncate": false,
+        "progressFormat": "decimal",
+        "precision": 4,
+        "showTrailingZeros": false
+      }
+    },
+    {
+      "code": "explicit-percentage",
+      "input": {
+        "maxLabelClusters": 4,
+        "noTruncate": false,
+        "progressFormat": "percentage",
+        "precision": 0,
+        "showTrailingZeros": true
+      },
+      "expected": {
+        "maxLabelClusters": 4,
+        "ellipsis": "...",
+        "truncate": true,
+        "progressFormat": "percentage",
+        "precision": 0,
+        "showTrailingZeros": true
+      }
+    },
+    {
+      "code": "explicit-decimal",
+      "input": {
+        "maxLabelClusters": 6,
+        "noTruncate": false,
+        "progressFormat": "decimal",
+        "precision": 3,
+        "showTrailingZeros": true
+      },
+      "expected": {
+        "maxLabelClusters": 6,
+        "ellipsis": "...",
+        "truncate": true,
+        "progressFormat": "decimal",
+        "precision": 3,
+        "showTrailingZeros": true
+      }
+    },
+    {
+      "code": "invalid-decimal-zero",
+      "input": {
+        "noTruncate": false,
+        "progressFormat": "decimal",
+        "precision": 0
+      },
+      "error": "precision must be at least 1 and at most 100 for decimal format"
+    },
+    {
+      "code": "invalid-percentage-too-high",
+      "input": {
+        "noTruncate": false,
+        "progressFormat": "percentage",
+        "precision": 101
+      },
+      "error": "precision must be at least 0 and at most 100 for percentage format"
+    }
+  ]
+}

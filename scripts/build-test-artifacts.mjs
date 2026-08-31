@@ -40,6 +40,7 @@ chmodSync(resolve(compiledCliRoot, "boot", "cli-main.js"), 0o755);
 
 rmSync(resolve(outputRoot, "src"), { recursive: true, force: true });
 cpSync(compiledRoot, resolve(outputRoot, "src"), { recursive: true });
+cpSync(compiledCliRoot, resolve(outputRoot, "src"), { recursive: true });
 
 cpSync(
   resolve(projectRoot, "test", "tdd", "fixtures"),

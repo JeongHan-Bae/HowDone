@@ -4,16 +4,18 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   CLI_COMMANDS,
+  CLI_GLOBAL_OPTIONS,
   CLI_OPTIONS,
-  CLI_SYNTAX_REFERENCE,
   CLI_USAGE,
   type CliCommandHeader,
   type CliOptionHeader,
 } from "../src/application/cli/args.js";
 import {
+  CLI_SYNTAX_REFERENCE,
   HELP_SECTIONS,
   type HelpOption,
-} from "../src/application/cli/help.js";
+  type HelpDocumentLine,
+} from "../src/adapters/output/cli-help.js";
 
 interface CliMetadata {
   bin?: Record<string, string>;
@@ -64,10 +66,45 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 }
 
-function assertRenderedLabel(text: string, label: string, sectionName: string): void {
-  const pattern = new RegExp(`^  ${escapeRegExp(label)}(?:\\s|$)`, "mu");
-  if (!pattern.test(text)) {
-    throw new Error(`CLI help ${sectionName} is missing: ${label}`);
+function normalizeWhitespaceForComparison(value: string): string {
+  return value.replace(/\s+/gu, " ").trim();
+}
+
+function helpLineText(line: HelpDocumentLine): string {
+  return line.map((part) => typeof part === "string" ? part : part.text).join("");
+}
+
+function stripTerminalCodeMarkup(value: string): string {
+  return value.replace(/`([^`\n]*)`/gu, "$1");
+}
+
+function assertRenderedLabel(
+  text: string,
+  option: Pick<HelpOption, "command" | "argument">,
+  sectionName: string,
+): void {
+  const commands = Array.isArray(option.command)
+    ? option.command
+    : [option.command];
+  const combined = [
+    Array.isArray(option.command)
+      ? option.command.join(", ")
+      : option.command,
+    option.argument,
+  ]
+    .filter((part) => part.length > 0)
+    .join(" ");
+  if (new RegExp(`^  ${escapeRegExp(combined)}(?:\\s|$)`, "mu").test(text)) {
+    return;
+  }
+  for (const command of commands) {
+    const label = [command, option.argument]
+      .filter((part) => part.length > 0)
+      .join(" ");
+    const pattern = new RegExp(`^  ${escapeRegExp(label)}(?:,|\\s|$)`, "mu");
+    if (!pattern.test(text)) {
+      throw new Error(`CLI help ${sectionName} is missing: ${label}`);
+    }
   }
 }
 
@@ -76,14 +113,16 @@ function assertRenderedDescriptions(
   options: readonly HelpOption[],
   sectionName: string,
 ): void {
+  const normalizedText = normalizeWhitespaceForComparison(text);
   for (const option of options) {
     if (option.description.length === 0) {
       throw new Error(`CLI help ${sectionName} has an empty description`);
     }
     for (const line of option.description) {
-      if (!text.includes(line)) {
+      const lineText = helpLineText(line);
+      if (!normalizedText.includes(normalizeWhitespaceForComparison(lineText))) {
         throw new Error(
-          `CLI help ${sectionName} is missing description text: ${line}`,
+          `CLI help ${sectionName} is missing description text: ${lineText}`,
         );
       }
     }
@@ -94,13 +133,17 @@ function assertRenderedSection(
   text: string,
   title: string,
   nextTitle: string,
-  expected: string,
+  expected: readonly HelpDocumentLine[],
 ): void {
   const actual = section(text, title, nextTitle)
     .split("\n")
     .slice(1)
     .map((line) => line.trim());
-  assertSameLabels(actual, expected.split("\n"), `Help ${title}`);
+  assertSameLabels(
+    actual,
+    expected.map(helpLineText),
+    `Help ${title}`,
+  );
 }
 
 function main(): void {
@@ -111,11 +154,11 @@ function main(): void {
   const binNames = Object.keys(cliMetadata.bin ?? {}).sort();
   assertSameLabels(binNames, ["howdone", "howdone-cli"], "CLI bin names");
 
-  const helpText = execFileSync(
+  const helpText = stripTerminalCodeMarkup(execFileSync(
     process.execPath,
     [resolve(projectRoot, "bin", "howdone.cjs"), "--help"],
     { cwd: projectRoot, encoding: "utf8" },
-  );
+  ));
   const usageSection = section(helpText, "Usage", "Commands");
   const usageLines = usageSection
     .split("\n")
@@ -133,7 +176,7 @@ function main(): void {
   const expectedCommandLabels = CLI_COMMANDS.map(renderCommand);
   assertSameLabels(actualCommands, expectedCommandLabels, "Help commands");
   const commandSection = section(helpText, "Commands", "Options");
-  for (const command of expectedCommandLabels) {
+  for (const command of HELP_SECTIONS.commands) {
     assertRenderedLabel(commandSection, command, "Commands");
   }
   assertRenderedDescriptions(commandSection, HELP_SECTIONS.commands, "Commands");
@@ -141,11 +184,32 @@ function main(): void {
   const actualOptions = HELP_SECTIONS.options.map(renderOption);
   const expectedOptionLabels = CLI_OPTIONS.map(renderOption);
   assertSameLabels(actualOptions, expectedOptionLabels, "Help options");
-  const optionSection = section(helpText, "Options", "Supported paths");
-  for (const option of expectedOptionLabels) {
+  const optionSection = section(helpText, "Options", "Global options");
+  for (const option of HELP_SECTIONS.options) {
     assertRenderedLabel(optionSection, option, "Options");
   }
   assertRenderedDescriptions(optionSection, HELP_SECTIONS.options, "Options");
+
+  const actualGlobalOptions = HELP_SECTIONS.globalOptions.map(renderOption);
+  const expectedGlobalOptionLabels = CLI_GLOBAL_OPTIONS.map(renderOption);
+  assertSameLabels(
+    actualGlobalOptions,
+    expectedGlobalOptionLabels,
+    "Help global options",
+  );
+  const globalOptionSection = section(
+    helpText,
+    "Global options",
+    "Supported paths",
+  );
+  for (const option of HELP_SECTIONS.globalOptions) {
+    assertRenderedLabel(globalOptionSection, option, "Global options");
+  }
+  assertRenderedDescriptions(
+    globalOptionSection,
+    HELP_SECTIONS.globalOptions,
+    "Global options",
+  );
 
   assertRenderedSection(
     helpText,
@@ -194,7 +258,7 @@ function main(): void {
     .slice(1)
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
-  if (!HELP_SECTIONS.syntaxReference.includes(CLI_SYNTAX_REFERENCE)) {
+  if (!HELP_SECTIONS.syntaxReference.map(helpLineText).join("\n").includes(CLI_SYNTAX_REFERENCE)) {
     throw new Error("Help syntax reference does not describe the CLI syntax file");
   }
   const syntaxReferencePath = resolve(projectRoot, CLI_SYNTAX_REFERENCE);
@@ -208,7 +272,7 @@ function main(): void {
   }
 
   console.log(
-    `CLI help contract OK: ${CLI_USAGE.length} command forms (${CLI_COMMANDS.length} standalone), ${CLI_OPTIONS.length} options`,
+    `CLI help contract OK: ${CLI_USAGE.length} command forms (${CLI_COMMANDS.length} standalone), ${CLI_OPTIONS.length + CLI_GLOBAL_OPTIONS.length} options`,
   );
 }
 

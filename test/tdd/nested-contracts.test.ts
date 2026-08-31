@@ -1,16 +1,17 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { test } from "node:test";
-import { JsonRenderer } from "../../src/adapters/output/json-renderer.ts";
-import { TerminalRenderer } from "../../src/adapters/output/terminal-renderer.ts";
-import { defaultRemarkLexer } from "../../src/adapters/markdown/remark-lexer.ts";
-import {
-  buildProgressRoots,
-  calculateProgress,
-  summarizeProgress,
-  TypedAstParser,
+import {readFileSync} from "node:fs";
+import {test} from "node:test";
+import {JsonRenderer} from "../../src/adapters/output/json-renderer.ts";
+import {TerminalRenderer} from "../../src/adapters/output/terminal-renderer.ts";
+import {defaultRemarkLexer} from "../../src/adapters/markdown/remark-lexer.ts";
+import type {
+  ProgressReport,
+  ProgressResult,
+  ResolvedDisplayOptions,
+  TerminalOutput,
 } from "howdone";
-import type { ResolvedDisplayOptions } from "howdone";
+import {buildProgressRoots, calculateProgress, summarizeProgress,} from "howdone";
+import {TypedAstParser} from "howdone/std";
 
 interface JsonOutputFixture {
   sourcePath: string;
@@ -33,6 +34,24 @@ const fixture = JSON.parse(
   readFileSync(new URL("./fixtures/nested-contracts.json", import.meta.url), "utf8"),
 ) as NestedFixtures;
 
+function plainText(output: TerminalOutput): string {
+  let text = "";
+  output.writeTo({ write: (chunk: string) => { text += chunk; } });
+  return text;
+}
+
+function reportFor(progress: ProgressResult): ProgressReport {
+  return {
+    source: { path: "tasks.md" },
+    markdown: progress,
+    markdownPresent: true,
+    frontmatter: [],
+    frontmatterPresent: false,
+    presentation: "separate",
+    progress,
+  };
+}
+
 test("TDD AST-to-tree boundary keeps nested implicit and explicit objects distinct", () => {
   const ast = new TypedAstParser().parse(defaultRemarkLexer.lex(fixture.source)).body;
   const roots = buildProgressRoots(ast);
@@ -54,11 +73,10 @@ test("TDD JSON boundary preserves nested report shape and only truncates output 
     new TypedAstParser().parse(defaultRemarkLexer.lex(fixture.source)).body,
   );
   const original = JSON.stringify(result);
-  const json = new JsonRenderer().render(
-    { source: { path: fixture.jsonOutput.sourcePath }, progress: result },
-    fixture.jsonOutput.options,
+  const parsed = new JsonRenderer().render(
+      {source: {path: fixture.jsonOutput.sourcePath}, progress: result},
+      fixture.jsonOutput.options,
   );
-  const parsed = JSON.parse(json);
 
   assert.deepEqual(parsed, fixture.jsonOutput.expectedReport);
   assert.equal(JSON.stringify(result), original);
@@ -71,11 +89,11 @@ test("TDD terminal boundary preserves complete nested tree and details output", 
   const renderer = new TerminalRenderer();
 
   assert.equal(
-    renderer.render("tree", result, fixture.jsonOutput.options),
+    plainText(renderer.render("tree", reportFor(result), fixture.jsonOutput.options)),
     fixture.jsonOutput.terminalOutput.tree,
   );
   assert.equal(
-    renderer.render("details", result, fixture.jsonOutput.options),
+    plainText(renderer.render("details", reportFor(result), fixture.jsonOutput.options)),
     fixture.jsonOutput.terminalOutput.details,
   );
 });

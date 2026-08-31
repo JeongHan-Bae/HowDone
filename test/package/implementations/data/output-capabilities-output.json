@@ -1,0 +1,2562 @@
+{
+  "0000-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0000-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0000-aa\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0000-aa",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0000-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0000-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0000-na\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0000-na",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0000-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0000-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0000-an\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0000-an",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0000-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0000-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0000-nn\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0000-nn",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0001-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0001-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0001-aa\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0001-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "0001-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0001-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0001-na\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0001-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "0001-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0001-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0001-an\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0001-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0001-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0001-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0001-nn\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0001-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0010-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0010-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0010-aa\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0010-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "0010-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0010-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0010-na\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0010-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0010-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0010-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0010-an\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0010-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "0010-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0010-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0010-nn\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0010-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0011-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0011-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0011-aa\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0011-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": true
+      }
+    }
+  },
+  "0011-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0011-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0011-na\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0011-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "0011-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0011-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0011-an\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0011-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "0011-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0011-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0011-nn\n",
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0011-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0100-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0100-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0100-aa\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0100-aa",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0100-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0100-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0100-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0100-na",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0100-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0100-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0100-an\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0100-an",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0100-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0100-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0100-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0100-nn",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0101-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0101-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0101-aa\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0101-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "0101-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0101-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0101-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0101-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "0101-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0101-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0101-an\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0101-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0101-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0101-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0101-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0101-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0110-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0110-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0110-aa\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0110-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "0110-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0110-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0110-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0110-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0110-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0110-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0110-an\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0110-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "0110-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0110-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0110-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0110-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "0111-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0111-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0111-aa\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0111-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": true
+      }
+    }
+  },
+  "0111-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0111-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0111-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0111-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "0111-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0111-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0111-an\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0111-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "0111-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "0111-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:0111-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "0111-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1000-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1000-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1000-aa\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1000-aa",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1000-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1000-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1000-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1000-na",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1000-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1000-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1000-an\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1000-an",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1000-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1000-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1000-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1000-nn",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1001-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1001-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1001-aa\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1001-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "1001-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1001-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1001-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1001-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "1001-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1001-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1001-an\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1001-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1001-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1001-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1001-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1001-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1010-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1010-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1010-aa\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1010-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "1010-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1010-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1010-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1010-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1010-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1010-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1010-an\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1010-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "1010-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1010-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1010-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1010-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1011-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1011-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1011-aa\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1011-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": true
+      }
+    }
+  },
+  "1011-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1011-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1011-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1011-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "1011-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1011-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1011-an\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1011-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "1011-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1011-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1011-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1011-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1100-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1100-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1100-aa\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1100-aa",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1100-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1100-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1100-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1100-na",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1100-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1100-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1100-an\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1100-an",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1100-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1100-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1100-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1100-nn",
+        "percentage": 50
+      },
+      "hook": false,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1101-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1101-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1101-aa\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1101-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "1101-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1101-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1101-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1101-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "1101-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1101-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1101-an\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1101-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1101-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1101-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1101-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1101-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1110-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1110-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1110-aa\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1110-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "1110-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1110-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1110-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1110-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1110-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1110-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1110-an\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1110-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "1110-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1110-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1110-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1110-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  },
+  "1111-aa": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1111-aa",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1111-aa\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1111-aa",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": true
+      }
+    }
+  },
+  "1111-na": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1111-na",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1111-na\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1111-na",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": true
+      }
+    }
+  },
+  "1111-an": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1111-an",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1111-an\n",
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1111-an",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": true,
+        "pager": false
+      }
+    }
+  },
+  "1111-nn": {
+    "terminal": {
+      "label": "consumer-terminal-port",
+      "content": {
+        "lines": [
+          {
+            "parts": [
+              {
+                "text": "consumer-terminal-port:",
+                "semantic": "accent"
+              },
+              {
+                "text": "1111-nn",
+                "semantic": "partial"
+              }
+            ]
+          }
+        ]
+      },
+      "fallbackStdout": "consumer-terminal-port:1111-nn\n",
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    },
+    "json": {
+      "label": "consumer-json-port",
+      "object": {
+        "adapter": "consumer-json-port",
+        "case": "1111-nn",
+        "percentage": 50
+      },
+      "hook": true,
+      "effective": {
+        "color": false,
+        "pager": false
+      }
+    }
+  }
+}

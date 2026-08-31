@@ -1,14 +1,39 @@
 import type { FrontmatterProgress, ProgressReport, ProgressResult } from "./types.ts";
 import { calculateCombinedProgress } from "./analyzer.ts";
 
+/**
+ * @brief Controls how a progress report combines Markdown and frontmatter.
+ *
+ * @details
+ * The application supplies this policy after validating command-line or
+ * caller options. The report builder applies it without depending on a CLI
+ * parser or an output adapter.
+ */
 export interface ProgressReportOptions {
+  /** @brief Whether eligible source channels should be merged. */
   mergeFrontmatter: boolean;
+
+  /** @brief Optional fraction of merged progress assigned to frontmatter. */
   frontmatterWeight?: number;
 }
 
+/**
+ * @brief Returns a report together with ignored-option diagnostics.
+ *
+ * @details
+ * A requested merge or weight can be semantically inapplicable when the
+ * source has too few channels or one side has no checklist roots. The boolean
+ * results let the application produce a warning without changing the report
+ * contract.
+ */
 export interface ProgressReportBuild {
+  /** @brief Progress report produced from the supplied source channels. */
   report: ProgressReport;
+
+  /** @brief True when merge was requested but fewer than two components existed. */
   mergeIgnored: boolean;
+
+  /** @brief True when a requested weight was inapplicable to the source roots. */
   weightIgnored: boolean;
 }
 

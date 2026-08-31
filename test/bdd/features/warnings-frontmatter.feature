@@ -1,53 +1,35 @@
-Feature: Frontmatter merge and weight warnings
-  These scenarios prove merge and weight warning policy, including silent and strict modes.
+Feature: Frontmatter merge and weight diagnostics
+  These scenarios prove hard invalid-value errors and merge/weight warning policy.
 
-  Scenario Outline: Illegal frontmatter weights warn and leave the normal merge result
+  Scenario Outline: Illegal frontmatter weights are hard errors
     Given the frontmatter fixture "yaml-checklist-with-body"
     When I run howdone with arguments "tasks.md --json --merge-frontmatter --frontmatter-weight <weight> <extra>"
-    Then the command succeeds
-    And stderr contains "Warning"
-    And stderr contains "frontmatter-weight is illegal"
-    And stdout is valid JSON
-    And stdout JSON reports presentation "merged"
-    And stdout JSON reports progress "0.6666666666666666" and percentage "66.66666666666666"
+    Then the command fails
+    And stderr contains "--frontmatter-weight must be a decimal strictly between 0 and 1"
+    And stdout is empty
 
     Examples:
       | weight | extra                  |
       | 0      |                        |
-      | 0      | --max-label-clusters 5 |
+      | 0      | --silent               |
+      | 0      | --strict               |
       | 1      |                        |
-      | 1      | --max-label-clusters 5 |
       | -0.5   |                        |
-      | -0.5   | --max-label-clusters 5 |
       | 1.5    |                        |
-      | 1.5    | --max-label-clusters 5 |
       | nope   |                        |
-      | nope   | --max-label-clusters 5 |
 
-  Scenario Outline: Silent mode suppresses an illegal frontmatter weight warning
+  Scenario Outline: Equals-form illegal frontmatter weights are hard errors
     Given the frontmatter fixture "yaml-checklist-with-body"
-    When I run howdone with arguments "tasks.md --json --merge-frontmatter --frontmatter-weight 0 --silent <extra>"
-    Then the command succeeds
-    And stderr is empty
-    And stdout is valid JSON
-    And stdout JSON reports presentation "merged"
-    And stdout JSON reports progress "0.6666666666666666" and percentage "66.66666666666666"
-
-    Examples:
-      | extra                  |
-      |                        |
-      | --max-label-clusters 5 |
-
-  Scenario Outline: Strict mode rejects an illegal frontmatter weight
-    Given the frontmatter fixture "yaml-checklist-with-body"
-    When I run howdone with arguments "tasks.md --json --merge-frontmatter --frontmatter-weight 0 --strict <extra>"
+    When I run howdone with arguments "tasks.md --json --merge-frontmatter --frontmatter-weight=<weight> <extra>"
     Then the command fails
-    And stderr contains "frontmatter-weight is illegal"
+    And stderr contains "--frontmatter-weight must be a decimal strictly between 0 and 1"
+    And stdout is empty
 
     Examples:
-      | extra                  |
-      |                        |
-      | --max-label-clusters 5 |
+      | weight | extra    |
+      | 0      |          |
+      | 1.5    | --silent |
+      | nope   | --strict |
 
   Scenario: A valid frontmatter weight without merge is warned and ignored
     Given the frontmatter fixture "yaml-checklist-with-body"
@@ -56,8 +38,6 @@ Feature: Frontmatter merge and weight warnings
     And stderr contains "Warning"
     And stderr contains "frontmatter-weight is invalid without --merge-frontmatter"
     And stdout is valid JSON
-    And stdout JSON reports presentation "separate"
-    And stdout JSON reports progress "0.6666666666666666" and percentage "66.66666666666666"
 
   Scenario: Strict mode rejects a valid frontmatter weight without merge
     Given the frontmatter fixture "yaml-checklist-with-body"
@@ -161,9 +141,13 @@ Feature: Frontmatter merge and weight warnings
     Then the command succeeds
     And stderr is empty
     And stdout is valid JSON
-    And stdout JSON reports presentation "merged"
-    And stdout JSON reports progress "0.6666666666666666" and percentage "66.66666666666666"
-    And stdout JSON reports frontmatter weight "0.5"
+
+  Scenario: Equals-form frontmatter weight is applied to a valid merge
+    Given the frontmatter fixture "yaml-checklist-with-body"
+    When I run howdone with arguments "tasks.md --json --merge-frontmatter --frontmatter-weight=0.5"
+    Then the command succeeds
+    And stderr is empty
+    And stdout is valid JSON
 
   Scenario: Explicit frontmatter merge weighting overrides root counts
     Given the frontmatter fixture "yaml-checklist-with-body"
@@ -172,9 +156,6 @@ Feature: Frontmatter merge and weight warnings
     And stderr contains "Warning"
     And stderr contains "have no effect with --json"
     And stdout is valid JSON
-    And stdout JSON reports presentation "merged"
-    And stdout JSON reports progress "0.6666666666666666" and percentage "66.66666666666666"
-    And stdout JSON reports frontmatter weight "0.5"
 
   Scenario: A single frontmatter component warns when merge is requested
     Given the frontmatter fixture "yaml-checklist-only"
@@ -183,7 +164,6 @@ Feature: Frontmatter merge and weight warnings
     And stderr contains "Warning"
     And stderr contains "at least two source components"
     And stdout is valid JSON
-    And stdout JSON reports progress "0.3333333333333333" and percentage "33.33333333333333"
 
   Scenario: Strict mode rejects a single frontmatter merge component
     Given the frontmatter fixture "yaml-checklist-only"
@@ -198,10 +178,30 @@ Feature: Frontmatter merge and weight warnings
     And stderr contains "Warning"
     And stderr contains "at least two source components"
     And stdout is valid JSON
-    And stdout JSON reports progress "0.5" and percentage "50"
 
   Scenario: Strict mode rejects a single Markdown merge component
     Given the frontmatter fixture "body-only"
     When I run howdone with arguments "tasks.md --json --merge-frontmatter --strict"
     Then the command fails
     And stderr contains "at least two source components"
+
+  Scenario: A frontmatter weight is invalid when two headers have no Markdown side
+    Given the frontmatter fixture "yaml-toml-multiple-only"
+    When I run howdone with arguments "tasks.md --json --merge-frontmatter --frontmatter-weight 0.5 --no-truncate"
+    Then the command succeeds
+    And stderr contains "Warning"
+    And stderr contains "frontmatter-weight is invalid unless both frontmatter and Markdown have checklist roots"
+    And stdout is valid JSON
+
+  Scenario: Silent mode suppresses a frontmatter weight warning without a Markdown side
+    Given the frontmatter fixture "yaml-toml-multiple-only"
+    When I run howdone with arguments "tasks.md --json --merge-frontmatter --frontmatter-weight 0.5 --silent --no-truncate"
+    Then the command succeeds
+    And stderr is empty
+    And stdout is valid JSON
+
+  Scenario: Strict mode rejects a frontmatter weight without a Markdown side
+    Given the frontmatter fixture "yaml-toml-multiple-only"
+    When I run howdone with arguments "tasks.md --json --merge-frontmatter --frontmatter-weight 0.5 --strict"
+    Then the command fails
+    And stderr contains "frontmatter-weight is invalid unless both frontmatter and Markdown have checklist roots"
