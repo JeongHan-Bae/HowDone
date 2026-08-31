@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import * as application from "howdone/application";
 import * as core from "howdone";
@@ -87,21 +86,4 @@ test("published Core builds a complete consumer report without CLI adapters", ()
 test("published Core fixture coverage includes valid and invalid display policy branches", () => {
   assert.equal(displayOptionsCases.length, 6);
   assert.equal(displayOptionsCases.filter((fixture) => fixture.error !== undefined).length, 2);
-});
-
-test("published package ships the hexagonal API contract", () => {
-  const api = readFileSync(
-    new URL("../../../node_modules/howdone/docs/api.md", import.meta.url),
-    "utf8",
-  );
-
-  assert.match(api, /^# Public API/u);
-  assert.match(api, /howdone\/application/u);
-  assert.match(api, /howdone\/std/u);
-  assert.match(api, /interface CliDependencies/u);
-  assert.match(api, /interface InfoDocumentPort/u);
-  assert.match(api, /## Use the Core: the hexagonal composition root/u);
-  assert.match(api, /## Package dependency boundary/u);
-  assert.match(api, /## CLI composition and dependencies/u);
-  assert.match(api, /mdast-util-to-string/u);
 });

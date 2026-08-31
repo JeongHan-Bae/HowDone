@@ -407,14 +407,18 @@ matrix or release policy.
 
 ### Package contents
 
-`npm run pack:check` builds first, then runs `npm pack --dry-run --json` for
-both workspaces and verifies each package's metadata and file allowlist. The
-core package contains only its selected `dist/core` and `dist/application`
-artifacts, `docs/api.md`, `README.md`, `LICENSE`, and `package.json`. The CLI
-package contains its `dist/` artifacts, `docs/guide.md`, `docs/syntax.md`,
-`README.md`, `LICENSE`, and `package.json`. Repository source, tests, development
-documentation, maintenance scripts, CI configuration, lockfiles, and
-version-badge data are excluded.
+`npm run pack:check` builds first, then creates a temporary npm package archive
+for each workspace. It first verifies the archive's metadata and complete file
+allowlist, including required-file presence and unexpected-file rejection. It
+then compares the packaged README, LICENSE, and published API/CLI documents
+byte for byte with their source files. The check does not parse Markdown,
+assert document snippets, or print document contents. The core package contains
+only its selected `dist/core` and `dist/application` artifacts, `docs/api.md`,
+`README.md`, `LICENSE`, and `package.json`. The CLI package contains its
+`dist/` artifacts, `docs/guide.md`, `docs/syntax.md`, `README.md`, `LICENSE`,
+and `package.json`. Repository source, tests, development documentation,
+maintenance scripts, CI configuration, lockfiles, and version-badge data are
+excluded.
 
 ### Dependency and freshness audit
 

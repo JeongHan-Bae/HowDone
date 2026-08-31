@@ -419,7 +419,7 @@ fails closed on a later retry because an already published target is rejected.
   - `docs/architecture.md`: architecture and dependency direction.
   - `docs/api.md`: public Core/application API.
   - `docs/development.md`: development, CI, and package-maintenance workflow
-    context; the release publication contract is defined here.
+    context; the release publication contract is defined in this file.
   - `docs/guide.md`: standalone complete CLI usage, command ownership, and
     parameter behavior shipped with `howdone-cli`.
   - `docs/syntax.md`: standalone source and result language contract shipped
